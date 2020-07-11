@@ -128,10 +128,6 @@
          color: inherit;
          opacity: 0.4;
       }
-
-      //dev
-      // background-color: rgba(red, 0.3);
-      // opacity: 1;
    }
 
    &__search-icon,
@@ -155,9 +151,6 @@
       cursor: pointer;
 
       opacity: 0;
-
-      //dev
-      // background-color: rgba(blue, 0.4);
    }
 
    &:focus-within {
@@ -183,10 +176,7 @@
    }
 }
 
-#action-panel:focus-within {
-   //selects icons other than the search icon when the search icon is expanded
-   .button-row {
-      opacity: 0;
-      transform: translateX($action-panel-width / 2) scaleX(0);
-   }
+#action-panel:focus-within .button-row {
+   opacity: 0;
+   transform: translateX($action-panel-width / 2) scaleX(0);
 }

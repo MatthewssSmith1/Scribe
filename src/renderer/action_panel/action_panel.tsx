@@ -26,7 +26,11 @@ export default class ActionPanel extends React.Component {
             <Icon glyph="device_hub" onClick={() => {}} />
             <Icon glyph="note_add" onClick={() => {}} />
             <Icon glyph="settings" onClick={() => {}} />
-            <Icon glyph="arrow_back_ios" className="button-row__collapse-icon" onClick={this.toggleCollapsed} />
+            <Icon
+               glyph="arrow_back_ios"
+               className="button-row__collapse-icon"
+               onClick={() => document.getElementById('root').classList.toggle('action-panel-collapsed')}
+            />
          </div>
       )
    }
@@ -42,12 +46,5 @@ export default class ActionPanel extends React.Component {
             </div>
          </div>
       )
-   }
-
-   toggleCollapsed = () => {
-      var root: HTMLElement = document.getElementById('root')
-
-      root.classList.toggle('action-panel-collapsed')
-      this.setState({ isCollapsed: root.classList.contains('action-panel-collapsed') })
    }
 }
