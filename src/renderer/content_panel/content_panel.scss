@@ -1,0 +1,11 @@
+.content-panel {
+   background-color: $content-panel-color;
+
+   grid-column: body-right / right;
+   grid-row: top / bottom;
+
+   margin: 2rem 0 2rem 0;
+
+   //[horizontal offset] [vertical offset] [blur radius] [optional spread radius] [color]
+   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1), 0 6px 20px 0 rgba(0, 0, 0, 0.1);
+}

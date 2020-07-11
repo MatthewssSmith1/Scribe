@@ -1,0 +1,21 @@
+{
+   "compilerOptions": {
+      "allowSyntheticDefaultImports": true,
+      "jsx": "react",
+      "baseUrl": ".",
+      "paths": {
+         "@/*": ["src/*"],
+         "@main/*": ["src/main/*"],
+         "@renderer/*": ["src/renderer/*"],
+         "@workspace/*": ["workspace/*"]
+      },
+      "module": "commonjs",
+      "moduleResolution": "node",
+      "noImplicitAny": false,
+      "noImplicitThis": false,
+      "strictNullChecks": false,
+      "sourceMap": true,
+      "target": "esnext"
+   },
+   "exclude": ["node_modules"]
+}

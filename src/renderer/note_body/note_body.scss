@@ -1,0 +1,77 @@
+.note-body {
+   grid-column: body-left / body-right;
+   grid-row: top / bottom;
+
+   padding: 2rem;
+   padding-bottom: 30vh;
+
+   overflow-x: hidden;
+   overflow-y: scroll;
+
+   &::-webkit-scrollbar {
+      display: none;
+   }
+
+   &__top-element-wrapper {
+      display: flex;
+      align-items: center;
+
+      margin-left: 1.6rem;
+      height: 3rem;
+
+      &__document-title {
+         font-size: 1.5rem;
+      }
+   }
+}
+
+.breadcrumbs {
+   display: flex;
+   align-items: center;
+   justify-content: flex-start;
+   height: 2rem;
+
+   &__crumb {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+
+      flex-grow: 1;
+
+      position: relative;
+
+      max-width: 20rem;
+
+      user-select: none;
+
+      font-size: 1rem;
+
+      // font-weight: 700;
+
+      //except for the last breadcrumb (the active bullet), appear clickable
+      cursor: pointer;
+      &:last-child {
+         cursor: default;
+      }
+
+      transition: transform $transition-time-normal;
+      &:hover:not(:last-child) {
+         transform: scale(1.03);
+      }
+   }
+
+   &__spacer {
+      margin-left: 0.5rem;
+      margin-right: 0.5rem;
+      padding-top: 0.2rem;
+      cursor: default;
+
+      & .icon {
+         cursor: default;
+
+         &__glyph {
+            font-size: 1.2rem;
+         }
+      }
+   }
+}

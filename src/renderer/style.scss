@@ -1,0 +1,79 @@
+//color palette 1
+$orange-yellow-crayola: #f4d06fff;
+$dark-orange: #ff8811ff;
+$middle-blue-green: #9dd9d2ff;
+$floral-white: #fff8f0ff;
+$space-cadet: #392f5aff;
+
+//color palette 2
+$cadet: #4f6d7aff;
+$columbia-blue: #c0d6dfff;
+$alice-blue: #dbe9eeff;
+$blue-yonder: #4a6fa5ff;
+$blue-sapphire: #166088ff;
+$naples-yellow: #ffdf64ff;
+
+//main color variables
+$document-color: $alice-blue; //azure
+$document-content-color: black;
+$action-panel-color: $blue-yonder; //cornflowerblue
+$action-panel-content-color: $columbia-blue;
+$content-panel-color: lighten($cadet, 20%);
+
+//transition variables
+$transition-time-slow: 400ms;
+$transition-time-normal: 300ms;
+$transition-time-fast: 20ms;
+
+//specific variables
+$bullet-list-link-color: $blue-sapphire;
+$bullet-dot-highlight-color: rgb(193, 206, 211);
+$action-panel-width: 14rem;
+$content-panel-width: 5rem;
+
+//action panel
+$action-panel__button-row-height: 3rem;
+$action-panel__icon-size: 1.8rem;
+$action-panel__search-bar-anim: 200ms ease-in;
+
+* {
+   padding: 0;
+   margin: 0;
+   font-family: 'Montserrat', sans-serif;
+   cursor: default;
+}
+
+#root {
+   position: absolute;
+   top: 0;
+   bottom: 0;
+   left: 0;
+   right: 0;
+
+   background-color: $document-color;
+
+   overflow: hidden;
+
+   display: grid;
+   grid-template-columns: [left] $action-panel-width [body-left] auto [body-right] $content-panel-width [right];
+   grid-template-rows: [top] 100% [bottom];
+
+   transition: left $transition-time-normal, right $transition-time-normal;
+
+   &.action-panel-collapsed {
+      left: -$action-panel-width;
+   }
+
+   &.content-panel-collapsed {
+      right: -$content-panel-width;
+   }
+}
+
+@import 'other_components/icon.scss';
+@import 'action_panel/action_panel.scss';
+@import 'content_panel/content_panel.scss';
+@import 'note_body/note_body.scss';
+@import 'note_body/link_menu/link_menu.scss';
+@import 'note_body/bullet_component/bullet_component.scss';
+@import 'note_body/bullet_component/bullet_dot/bullet_dot.scss';
+@import 'note_body/bullet_component/bullet_drop_down/bullet_drop_down.scss';

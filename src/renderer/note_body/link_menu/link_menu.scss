@@ -1,0 +1,58 @@
+#link-menu {
+   //left and right are both set in code (link_menu.tsx)
+   position: fixed;
+   left: 0;
+   right: 0;
+
+   //gap between selected text and the menu
+   margin-top: 0.2rem;
+
+   //make sure its displayed on top of everything else
+   z-index: 4;
+
+   background-color: $cadet;
+
+   width: 14rem;
+
+   overflow: hidden;
+
+   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1), 0 6px 20px 0 rgba(0, 0, 0, 0.1);
+
+   display: flex;
+   flex-direction: column;
+   &.hidden {
+      display: none;
+   }
+
+   & .link-menu__item {
+      height: 2rem;
+      width: 100%;
+
+      padding-left: 0.5rem;
+      padding-top: auto;
+      padding-bottom: auto;
+
+      display: flex;
+      justify-content: start;
+      align-items: center;
+
+      & p {
+         font-size: 1.2rem;
+         color: white;
+
+         white-space: nowrap;
+         overflow: hidden;
+         text-overflow: ellipsis;
+
+         transition: transform $transition-time-normal;
+      }
+
+      &:hover {
+         background-color: rgba(0, 0, 0, 0.151);
+
+         p {
+            transform: scale(1.05);
+         }
+      }
+   }
+}

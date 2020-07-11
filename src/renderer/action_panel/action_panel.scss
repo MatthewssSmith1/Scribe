@@ -1,0 +1,191 @@
+#action-panel {
+   background-color: $action-panel-color;
+   color: $action-panel-content-color;
+
+   /* see main.css #root */
+   grid-column: left / body-left;
+   grid-row: top / bottom;
+
+   overflow-x: visible;
+
+   position: relative;
+   top: 0;
+   bottom: 0;
+   left: 0;
+   right: 0;
+
+   border-top: 1px solid lighten($color: $action-panel-color, $amount: 5%);
+}
+
+.button-row {
+   position: absolute;
+   left: 0;
+   top: 0;
+   right: 0;
+
+   height: $action-panel__button-row-height;
+
+   display: flex;
+   align-items: center;
+   justify-content: space-around;
+
+   padding: 0.3rem;
+
+   transition: transform $action-panel__search-bar-anim, opacity $action-panel__search-bar-anim;
+   // transition: opacity $action-panel__search-bar-anim, left $action-panel__search-bar-anim;
+
+   & > .icon {
+      padding: 0.5rem;
+
+      &__glyph {
+         font-size: $action-panel__icon-size;
+      }
+   }
+
+   & .search-icon-place-holder {
+      width: 2.5rem;
+      height: 2.5rem;
+   }
+
+   //chevron icon that closes/opens the panel
+   &__collapse-icon {
+      transition: transform $transition-time-normal, color $transition-time-normal;
+
+      &.parent-collapsed {
+         color: $document-content-color;
+         transform: translateX(2.5rem) scale(-1);
+      }
+   }
+}
+
+.search-bar-wrapper {
+   position: absolute;
+   left: 0;
+   top: 0;
+   right: 0;
+
+   height: $action-panel__button-row-height;
+
+   display: flex;
+   align-items: center;
+   justify-content: start;
+
+   padding: 0.3rem 0.5rem;
+}
+
+.search-bar {
+   $bar-height: 2.2rem;
+   $bar-width: 13rem;
+
+   position: relative;
+
+   width: $bar-height;
+   height: $bar-height;
+   margin: 0.15rem;
+
+   border: 1px solid transparent;
+   border-radius: $bar-height / 2;
+
+   z-index: 2;
+
+   overflow: hidden;
+
+   transition: width $action-panel__search-bar-anim, border-color $action-panel__search-bar-anim;
+
+   &__input {
+      $text-padding-left: 0.9rem;
+
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+
+      width: $bar-width - $bar-height - $text-padding-left;
+
+      border-radius: $bar-height / 2 0 0 $bar-height / 2;
+      border: 0;
+      outline: none;
+
+      //receive clicks above icons
+      z-index: 3;
+      cursor: pointer;
+
+      //invisible until clicked
+      opacity: 0;
+
+      background-color: transparent;
+
+      //text looks
+      font-size: 1rem;
+      color: inherit;
+      padding-left: $text-padding-left; //text offset from left
+
+      transition: opacity $action-panel__search-bar-anim;
+
+      //placeholder text
+      &::placeholder {
+         color: inherit;
+         opacity: 0.4;
+      }
+
+      //dev
+      // background-color: rgba(red, 0.3);
+      // opacity: 1;
+   }
+
+   &__search-icon,
+   &__close-icon {
+      position: absolute;
+      right: 0;
+
+      height: $bar-height;
+      width: $bar-height;
+
+      transition: opacity $action-panel__search-bar-anim;
+
+      .icon__glyph {
+         font-size: $action-panel__icon-size;
+      }
+   }
+
+   &__close-icon {
+      border-radius: 0 50% 50% 0;
+
+      cursor: pointer;
+
+      opacity: 0;
+
+      //dev
+      // background-color: rgba(blue, 0.4);
+   }
+
+   &:focus-within {
+      width: $bar-width;
+
+      border-color: inherit;
+
+      .search-bar__input {
+         opacity: 1;
+      }
+
+      .search-bar__search-icon {
+         opacity: 0;
+      }
+
+      .search-bar__close-icon {
+         opacity: 1;
+      }
+   }
+
+   &:hover .search-bar__search-icon .icon__glyph {
+      transform: scale(1.1);
+   }
+}
+
+#action-panel:focus-within {
+   //selects icons other than the search icon when the search icon is expanded
+   .button-row {
+      opacity: 0;
+      transform: translateX($action-panel-width / 2) scaleX(0);
+   }
+}

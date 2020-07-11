@@ -1,0 +1,50 @@
+/*
+   bullet
+      bullet__line
+         bullet__line__drop-down
+         bullet__line__dot
+            bullet__line__dot__circle
+         bullet__line__editable
+      bullet__children-container
+*/
+
+.bullet__line__dot {
+   height: 1.7rem;
+   width: 1.7rem;
+
+   display: flex;
+   align-items: center;
+   justify-content: center;
+
+   margin-right: 0.15rem;
+
+   cursor: default;
+}
+
+.bullet__line__dot__circle {
+   background-color: $document-content-color;
+
+   width: 0.3em;
+   height: 0.3em;
+
+   border-radius: 50%;
+   border: 0.3em solid $document-color;
+
+   cursor: pointer;
+
+   transition: border-color $transition-time-normal, width $transition-time-normal, height $transition-time-normal, border $transition-time-normal;
+
+   &.highlighted {
+      border-color: $bullet-dot-highlight-color;
+   }
+
+   &:hover {
+      width: 0.4em;
+      height: 0.4em;
+      /* border: 0.2em solid azure; */
+   }
+
+   &.no-on-click {
+      cursor: default;
+   }
+}
