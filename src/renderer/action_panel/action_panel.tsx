@@ -3,22 +3,10 @@ import Icon from '@/renderer/other_components/icon'
 
 //the panel on the left of the document body that can be collapsed/expanded
 export default class ActionPanel extends React.Component {
-   state: {
-      isCollapsed: boolean
-   }
-
    constructor(props: {}) {
       super(props)
 
-      this.state = { isCollapsed: true }
-      document.getElementById('root').classList.toggle('action-panel-collapsed', this.state.isCollapsed)
-   }
-
-   toggleCollapsed = () => {
-      var root: HTMLElement = document.getElementById('root')
-
-      root.classList.toggle('action-panel-collapsed')
-      this.setState({ isCollapsed: root.classList.contains('action-panel-collapsed') })
+      document.getElementById('root').classList.add('action-panel-collapsed')
    }
 
    render(): JSX.Element {
@@ -54,5 +42,12 @@ export default class ActionPanel extends React.Component {
             </div>
          </div>
       )
+   }
+
+   toggleCollapsed = () => {
+      var root: HTMLElement = document.getElementById('root')
+
+      root.classList.toggle('action-panel-collapsed')
+      this.setState({ isCollapsed: root.classList.contains('action-panel-collapsed') })
    }
 }
