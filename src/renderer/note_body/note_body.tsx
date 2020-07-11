@@ -1,10 +1,11 @@
 import * as React from 'react'
 
-import Bullet from '@/main/bullet'
+import Bullet from '@main/bullet'
 import BulletComponent from '@renderer/note_body/bullet_component/bullet_component'
-import Icon from '@/renderer/other_components/icon'
-import WorkspaceManager from '@/main/workspace_manager'
+import Icon from '@renderer/other_components/icon'
+import WorkspaceManager from '@main/workspace_manager'
 import Document from '@main/document'
+import Link from '@main/link'
 
 export default class NoteBody extends React.Component {
    private static _singleton: NoteBody
@@ -55,9 +56,37 @@ export default class NoteBody extends React.Component {
       this._singleton.forceUpdate()
    }
 
+   static get currentDocument(): Document {
+      return this._singleton.state.document
+   }
+
+   static loadLinkByID(linkId: number): void {
+      var link: Link = WorkspaceManager.links.find(l => l.id == linkId)
+
+      if (link == undefined) {
+         console.warn(`could not find link of id ${linkId}`)
+         return
+      }
+
+      console.log('link found when span clicked:')
+      console.log(link.toString())
+
+      //find the document that the link goes to
+      //TODO abstract into WorkspaceManager method
+      var document: Document = WorkspaceManager.documents.find(doc => doc.metaData.id == link.to.documentId)
+      var docRootBullet: Bullet = document.toBullet()
+
+      this._singleton.setState({ document: document, rootBullet: docRootBullet, bullets: docRootBullet.children })
+   }
+
    handleBulletListClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-      // console.log(e)
-      //TODO use follow document links
+      var clickedSpan = e.target as HTMLSpanElement
+
+      if (!clickedSpan || !e.ctrlKey || !clickedSpan.classList.contains('link')) return
+
+      var linkID = parseInt(clickedSpan.dataset.linkId)
+
+      NoteBody.loadLinkByID(linkID)
    }
 
    render(): JSX.Element {

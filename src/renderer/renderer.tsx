@@ -9,11 +9,18 @@ import NoteBody from '@renderer/note_body/note_body'
 import ContentPanel from '@renderer/content_panel/content_panel'
 import LinkMenu from '@renderer/note_body/link_menu/link_menu'
 
-ReactDOM.render([<ActionPanel key="0" />, <NoteBody key="1" />, <ContentPanel key="2" />, <LinkMenu key="3" />], document.getElementById('root'))
+var root = document.getElementById('root')
+
+ReactDOM.render([<ActionPanel key="0" />, <NoteBody key="1" />, <ContentPanel key="2" />, <LinkMenu key="3" />], root)
 
 WorkspaceManager.init()
 
-// document.getElementById('root').classList.add('content-panel-collapsed')
+document.addEventListener('keydown', event => {
+   if (event.key == 'Control') root.classList.add('ctrl-pressed')
+})
+document.addEventListener('keyup', event => {
+   if (event.key == 'Control') root.classList.remove('ctrl-pressed')
+})
 
 let titleBar = new Titlebar({
    backgroundColor: Color.fromHex('#4a6fa5'),

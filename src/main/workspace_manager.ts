@@ -1,6 +1,7 @@
-import { readdirSync, Dirent, existsSync, readFileSync, writeFileSync } from 'fs'
+import { readdirSync, Dirent, existsSync, readFileSync, writeFileSync, appendFileSync } from 'fs'
 import Document from '@main/document'
 import Link, { ToAddress } from '@main/link'
+import { FromAddress } from './link'
 
 const yaml = require('js-yaml')
 
@@ -80,7 +81,7 @@ export default class WorkspaceManager {
    static getSuggestedLinks(str: string): Array<[string, ToAddress]> {
       if (!this.isInitialized) throw 'WorkspaceManager.getRecommendedLinks() called before init() completed'
 
-      str = str.toLowerCase()
+      str = str.toLowerCase().trim()
 
       return this.documents
          .filter(doc => doc.name.toLowerCase().includes(str))
@@ -90,5 +91,25 @@ export default class WorkspaceManager {
                documentId: doc.metaData.id,
             },
          ])
+   }
+
+   static saveLink(link: Link): void {
+      appendFileSync(this.workspacePath + 'links.list', '\n' + link.toString())
+   }
+
+   static get newLinkID(): number {
+      return Date.now()
+
+      //? save link to file here too?
+   }
+
+   static createLink(from: FromAddress, to: ToAddress): Link {
+      var link = new Link(this.newLinkID, { ...from }, { ...to })
+
+      this.links.push(link)
+
+      this.saveLink(link)
+
+      return link
    }
 }
