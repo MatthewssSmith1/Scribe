@@ -1,11 +1,31 @@
-.content-panel {
-   background-color: $content-panel-color;
-
+.content-panel-wrapper {
    grid-column: body-right / right;
    grid-row: top / bottom;
 
    margin: 2rem 0 2rem 0;
+}
+
+.content-panel {
+   position: relative;
+   width: 100%;
+   height: 100%;
+
+   background-color: $content-panel-color;
 
    //[horizontal offset] [vertical offset] [blur radius] [optional spread radius] [color]
    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1), 0 6px 20px 0 rgba(0, 0, 0, 0.1);
+
+   &__draggable-edge {
+      $draggable-width: 5px;
+
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: -$draggable-width / 2;
+      width: $draggable-width;
+
+      cursor: col-resize;
+
+      background-color: transparent;
+   }
 }
