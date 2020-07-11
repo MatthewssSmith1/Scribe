@@ -25,7 +25,7 @@ export default class ActionPanel extends React.Component {
             <div className="search-icon-place-holder" />
             <Icon glyph="device_hub" onClick={() => {}} />
             <Icon glyph="note_add" onClick={() => {}} />
-            <Icon glyph="settings" onClick={() => {}} />
+            <Icon glyph="settings" onClick={() => document.getElementById('root').classList.toggle('content-panel-collapsed')} />
             <Icon
                glyph="arrow_back_ios"
                className="button-row__collapse-icon"
