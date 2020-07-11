@@ -7,6 +7,7 @@ import Bullet from '@/main/bullet'
 import handleKeyPress from '@renderer/note_body/bullet_component/key_press'
 import BulletDot from '@renderer/note_body/bullet_component/bullet_dot/bullet_dot'
 import BulletDropDown from '@renderer/note_body/bullet_component/bullet_drop_down/bullet_drop_down'
+import NoteBody from '../note_body'
 
 /*
    bullet
@@ -84,7 +85,14 @@ class BulletLine extends React.Component {
    handleChange = (evt: ContentEditableEvent) => {
       // evt.preventDefault()
       if (evt.type !== 'input') return
-      this.props.bullet.text = evt.target.value
+
+      //for some unknown reason, whenever the div is edited, an unknown character is added to the end of the text node (appears to be both delete and new line)
+      var newText = evt.target.value
+      newText = newText.slice(0, newText.length - 2)
+
+      this.props.bullet.text = newText
+
+      NoteBody.queueSaveDocument()
    }
 
    // #region Selection

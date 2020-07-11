@@ -45,7 +45,7 @@ export default class Document {
       this.saveMetaData()
    }
 
-   toBullet() {
+   toBullet(): Bullet {
       if (!WorkspaceManager.isInitialized) throw 'Document.toBullet() (reading from a file) called before WorkspaceManager.init() finished'
 
       var fileLines = readFileSync(WorkspaceManager.workspacePath + `${this.name}.txt`, { encoding: 'utf8', flag: 'r' })

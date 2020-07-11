@@ -2,13 +2,17 @@ import * as React from 'react'
 
 import Bullet from '@main/bullet'
 import BulletComponent from '@renderer/note_body/bullet_component/bullet_component'
-import Icon from '@renderer/other_components/icon'
+import Breadcrumbs from '@renderer/note_body/breadcrumbs/breadcrumbs'
 import WorkspaceManager from '@main/workspace_manager'
 import Document from '@main/document'
 import Link from '@main/link'
+import { writeFileSync } from 'fs'
 
 export default class NoteBody extends React.Component {
    private static _singleton: NoteBody
+
+   private _shouldSave: boolean = false
+   private _saveInterval: NodeJS.Timeout
 
    state: {
       document: Document
@@ -24,15 +28,11 @@ export default class NoteBody extends React.Component {
 
       this.state = { document: null, rootBullet: null, isRootSelected: true, bullets: [] }
 
-      NoteBody.loadRootBullet()
-   }
-
-   static async loadRootBullet() {
       WorkspaceManager.onceInitialized(() => {
          var currentDocument = WorkspaceManager.documents[0]
          var rootBullet = currentDocument.toBullet()
 
-         this._singleton.setState({ document: currentDocument, rootBullet: rootBullet, bullets: rootBullet.children })
+         NoteBody._singleton.setState({ document: currentDocument, rootBullet: rootBullet, bullets: rootBullet.children })
       })
    }
 
@@ -46,31 +46,16 @@ export default class NoteBody extends React.Component {
       this.rebuild()
    }
 
-   static selectBullets(bullets: Array<Bullet>) {
-      this._singleton.setState({ isRootSelected: false, bullets: bullets })
-
-      this.rebuild()
-   }
-
    static rebuild() {
       this._singleton.forceUpdate()
+      NoteBody.queueSaveDocument()
    }
 
    static get currentDocument(): Document {
       return this._singleton.state.document
    }
 
-   static loadLinkByID(linkId: number): void {
-      var link: Link = WorkspaceManager.links.find(l => l.id == linkId)
-
-      if (link == undefined) {
-         console.warn(`could not find link of id ${linkId}`)
-         return
-      }
-
-      console.log('link found when span clicked:')
-      console.log(link.toString())
-
+   static loadLink(link: Link): void {
       //find the document that the link goes to
       //TODO abstract into WorkspaceManager method
       var document: Document = WorkspaceManager.documents.find(doc => doc.metaData.id == link.to.documentId)
@@ -79,14 +64,40 @@ export default class NoteBody extends React.Component {
       this._singleton.setState({ document: document, rootBullet: docRootBullet, bullets: docRootBullet.children })
    }
 
-   handleBulletListClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+   static queueSaveDocument(): void {
+      NoteBody._singleton._shouldSave = true
+   }
+
+   //every four seconds (while the component is mounted) save the document
+   componentDidMount() {
+      this._saveInterval = setInterval(() => {
+         if (this._shouldSave) {
+            this._shouldSave = false
+
+            var textFilePath = WorkspaceManager.workspacePath + NoteBody._singleton.state.document.name + '.txt'
+            writeFileSync(textFilePath, NoteBody._singleton.state.rootBullet.toString())
+            console.log('doc saved')
+         }
+      }, 4000)
+   }
+   componentWillUnmount() {
+      clearInterval(this._saveInterval)
+   }
+
+   //called when any bullet is clicked, loads what a link points to if ctrl is pressed
+   handleClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
       var clickedSpan = e.target as HTMLSpanElement
 
       if (!clickedSpan || !e.ctrlKey || !clickedSpan.classList.contains('link')) return
 
       var linkID = parseInt(clickedSpan.dataset.linkId)
+      var link: Link = WorkspaceManager.links.find(l => l.id == linkID)
+      if (link == undefined) {
+         console.warn(`could not find link of id ${linkID}`)
+         return
+      }
 
-      NoteBody.loadLinkByID(linkID)
+      NoteBody.loadLink(link)
    }
 
    render(): JSX.Element {
@@ -105,45 +116,10 @@ export default class NoteBody extends React.Component {
       return (
          <div className="note-body">
             <div className="note-body__top-element-wrapper">{bullets.length > 0 && documentTopElement}</div>
-            <div className="note-body__bullet-list" onClick={this.handleBulletListClick}>
+            <div className="note-body__bullet-list" onClick={this.handleClick}>
                {bulletElements}
             </div>
          </div>
       )
-   }
-}
-
-class Breadcrumbs extends React.Component {
-   props: {
-      selectedBullets: Array<Bullet>
-      isRootSelected: boolean
-   }
-
-   render() {
-      var elements: Array<JSX.Element> = []
-
-      var selectedBullets = this.props.selectedBullets
-      selectedBullets[0].breadCrumbs.forEach((crumbBullet, i) => {
-         elements.push(<this.Crumb text={crumbBullet.text} onClick={() => NoteBody.selectBullet(crumbBullet)} key={i * 2} />)
-         elements.push(<this.Spacer key={i * 2 + 1} />)
-      })
-
-      elements.push(<this.Crumb text={selectedBullets.map(b => b.text).join(', ')} key={-1} />)
-
-      return <div className="breadcrumbs">{elements}</div>
-   }
-
-   Crumb(props: { text: string; onClick?: (event: React.MouseEvent<HTMLHeadingElement, MouseEvent>) => void }): JSX.Element {
-      var hasOnClick: boolean = props.onClick != null
-
-      return (
-         <h1 className="breadcrumbs__crumb" onClick={hasOnClick ? props.onClick : null}>
-            {props.text}
-         </h1>
-      )
-   }
-
-   Spacer(): JSX.Element {
-      return <Icon glyph="arrow_forward_ios" className="breadcrumbs__spacer" />
    }
 }

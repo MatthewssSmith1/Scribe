@@ -9,7 +9,7 @@ export default class Bullet {
    //passed to react.js components in children lists
    key: number = 0
 
-   // #region Constructor & Factory
+   // #region Constructor, Factory, Serializing
    constructor(text: string = '', children: Array<Bullet> = [], parent: Bullet = null) {
       this.text = text.replace('\t', '')
 
@@ -40,6 +40,20 @@ export default class Bullet {
       }
 
       return new Bullet(text, children)
+   }
+
+   toString(): string {
+      return this.toStringList().join('\n')
+   }
+
+   toStringList(strList: Array<string> = [], depth: number = 0): Array<string> {
+      const childrenDepth = depth + 1
+      this.children.forEach(c => {
+         strList.push('\t'.repeat(childrenDepth) + c.text)
+         c.toStringList(strList, childrenDepth)
+      })
+
+      return strList
    }
    // #endregion
 

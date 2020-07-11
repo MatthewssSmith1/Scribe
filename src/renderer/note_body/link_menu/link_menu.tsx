@@ -75,12 +75,10 @@ export default class LinkMenu extends React.Component {
 
          var link = WorkspaceManager.createLink(fromAddress, props.toAddress)
 
-         console.log('link added to span:')
-         console.log(link.toString())
-
          this.hide()
 
          var selection = window.getSelection()
+         var editable = selection.anchorNode.parentElement
 
          var span = document.createElement('SPAN')
          span.textContent = selection.toString()
@@ -90,6 +88,10 @@ export default class LinkMenu extends React.Component {
          var range = selection.getRangeAt(0)
          range.deleteContents()
          range.insertNode(span)
+
+         this.state.bulletWithSelection.text = editable.innerHTML
+
+         NoteBody.saveDocument()
       }
 
       return (
