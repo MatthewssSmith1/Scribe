@@ -1,30 +1,24 @@
 import * as React from 'react'
 import Icon from '@/renderer/other_components/icon'
 
-import cx from 'classnames'
-import Bullet from '@/main/bullet'
-
+//the panel on the left of the document body that can be collapsed/expanded
 export default class ActionPanel extends React.Component {
    state: {
-      collapsed: boolean
+      isCollapsed: boolean
    }
-
-   workspaceRoot: Bullet
 
    constructor(props: {}) {
       super(props)
 
-      var isCollapsed = true
-      document.getElementById('root').classList.toggle('action-panel-collapsed', isCollapsed)
-
-      this.state = { collapsed: isCollapsed }
+      this.state = { isCollapsed: true }
+      document.getElementById('root').classList.toggle('action-panel-collapsed', this.state.isCollapsed)
    }
 
    toggleCollapsed = () => {
       var root: HTMLElement = document.getElementById('root')
 
       root.classList.toggle('action-panel-collapsed')
-      this.setState({ collapsed: root.classList.contains('action-panel-collapsed') })
+      this.setState({ isCollapsed: root.classList.contains('action-panel-collapsed') })
    }
 
    render(): JSX.Element {
@@ -36,22 +30,20 @@ export default class ActionPanel extends React.Component {
       )
    }
 
-   ButtonRow = () => {
+   //the row of buttons at the top of the action panel (excluding the search icon, which is rendered above this row and by the SearchBar component)
+   ButtonRow() {
       return (
          <div className="button-row">
             <div className="search-icon-place-holder" />
             <Icon glyph="device_hub" onClick={() => {}} />
             <Icon glyph="note_add" onClick={() => {}} />
             <Icon glyph="settings" onClick={() => {}} />
-            <Icon
-               glyph="arrow_back_ios"
-               className={cx('button-row__collapse-icon', { 'parent-collapsed': this.state.collapsed })}
-               onClick={this.toggleCollapsed}
-            />
+            <Icon glyph="arrow_back_ios" className="button-row__collapse-icon" onClick={this.toggleCollapsed} />
          </div>
       )
    }
 
+   //the search icon on the top left of the action panel which expands into the search bar
    SearchBar(): JSX.Element {
       return (
          <div className="search-bar-wrapper">

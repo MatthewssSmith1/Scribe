@@ -42,20 +42,21 @@
       }
    }
 
+   //match size of other icons exactly
    & .search-icon-place-holder {
       width: 2.5rem;
       height: 2.5rem;
    }
 
    //chevron icon that closes/opens the panel
-   &__collapse-icon {
-      transition: transform $transition-time-normal, color $transition-time-normal;
+}
 
-      &.parent-collapsed {
-         color: $document-content-color;
-         transform: translateX(2.5rem) scale(-1);
-      }
-   }
+.button-row__collapse-icon {
+   transition: transform $transition-time-normal, color $transition-time-normal;
+}
+.action-panel-collapsed .button-row__collapse-icon {
+   color: $document-content-color;
+   transform: translateX(2.5rem) scale(-1);
 }
 
 .search-bar-wrapper {
