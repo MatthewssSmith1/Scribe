@@ -15,6 +15,13 @@ export default class NoteBody extends React.Component {
    private _shouldSaveImmediate: boolean = false
    private _saveInterval: NodeJS.Timeout
 
+   props: {
+      isActionPanelCollapsed: boolean
+      isContentPanelCollapsed: boolean
+      actionPanelWidth: number
+      contentPanelWidth: number
+   }
+
    state: {
       document: Document
       rootBullet: Bullet
@@ -22,7 +29,7 @@ export default class NoteBody extends React.Component {
       bullets: Array<Bullet>
    }
 
-   constructor(props: {}) {
+   constructor(props: any) {
       super(props)
 
       NoteBody._singleton = this
@@ -117,12 +124,21 @@ export default class NoteBody extends React.Component {
       )
 
       return (
-         <div className="note-body">
+         <div className="note-body" style={this.getStyle()}>
             <div className="note-body__top-element-wrapper">{bullets.length > 0 && documentTopElement}</div>
             <div className="note-body__bullet-list" onClick={this.handleClick}>
                {bulletElements}
             </div>
          </div>
       )
+   }
+
+   getStyle() {
+      var props = this.props
+
+      return {
+         right: props.isContentPanelCollapsed ? "0px" : `${props.contentPanelWidth}px`,
+         left: props.isActionPanelCollapsed ? "0px" : `${props.actionPanelWidth}px`,
+      }
    }
 }

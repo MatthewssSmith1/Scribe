@@ -1,19 +1,22 @@
 import * as React from 'react'
 import Icon from '@/renderer/other_components/icon'
+import RootChildren from '../renderer'
+import cx from 'classnames'
 
 //the panel on the left of the document body that can be collapsed/expanded
 export default class ActionPanel extends React.Component {
-   constructor(props: {}) {
-      super(props)
-
-      document.getElementById('root').classList.add('action-panel-collapsed')
+   props: {
+      width: number
+      isCollapsed: boolean
    }
 
    render(): JSX.Element {
       return (
-         <div id="action-panel">
-            <this.SearchBar />
-            <this.ButtonRow />
+         <div id="action-panel-wrapper" className={cx({ collapsed: this.props.isCollapsed })} style={this.getStyle()}>
+            <div id="action-panel">
+               <this.SearchBar />
+               <this.ButtonRow />
+            </div>
          </div>
       )
    }
@@ -25,12 +28,8 @@ export default class ActionPanel extends React.Component {
             <div className="search-icon-place-holder" />
             <Icon glyph="device_hub" onClick={() => {}} />
             <Icon glyph="note_add" onClick={() => {}} />
-            <Icon glyph="settings" onClick={() => document.getElementById('root').classList.toggle('content-panel-collapsed')} />
-            <Icon
-               glyph="arrow_back_ios"
-               className="button-row__collapse-icon"
-               onClick={() => document.getElementById('root').classList.toggle('action-panel-collapsed')}
-            />
+            <Icon glyph="settings" onClick={() => RootChildren.toggleContentPanelCollapsed()} />
+            <Icon glyph="arrow_back_ios" className="button-row__collapse-icon" onClick={() => RootChildren.toggleActionPanelCollapsed()} />
          </div>
       )
    }
@@ -46,5 +45,14 @@ export default class ActionPanel extends React.Component {
             </div>
          </div>
       )
+   }
+
+   getStyle() {
+      var props = this.props
+
+      return {
+         left: props.isCollapsed ? `${-props.width}px` : '0px',
+         width: props.width,
+      }
    }
 }

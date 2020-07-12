@@ -1,18 +1,25 @@
+#action-panel-wrapper {
+   position: absolute;
+   left: 0;
+   top: 0;
+   bottom: 0;
+
+   //attempts to get the uncollapse button to work
+   overflow-x: visible;
+   z-index: 3;
+
+   transition: left $transition-time-normal;
+}
+
 #action-panel {
    background-color: $action-panel-color;
    color: $action-panel-content-color;
 
-   /* see main.css #root */
-   grid-column: left / body-left;
-   grid-row: top / bottom;
-
    overflow-x: visible;
 
    position: relative;
-   top: 0;
-   bottom: 0;
-   left: 0;
-   right: 0;
+   width: 100%;
+   height: 100%;
 
    border-top: 1px solid lighten($color: $action-panel-color, $amount: 5%);
 }
@@ -31,7 +38,7 @@
 
    padding: 0.3rem;
 
-   transition: transform $action-panel__search-bar-anim, opacity $action-panel__search-bar-anim;
+   transition: opacity $action-panel__search-bar-anim;
    // transition: opacity $action-panel__search-bar-anim, left $action-panel__search-bar-anim;
 
    & > .icon {
@@ -54,7 +61,7 @@
 .button-row__collapse-icon {
    transition: transform $transition-time-normal, color $transition-time-normal;
 }
-.action-panel-collapsed .button-row__collapse-icon {
+#action-panel-wrapper.collapsed .button-row__collapse-icon {
    color: $document-content-color;
    transform: translateX(2.5rem) scale(-1);
 }
@@ -178,5 +185,4 @@
 
 #action-panel:focus-within .button-row {
    opacity: 0;
-   transform: translateX($action-panel-width / 2) scaleX(0);
 }

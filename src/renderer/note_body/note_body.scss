@@ -1,6 +1,12 @@
 .note-body {
-   grid-column: body-left / body-right;
-   grid-row: top / bottom;
+   position: absolute;
+   top: 0;
+   left: 0;
+   right: 0;
+   bottom: 0;
+
+   //both right and left area modified in code
+   transition: right $transition-time-normal, left $transition-time-normal;
 
    padding: 2rem;
    padding-bottom: 30vh;

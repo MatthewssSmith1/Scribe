@@ -1,11 +1,15 @@
-.content-panel-wrapper {
-   grid-column: body-right / right;
-   grid-row: top / bottom;
+#content-panel-wrapper {
+   position: absolute;
+   right: 0;
+   top: 0;
+   bottom: 0;
 
    margin: 2rem 0 2rem 0;
+
+   transition: right $transition-time-normal;
 }
 
-.content-panel {
+#content-panel {
    position: relative;
    width: 100%;
    height: 100%;
@@ -15,7 +19,7 @@
    //[horizontal offset] [vertical offset] [blur radius] [optional spread radius] [color]
    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1), 0 6px 20px 0 rgba(0, 0, 0, 0.1);
 
-   &__draggable-edge {
+   & .content-panel__draggable-edge {
       $draggable-width: 5px;
 
       position: absolute;

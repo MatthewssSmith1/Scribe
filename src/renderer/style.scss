@@ -28,8 +28,6 @@ $transition-time-fast: 20ms;
 //specific variables
 $bullet-list-link-color: $blue-sapphire;
 $bullet-dot-highlight-color: rgb(193, 206, 211);
-$action-panel-width: 14rem;
-$content-panel-width: 20rem;
 
 //action panel
 $action-panel__button-row-height: 3rem;
@@ -53,20 +51,6 @@ $action-panel__search-bar-anim: 200ms ease-in;
    background-color: $document-color;
 
    overflow: hidden;
-
-   display: grid;
-   grid-template-columns: [left] $action-panel-width [body-left] auto [body-right] $content-panel-width [right];
-   grid-template-rows: [top] 100% [bottom];
-
-   transition: left $transition-time-normal, right $transition-time-normal;
-
-   &.action-panel-collapsed {
-      left: -$action-panel-width;
-   }
-
-   &.content-panel-collapsed {
-      right: -$content-panel-width;
-   }
 }
 
 @import 'other_components/icon.scss';
