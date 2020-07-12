@@ -2,7 +2,7 @@ import * as React from 'react'
 import Bullet from '@main/bullet'
 import Link, { FromAddress, ToAddress } from '@main/link'
 import WorkspaceManager from '@main/workspace_manager'
-import NoteBody from '../note_body'
+import NoteBody from '../note_body/note_body'
 
 export default class LinkMenu extends React.Component {
    private static _singleton: LinkMenu
@@ -66,7 +66,7 @@ export default class LinkMenu extends React.Component {
    }
 
    SuggestionItem = (props: { name: string; toAddress: ToAddress }): JSX.Element => {
-      var linkToSuggestion = () => {
+      var handleClick = (e: React.MouseEvent<HTMLParagraphElement, MouseEvent>) => {
          var fromAddress: FromAddress = {
             documentId: NoteBody.currentDocument.metaData.id,
             bulletCoords: this.state.bulletWithSelection.coords,
@@ -91,12 +91,12 @@ export default class LinkMenu extends React.Component {
 
          this.state.bulletWithSelection.text = editable.innerHTML
 
-         NoteBody.queueSaveDocument()
+         NoteBody.queueSaveDocument(true)
       }
 
       return (
          <div className="link-menu__item">
-            <p onClick={linkToSuggestion}>{props.name}</p>
+            <p onClick={handleClick}>{props.name}</p>
          </div>
       )
    }
@@ -144,6 +144,6 @@ export default class LinkMenu extends React.Component {
 
       if (clickedElm != menuDiv && !menuDiv.contains(clickedElm)) {
          LinkMenu._singleton.hide()
-      }
+      } else e.preventDefault()
    }
 }

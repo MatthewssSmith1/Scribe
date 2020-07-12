@@ -12,6 +12,7 @@ export default class NoteBody extends React.Component {
    private static _singleton: NoteBody
 
    private _shouldSave: boolean = false
+   private _shouldSaveImmediate: boolean = false
    private _saveInterval: NodeJS.Timeout
 
    state: {
@@ -64,24 +65,26 @@ export default class NoteBody extends React.Component {
       this._singleton.setState({ document: document, rootBullet: docRootBullet, bullets: docRootBullet.children })
    }
 
-   static queueSaveDocument(): void {
+   static queueSaveDocument(immediate: boolean = false): void {
       NoteBody._singleton._shouldSave = true
+      if (immediate) NoteBody._singleton.save()
    }
 
    //every four seconds (while the component is mounted) save the document
    componentDidMount() {
       this._saveInterval = setInterval(() => {
-         if (this._shouldSave) {
-            this._shouldSave = false
-
-            var textFilePath = WorkspaceManager.workspacePath + NoteBody._singleton.state.document.name + '.txt'
-            writeFileSync(textFilePath, NoteBody._singleton.state.rootBullet.toString())
-            console.log('doc saved')
-         }
+         if (this._shouldSave) this.save()
       }, 4000)
    }
    componentWillUnmount() {
       clearInterval(this._saveInterval)
+   }
+   private save() {
+      this._shouldSave = false
+
+      var textFilePath = WorkspaceManager.workspacePath + NoteBody._singleton.state.document.name + '.txt'
+      writeFileSync(textFilePath, NoteBody._singleton.state.rootBullet.toString())
+      console.log('doc saved')
    }
 
    //called when any bullet is clicked, loads what a link points to if ctrl is pressed

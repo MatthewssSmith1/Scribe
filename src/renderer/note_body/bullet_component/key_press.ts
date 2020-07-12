@@ -1,8 +1,7 @@
 import * as React from 'react'
 import NoteBody from '@renderer/note_body/note_body'
-import Bullet from '@/main/bullet'
-import WorkspaceManager from '@main/workspace_manager'
-import LinkMenu from '@renderer/note_body/link_menu/link_menu'
+import Bullet from '@main/bullet'
+import LinkMenu from '@renderer/link_menu/link_menu'
 
 export default function handleKeyPress(evt: React.KeyboardEvent<HTMLDivElement>, bullet: Bullet) {
    //TODO make enter with selection not collapsed start linking process

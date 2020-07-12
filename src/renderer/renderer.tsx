@@ -7,7 +7,7 @@ import WorkspaceManager from '@/main/workspace_manager'
 import ActionPanel from '@/renderer/action_panel/action_panel'
 import NoteBody from '@renderer/note_body/note_body'
 import ContentPanel from '@renderer/content_panel/content_panel'
-import LinkMenu from '@renderer/note_body/link_menu/link_menu'
+import LinkMenu from '@/renderer/link_menu/link_menu'
 
 //import all scss files
 import '@renderer/style.scss'
