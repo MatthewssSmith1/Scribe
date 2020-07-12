@@ -91,7 +91,7 @@ export default class LinkMenu extends React.Component {
 
          this.state.bulletWithSelection.text = editable.innerHTML
 
-         NoteBody.saveDocument()
+         NoteBody.queueSaveDocument()
       }
 
       return (
