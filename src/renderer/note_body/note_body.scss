@@ -1,12 +1,10 @@
 .note-body {
+   //right and left are both modified in note_body.tsx for content/action panel expanding/collapsing
    position: absolute;
    top: 0;
    left: 0;
    right: 0;
    bottom: 0;
-
-   //both right and left area modified in code
-   transition: right $transition-time-normal, left $transition-time-normal;
 
    padding: 2rem;
    padding-bottom: 30vh;
@@ -25,7 +23,7 @@
       margin-left: 1.6rem;
       height: 3rem;
 
-      &__document-title {
+      & document-title {
          font-size: 1.5rem;
       }
    }

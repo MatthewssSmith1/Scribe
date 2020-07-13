@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { writeFileSync } from 'fs'
 
 import Bullet from '@main/bullet'
 import BulletComponent from '@renderer/note_body/bullet_component/bullet_component'
@@ -6,16 +7,15 @@ import Breadcrumbs from '@renderer/note_body/breadcrumbs/breadcrumbs'
 import WorkspaceManager from '@main/workspace_manager'
 import Document from '@main/document'
 import Link from '@main/link'
-import { writeFileSync } from 'fs'
 
 export default class NoteBody extends React.Component {
    private static _singleton: NoteBody
 
    private _shouldSave: boolean = false
-   private _shouldSaveImmediate: boolean = false
    private _saveInterval: NodeJS.Timeout
 
    props: {
+      shouldAnimateLeft: boolean
       isActionPanelCollapsed: boolean
       isContentPanelCollapsed: boolean
       actionPanelWidth: number
@@ -114,11 +114,11 @@ export default class NoteBody extends React.Component {
       var bullets = this.state.bullets
 
       let bulletElements = bullets.map((child: Bullet) => {
-         return <BulletComponent bullet={child} isVirtualRoot={true} key={child.key} />
+         return <BulletComponent bullet={child} key={child.key} />
       })
 
       var documentTopElement = this.state.isRootSelected ? (
-         <h1 className="note-body__top-element-wrapper__document-title">{this.state.rootBullet && this.state.rootBullet.text}</h1>
+         <h1 className="document-title">{this.state.rootBullet && this.state.rootBullet.text}</h1>
       ) : (
          <Breadcrumbs selectedBullets={bullets} isRootSelected={this.state.isRootSelected} />
       )
@@ -133,12 +133,17 @@ export default class NoteBody extends React.Component {
       )
    }
 
-   getStyle() {
+   getStyle(): React.CSSProperties {
       var props = this.props
 
+      var rightProp = props.isContentPanelCollapsed ? 0 : props.contentPanelWidth
+      var leftProp = props.isActionPanelCollapsed ? 0 : props.actionPanelWidth
+
       return {
-         right: props.isContentPanelCollapsed ? "0px" : `${props.contentPanelWidth}px`,
-         left: props.isActionPanelCollapsed ? "0px" : `${props.actionPanelWidth}px`,
+         right: `${rightProp}px`,
+         left: `${leftProp}px`,
+         transitionDuration: '300ms',
+         transitionProperty: `${props.shouldAnimateLeft ? 'left' : 'right'}`,
       }
    }
 }

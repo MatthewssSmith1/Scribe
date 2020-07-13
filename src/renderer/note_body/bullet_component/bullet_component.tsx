@@ -19,10 +19,27 @@ import NoteBody from '../note_body'
       bullet__children-container
 */
 
+interface BulletProps {
+   bullet: Bullet
+}
+
 export default class BulletComponent extends React.Component {
-   props: {
-      bullet: Bullet
-      isVirtualRoot: boolean
+   props: BulletProps
+
+   constructor(props: any) {
+      super(props)
+
+      console.log('bullet constructed')
+   }
+
+   shouldComponentUpdate(nextProps: BulletProps, nextState: {}): boolean {
+      if (this.props.bullet.shouldRebuild) {
+         this.props.bullet.shouldRebuild = false
+
+         return true
+      }
+
+      return false
    }
 
    render(): JSX.Element {
@@ -31,19 +48,19 @@ export default class BulletComponent extends React.Component {
       let children = bullet.isCollapsed
          ? []
          : bullet.children.map((child: Bullet) => {
-              return <BulletComponent bullet={child} isVirtualRoot={false} key={child.key} />
+              return <BulletComponent bullet={child} key={child.key} />
            })
 
       if (bullet.childCount == 0)
          return (
             <div className="bullet childless">
-               <BulletLine bullet={bullet} isVirtualRoot={this.props.isVirtualRoot} />
+               <BulletLine bullet={bullet} />
             </div>
          )
 
       return (
          <div className="bullet">
-            <BulletLine bullet={bullet} isVirtualRoot={this.props.isVirtualRoot} />
+            <BulletLine bullet={bullet} />
             <div className="bullet__children-container">{children}</div>
          </div>
       )
@@ -53,7 +70,6 @@ export default class BulletComponent extends React.Component {
 class BulletLine extends React.Component {
    props: {
       bullet: Bullet
-      isVirtualRoot: boolean
    }
 
    innerRef: React.RefObject<HTMLElement>
@@ -69,7 +85,7 @@ class BulletLine extends React.Component {
 
       return (
          <div className={cx('bullet__line', { collapsed: bulletIsCollapsed })}>
-            <BulletDropDown bullet={bullet} isVirtualRoot={this.props.isVirtualRoot} />
+            <BulletDropDown bullet={bullet} />
             <BulletDot bullet={bullet} />
             <ContentEditable
                className={cx('bullet__line__editable', { childless: bullet.isChildless })}

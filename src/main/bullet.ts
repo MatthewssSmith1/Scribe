@@ -8,6 +8,7 @@ export default class Bullet {
    caretIndex: number = -1
    //passed to react.js components in children lists
    key: number = 0
+   shouldRebuild: boolean = false
 
    // #region Constructor, Factory, Serializing
    constructor(text: string = '', children: Array<Bullet> = [], parent: Bullet = null) {
@@ -343,6 +344,12 @@ export default class Bullet {
          this.children.forEach(c => c.setCollapsedForAllDescendants(isCollapsed))
          this.isCollapsed = isCollapsed
       }
+   }
+
+   enqueueRebuild() {
+      this.shouldRebuild = true
+
+      if (this.parent) this.parent.enqueueRebuild()
    }
    // #endregion
 }

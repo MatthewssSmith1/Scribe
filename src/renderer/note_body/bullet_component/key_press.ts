@@ -3,20 +3,20 @@ import NoteBody from '@renderer/note_body/note_body'
 import Bullet from '@main/bullet'
 import LinkMenu from '@renderer/link_menu/link_menu'
 
-export default function handleKeyPress(evt: React.KeyboardEvent<HTMLDivElement>, bullet: Bullet) {
+export default function handleKeyPress(e: React.KeyboardEvent<HTMLDivElement>, blt: Bullet) {
    //TODO make enter with selection not collapsed start linking process
 
-   var selection = window.getSelection()
+   var sel = window.getSelection()
 
    if (
-      handleEnter(evt, bullet, selection) ||
-      handleBackspace(evt, bullet, selection) ||
-      handleTab(evt, bullet, selection) ||
-      handleBrackets(evt, bullet, selection) ||
-      handleCtrlArrows(evt, bullet, selection) ||
-      handleAltArrows(evt, bullet, selection)
+      handleEnter(e, blt, sel) ||
+      handleBackspace(e, blt, sel) ||
+      handleTab(e, blt, sel) ||
+      handleBrackets(e, blt, sel) ||
+      handleCtrlArrows(e, blt, sel) ||
+      handleAltArrows(e, blt, sel)
    ) {
-      evt.preventDefault()
+      e.preventDefault()
       NoteBody.rebuild()
    }
 }
@@ -31,21 +31,28 @@ function handleEnter(evt: React.KeyboardEvent<HTMLDivElement>, bullet: Bullet, s
       var textBeforeCaret = bullet.text.substring(0, selection.anchorOffset)
       var textAfterCaret = bullet.text.substring(selection.anchorOffset)
 
-      bullet.addSibling(-1, new Bullet(textBeforeCaret))
+      var newBullet = new Bullet(textBeforeCaret)
+
+      bullet.addSibling(-1, newBullet)
       bullet.text = textAfterCaret
       bullet.select(0)
+
+      newBullet.enqueueRebuild()
+      bullet.enqueueRebuild()
 
       return true
    } else if (evt.key == 'Enter') {
       LinkMenu.handleEnterPressedOnSelection(bullet, selection)
 
       evt.preventDefault()
+      bullet.enqueueRebuild()
       return false
    }
 
    return false
 }
 
+//TODO potentially rework because the last character being messed up may have been corrected elsewhere
 function handleBackspace(evt: React.KeyboardEvent<HTMLDivElement>, bullet: Bullet, selection: Selection): boolean {
    if (evt.key == 'Backspace' && selection.isCollapsed && selection.anchorOffset == 0 && bullet.hasParent) {
       if (bullet.isFirstSibling) {
@@ -57,6 +64,8 @@ function handleBackspace(evt: React.KeyboardEvent<HTMLDivElement>, bullet: Bulle
          bullet.parent.addSibling(1, bullet)
 
          bullet.select(selection.anchorOffset)
+
+         bullet.children.forEach(c => c.enqueueRebuild)
       } else {
          var sibling = bullet.siblingBefore
          var sibText = sibling.text
@@ -66,6 +75,8 @@ function handleBackspace(evt: React.KeyboardEvent<HTMLDivElement>, bullet: Bulle
          sibling.text += bullet.text
 
          bullet.remove()
+
+         sibling.enqueueRebuild()
       }
 
       return true
@@ -75,8 +86,10 @@ function handleBackspace(evt: React.KeyboardEvent<HTMLDivElement>, bullet: Bulle
 
 function handleTab(evt: React.KeyboardEvent<HTMLDivElement>, bullet: Bullet, selection: Selection): boolean {
    if (evt.key == 'Tab' && selection.anchorOffset == 0 && bullet.isFirstSibling == false) {
-      bullet.siblingBefore.addChildrenToEnd(bullet.remove())
+      bullet.siblingBefore.addChildrenToEnd(bullet)
       bullet.select(0)
+
+      bullet.enqueueRebuild()
       return true
    }
 
@@ -100,6 +113,8 @@ function handleBrackets(evt: React.KeyboardEvent<HTMLDivElement>, bullet: Bullet
    } else if (evt.key == ']' && !bullet.isFirstSibling) {
       bullet.siblingBefore.addChildrenToEnd(bullet)
       bullet.select(selection.anchorOffset)
+
+      bullet.enqueueRebuild()
 
       return true
    }

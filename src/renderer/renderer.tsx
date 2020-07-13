@@ -2,6 +2,8 @@ import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 import { Titlebar, Color } from 'custom-electron-titlebar'
 
+import cx from 'classnames'
+
 import WorkspaceManager from '@/main/workspace_manager'
 
 import ActionPanel from '@/renderer/action_panel/action_panel'
@@ -12,82 +14,99 @@ import LinkMenu from '@/renderer/link_menu/link_menu'
 //import all scss files
 import '@renderer/style.scss'
 
-export default class RootChildren {
-   static isActionPanelCollapsed: boolean = false
-   static isContentPanelCollapsed: boolean = true
+interface RootState {
+   isActionPanelCollapsed: boolean
+   isContentPanelCollapsed: boolean
+   actionPanelWidth: number
+   contentPanelWidth: number
+   minContentPanelWidth: number
+   shouldAnimateLeft: boolean
+   isCtrlPressed: boolean
+}
 
-   static actionPanelWidth: number = 224
-   static contentPanelWidth: number = 350
+export default class RootComponent extends React.Component {
+   private static _singleton: RootComponent
 
-   static rootElement: HTMLElement
+   state: RootState
+
+   constructor(props: any) {
+      super(props)
+
+      RootComponent._singleton = this
+
+      this.state = {
+         isActionPanelCollapsed: false,
+         isContentPanelCollapsed: true,
+
+         actionPanelWidth: 224,
+         contentPanelWidth: 350,
+         minContentPanelWidth: 300,
+
+         shouldAnimateLeft: true,
+
+         isCtrlPressed: false,
+      }
+
+      document.addEventListener('keydown', event => {
+         if (event.key == 'Control') this.setState({ isCtrlPressed: true })
+      })
+      document.addEventListener('keyup', event => {
+         if (event.key == 'Control') this.setState({ isCtrlPressed: false })
+      })
+   }
 
    static toggleActionPanelCollapsed(newState?: boolean) {
-      console.log('toggled action panel')
-
-      this.isActionPanelCollapsed = newState || !this.isActionPanelCollapsed
-
-      this.build()
+      this._singleton.setState((state: RootState) => {
+         return { shouldAnimateLeft: true, isActionPanelCollapsed: newState || !state.isActionPanelCollapsed }
+      })
    }
 
    static toggleContentPanelCollapsed(newState?: boolean) {
-      this.isContentPanelCollapsed = newState || !this.isContentPanelCollapsed
-
-      this.build()
+      this._singleton.setState((state: RootState) => {
+         return { shouldAnimateLeft: false, isContentPanelCollapsed: newState || !state.isContentPanelCollapsed }
+      })
    }
 
    static setActionPanelWidth(newWidth: number) {
-      this.actionPanelWidth = newWidth
-
-      this.build()
+      this._singleton.setState({ shouldAnimateLeft: true, actionPanelWidth: newWidth })
    }
 
    static setContentPanelWidth(newWidth: number) {
-      this.contentPanelWidth = newWidth
-
-      this.build()
+      this._singleton.setState((state: RootState) => {
+         return { shouldAnimateLeft: false, contentPanelWidth: Math.max(newWidth, state.minContentPanelWidth) }
+      })
    }
 
-   static build() {
-      if (!this.rootElement) this.rootElement = document.getElementById('root')
+   render() {
+      var state = this.state
 
-      ReactDOM.render(
-         [
-            <ActionPanel key="0" width={this.actionPanelWidth} isCollapsed={this.isActionPanelCollapsed} />,
+      return (
+         <div id="root" className={cx({ 'ctrl-pressed': state.isCtrlPressed })}>
+            <ActionPanel key="0" width={state.actionPanelWidth} isCollapsed={state.isActionPanelCollapsed} />
             <NoteBody
                key="1"
-               actionPanelWidth={this.actionPanelWidth}
-               contentPanelWidth={this.contentPanelWidth}
-               isActionPanelCollapsed={this.isActionPanelCollapsed}
-               isContentPanelCollapsed={this.isContentPanelCollapsed}
-            />,
-            <ContentPanel key="2" width={this.contentPanelWidth} isCollapsed={this.isContentPanelCollapsed} />,
-            <LinkMenu key="3" />,
-         ],
-         this.rootElement
+               shouldAnimateLeft={state.shouldAnimateLeft}
+               actionPanelWidth={state.actionPanelWidth}
+               contentPanelWidth={state.contentPanelWidth}
+               isActionPanelCollapsed={state.isActionPanelCollapsed}
+               isContentPanelCollapsed={state.isContentPanelCollapsed}
+            />
+            <ContentPanel key="2" width={state.contentPanelWidth} isCollapsed={state.isContentPanelCollapsed} />,
+            <LinkMenu key="3" />
+         </div>
       )
    }
 }
 
-// var root = document.getElementById('root')
-
-// ReactDOM.render([<ActionPanel key="0" />, <NoteBody key="1" />, <ContentPanel key="2" />, <LinkMenu key="3" />], root)
-
-RootChildren.build()
-
-WorkspaceManager.init()
-
-//keeps root ctrl-pressed class updated to reflect actual state of the key to allow for children of root to be styled differently if ctrl is pressed
-document.addEventListener('keydown', event => {
-   if (event.key == 'Control') RootChildren.rootElement.classList.add('ctrl-pressed')
-})
-document.addEventListener('keyup', event => {
-   if (event.key == 'Control') RootChildren.rootElement.classList.remove('ctrl-pressed')
-})
-
 //add titlebar to top of window
 let titleBar = new Titlebar({
    backgroundColor: Color.fromHex('#4a6fa5'),
+   overflow: 'hidden',
+   unfocusEffect: false,
 })
 titleBar.updateTitle('Scribe')
-var rootContainer = document.querySelector('.container-after-titlebar') as HTMLElement
-rootContainer.style.overflow = 'hidden'
+
+ReactDOM.render(<RootComponent />, document.querySelector('.container-after-titlebar'))
+
+//handles file loading
+WorkspaceManager.init()

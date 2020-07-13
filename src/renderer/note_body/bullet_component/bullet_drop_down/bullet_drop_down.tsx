@@ -9,7 +9,6 @@ import NoteBody from '@renderer/note_body/note_body'
 export default class BulletDropDown extends React.Component {
    props: {
       bullet: Bullet
-      isVirtualRoot: boolean
    }
 
    onClick = (evt: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
