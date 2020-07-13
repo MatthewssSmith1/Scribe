@@ -20,6 +20,7 @@ interface RootState {
    actionPanelWidth: number
    contentPanelWidth: number
    minContentPanelWidth: number
+   hasPanelResized: boolean
    shouldAnimateLeft: boolean
    isCtrlPressed: boolean
 }
@@ -42,6 +43,8 @@ export default class RootComponent extends React.Component {
          contentPanelWidth: 350,
          minContentPanelWidth: 300,
 
+         hasPanelResized: false,
+
          shouldAnimateLeft: true,
 
          isCtrlPressed: false,
@@ -57,23 +60,23 @@ export default class RootComponent extends React.Component {
 
    static toggleActionPanelCollapsed(newState?: boolean) {
       this._singleton.setState((state: RootState) => {
-         return { shouldAnimateLeft: true, isActionPanelCollapsed: newState || !state.isActionPanelCollapsed }
+         return { hasPanelResized: false, shouldAnimateLeft: true, isActionPanelCollapsed: newState || !state.isActionPanelCollapsed }
       })
    }
 
    static toggleContentPanelCollapsed(newState?: boolean) {
       this._singleton.setState((state: RootState) => {
-         return { shouldAnimateLeft: false, isContentPanelCollapsed: newState || !state.isContentPanelCollapsed }
+         return { hasPanelResized: false, shouldAnimateLeft: false, isContentPanelCollapsed: newState || !state.isContentPanelCollapsed }
       })
    }
 
    static setActionPanelWidth(newWidth: number) {
-      this._singleton.setState({ shouldAnimateLeft: true, actionPanelWidth: newWidth })
+      this._singleton.setState({ hasPanelResized: true, shouldAnimateLeft: true, actionPanelWidth: newWidth })
    }
 
    static setContentPanelWidth(newWidth: number) {
       this._singleton.setState((state: RootState) => {
-         return { shouldAnimateLeft: false, contentPanelWidth: Math.max(newWidth, state.minContentPanelWidth) }
+         return { hasPanelResized: true, shouldAnimateLeft: false, contentPanelWidth: Math.max(newWidth, state.minContentPanelWidth) }
       })
    }
 
@@ -90,6 +93,7 @@ export default class RootComponent extends React.Component {
                contentPanelWidth={state.contentPanelWidth}
                isActionPanelCollapsed={state.isActionPanelCollapsed}
                isContentPanelCollapsed={state.isContentPanelCollapsed}
+               hasPanelResized={state.hasPanelResized}
             />
             <ContentPanel key="2" width={state.contentPanelWidth} isCollapsed={state.isContentPanelCollapsed} />,
             <LinkMenu key="3" />

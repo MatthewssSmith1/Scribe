@@ -80,12 +80,13 @@ export default class Bullet {
    addSibling(offset: number, bullet: Bullet) {
       if (offset == 0) throw 'bullet.addSibling() called with offset of 0'
 
-      var parent = this.parent
-      if (!parent) return
+      if (this.isRoot) throw 'bullet.addSibling() called on root'
 
       if (offset < 0) offset += 1
 
-      parent.addChildren(this.indexInParent + offset, bullet)
+      this.parent.addChildren(this.indexInParent + offset, bullet)
+
+      bullet.enqueueRebuild()
    }
 
    get siblingBefore(): Bullet {
@@ -242,6 +243,8 @@ export default class Bullet {
          }
       }
 
+      this.enqueueRebuild
+
       return this
    }
 
@@ -277,6 +280,9 @@ export default class Bullet {
 
          this.children.splice(index, 0, newChild)
       }
+
+      bullets.forEach(b => (b.shouldRebuild = true))
+      this.enqueueRebuild()
    }
 
    addChildrenToEnd(_bullets: Bullet | Array<Bullet>) {
@@ -291,10 +297,14 @@ export default class Bullet {
 
          this.children.push(newChild)
       }
+
+      bullets.forEach(b => (b.shouldRebuild = true))
+      this.enqueueRebuild()
    }
 
    remove(): Bullet {
       if (this.hasParent) {
+         this.parent.enqueueRebuild()
          this.parent.removeChild(this.parent.children.indexOf(this))
       }
 
@@ -314,6 +324,8 @@ export default class Bullet {
       removedBullet.caretIndex = -1
       this.children.splice(index, 1)
 
+      this.enqueueRebuild()
+
       return removedBullet
    }
 
@@ -328,22 +340,29 @@ export default class Bullet {
          removedBullets.push(this.removeChild(index))
       }
 
+      this.enqueueRebuild()
+
       return removedBullets
    }
 
    toggleCollapsed() {
       this.isCollapsed = !this.isCollapsed
+
+      this.enqueueRebuild()
    }
 
    setCollapsed(isCollapsed: boolean) {
       this.isCollapsed = isCollapsed
+
+      this.enqueueRebuild()
    }
 
    setCollapsedForAllDescendants(isCollapsed: boolean) {
-      if (this.hasChildren) {
-         this.children.forEach(c => c.setCollapsedForAllDescendants(isCollapsed))
-         this.isCollapsed = isCollapsed
-      }
+      if (!this.hasChildren) return
+      
+      this.children.forEach(c => c.setCollapsedForAllDescendants(isCollapsed))
+      this.isCollapsed = isCollapsed
+      this.enqueueRebuild()
    }
 
    enqueueRebuild() {

@@ -26,12 +26,6 @@ interface BulletProps {
 export default class BulletComponent extends React.Component {
    props: BulletProps
 
-   constructor(props: any) {
-      super(props)
-
-      console.log('bullet constructed')
-   }
-
    shouldComponentUpdate(nextProps: BulletProps, nextState: {}): boolean {
       if (this.props.bullet.shouldRebuild) {
          this.props.bullet.shouldRebuild = false
@@ -43,6 +37,8 @@ export default class BulletComponent extends React.Component {
    }
 
    render(): JSX.Element {
+      console.log('bullet rebuilt')
+
       let bullet = this.props.bullet
 
       let children = bullet.isCollapsed

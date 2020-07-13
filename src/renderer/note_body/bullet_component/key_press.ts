@@ -37,15 +37,11 @@ function handleEnter(evt: React.KeyboardEvent<HTMLDivElement>, bullet: Bullet, s
       bullet.text = textAfterCaret
       bullet.select(0)
 
-      newBullet.enqueueRebuild()
-      bullet.enqueueRebuild()
-
       return true
    } else if (evt.key == 'Enter') {
       LinkMenu.handleEnterPressedOnSelection(bullet, selection)
 
       evt.preventDefault()
-      bullet.enqueueRebuild()
       return false
    }
 
@@ -64,8 +60,6 @@ function handleBackspace(evt: React.KeyboardEvent<HTMLDivElement>, bullet: Bulle
          bullet.parent.addSibling(1, bullet)
 
          bullet.select(selection.anchorOffset)
-
-         bullet.children.forEach(c => c.enqueueRebuild)
       } else {
          var sibling = bullet.siblingBefore
          var sibText = sibling.text
@@ -75,8 +69,6 @@ function handleBackspace(evt: React.KeyboardEvent<HTMLDivElement>, bullet: Bulle
          sibling.text += bullet.text
 
          bullet.remove()
-
-         sibling.enqueueRebuild()
       }
 
       return true
@@ -87,9 +79,9 @@ function handleBackspace(evt: React.KeyboardEvent<HTMLDivElement>, bullet: Bulle
 function handleTab(evt: React.KeyboardEvent<HTMLDivElement>, bullet: Bullet, selection: Selection): boolean {
    if (evt.key == 'Tab' && selection.anchorOffset == 0 && bullet.isFirstSibling == false) {
       bullet.siblingBefore.addChildrenToEnd(bullet)
+
       bullet.select(0)
 
-      bullet.enqueueRebuild()
       return true
    }
 
@@ -114,8 +106,6 @@ function handleBrackets(evt: React.KeyboardEvent<HTMLDivElement>, bullet: Bullet
       bullet.siblingBefore.addChildrenToEnd(bullet)
       bullet.select(selection.anchorOffset)
 
-      bullet.enqueueRebuild()
-
       return true
    }
 
@@ -125,24 +115,11 @@ function handleBrackets(evt: React.KeyboardEvent<HTMLDivElement>, bullet: Bullet
 function handleCtrlArrows(evt: React.KeyboardEvent<HTMLDivElement>, bullet: Bullet, selection: Selection): boolean {
    if (!evt.ctrlKey) return false
 
-   var caretPos = selection.anchorOffset
+   if (evt.key == 'ArrowUp') bullet.bulletBefore.select(selection.anchorOffset)
+   else if (evt.key == 'ArrowDown') bullet.bulletAfter.select(selection.anchorOffset)
+   else return false
 
-   if (evt.key == 'ArrowUp') {
-      bullet.bulletBefore.select(caretPos)
-      return true
-   } else if (evt.key == 'ArrowDown') {
-      if (bullet.hasChildren) {
-         bullet.childAt(0).select(caretPos)
-      } else if (!bullet.isLastSibling) {
-         bullet.siblingAfter.select(caretPos)
-      } else {
-         var bulletAfter = bullet.bulletAfter
-         if (bulletAfter) bulletAfter.select(caretPos)
-      }
-      return true
-   }
-
-   return false
+   return true
 }
 
 function handleAltArrows(evt: React.KeyboardEvent<HTMLDivElement>, bullet: Bullet, selection: Selection): boolean {

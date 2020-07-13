@@ -16,6 +16,7 @@ export default class NoteBody extends React.Component {
 
    props: {
       shouldAnimateLeft: boolean
+      hasPanelResized: boolean
       isActionPanelCollapsed: boolean
       isContentPanelCollapsed: boolean
       actionPanelWidth: number
@@ -89,6 +90,8 @@ export default class NoteBody extends React.Component {
    private save() {
       this._shouldSave = false
 
+      return
+
       var textFilePath = WorkspaceManager.workspacePath + NoteBody._singleton.state.document.name + '.txt'
       writeFileSync(textFilePath, NoteBody._singleton.state.rootBullet.toString())
       console.log('doc saved')
@@ -138,6 +141,13 @@ export default class NoteBody extends React.Component {
 
       var rightProp = props.isContentPanelCollapsed ? 0 : props.contentPanelWidth
       var leftProp = props.isActionPanelCollapsed ? 0 : props.actionPanelWidth
+
+      //prevent animation when a panel is resized
+      if (props.hasPanelResized)
+         return {
+            right: `${rightProp}px`,
+            left: `${leftProp}px`,
+         }
 
       return {
          right: `${rightProp}px`,
