@@ -8,7 +8,6 @@ import { toggleActionPanel, toggleContentPanel } from '@/renderer/context_action
 //the panel on the left of the document body that can be collapsed/expanded
 export default function ActionPanel() {
    const state = useContextState()
-
    var { isCollapsed, width } = state.actionPanel
 
    var style = {

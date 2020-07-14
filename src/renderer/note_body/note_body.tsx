@@ -11,7 +11,7 @@ import Link from '@main/link'
 import { useContext } from '@renderer/context'
 
 //! remove
-import { initialState } from '../context_actions'
+import { initCtxState } from '../context_actions'
 
 // private static _singleton: NoteBody
 
@@ -112,7 +112,7 @@ export default function NoteBody() {
    // const [state, dispatch] = useContext()
 
    //! remove
-   var state = initialState
+   var state = initCtxState
 
    var rightProp = state.contentPanel.isCollapsed ? 0 : Math.max(state.contentPanel.width, state.contentPanel.minWidth)
    var leftProp = state.actionPanel.isCollapsed ? 0 : state.actionPanel.width

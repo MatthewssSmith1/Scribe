@@ -17,7 +17,7 @@ export default function handleKeyPress(e: React.KeyboardEvent<HTMLDivElement>, b
       handleAltArrows(e, blt, sel)
    ) {
       e.preventDefault()
-      NoteBody.rebuild()
+      // NoteBody.rebuild()
    }
 }
 

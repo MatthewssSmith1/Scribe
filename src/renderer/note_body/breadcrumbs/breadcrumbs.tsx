@@ -13,9 +13,10 @@ export default class Breadcrumbs extends React.Component {
    render() {
       var elements: Array<JSX.Element> = []
 
+      //old onclick for crumbs: onClick={() => NoteBody.selectBullet(crumbBullet)}s
       var selectedBullets = this.props.selectedBullets
       selectedBullets[0].breadCrumbs.forEach((crumbBullet, i) => {
-         elements.push(<this.Crumb text={crumbBullet.text} onClick={() => NoteBody.selectBullet(crumbBullet)} key={i * 2} />)
+         elements.push(<this.Crumb text={crumbBullet.text} key={i * 2} />)
          elements.push(<this.Spacer key={i * 2 + 1} />)
       })
 

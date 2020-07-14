@@ -1,13 +1,25 @@
-import React, { createContext, useReducer } from 'react'
+import React, { createContext, useReducer, useEffect } from 'react'
 
-import { contextReducer, initialState, State } from '@/renderer/context_actions'
+import { contextReducer, initCtxState, ContextState } from '@/renderer/context_actions'
 
-const ContextState = createContext(initialState)
+const ContextState = createContext(initCtxState)
 const ContextDispatch = createContext(null)
+
+function useWindowEvent(event: string, handler: any, passive = false) {
+   useEffect(() => {
+      // initiate the event handler
+      window.addEventListener(event, handler, passive)
+
+      // this will clean up the event every time the component is re-rendered
+      return function cleanup() {
+         window.removeEventListener(event, handler)
+      }
+   })
+}
 
 //the component which wraps the app root
 function ContextProvider({ children }) {
-   const [state, dispatch] = useReducer(contextReducer, initialState)
+   const [state, dispatch] = useReducer(contextReducer, initCtxState)
 
    return (
       <ContextState.Provider value={state}>
@@ -16,7 +28,7 @@ function ContextProvider({ children }) {
    )
 }
 
-function useContextState(): State {
+function useContextState(): ContextState {
    const contextState = React.useContext(ContextState)
    if (contextState === undefined) {
       throw new Error('useCountState must be used on a component that is a child of CountProvider')
@@ -33,8 +45,8 @@ function useContextDispatch() {
 }
 
 //allows more concise "const [state, dispatch] = useContext()"
-function useContext(): [State, any] {
+function useContext(): [ContextState, any] {
    return [useContextState(), useContextDispatch()]
 }
 
-export { ContextProvider, useContext, useContextState, useContextDispatch }
+export { ContextProvider, useContext, useContextState, useContextDispatch, useWindowEvent }

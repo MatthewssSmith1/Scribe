@@ -20,7 +20,7 @@ export default class BulletDot extends React.Component {
                })}
                onClick={() => {
                   // if (NoteBody.rootBullet == this.props.bullet) return
-                  NoteBody.selectBullet(this.props.bullet)
+                  // NoteBody.selectBullet(this.props.bullet)
                }}
             />
          </div>

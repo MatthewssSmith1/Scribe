@@ -3,8 +3,6 @@ import { useState } from 'react'
 import * as ReactDOM from 'react-dom'
 import { Titlebar, Color } from 'custom-electron-titlebar'
 
-import cx from 'classnames'
-
 import WorkspaceManager from '@/main/workspace_manager'
 
 import ActionPanel from '@/renderer/action_panel/action_panel'

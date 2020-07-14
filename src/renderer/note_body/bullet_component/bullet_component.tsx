@@ -104,7 +104,7 @@ class BulletLine extends React.Component {
 
       this.props.bullet.text = newText
 
-      NoteBody.queueSaveDocument()
+      // NoteBody.queueSaveDocument()
    }
 
    // #region Selection
