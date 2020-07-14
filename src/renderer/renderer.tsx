@@ -34,6 +34,3 @@ ReactDOM.render(
    </ContextProvider>,
    document.querySelector('.container-after-titlebar')
 )
-
-//handles file loading
-WorkspaceManager.init()

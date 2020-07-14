@@ -4,10 +4,6 @@ import cx from 'classnames'
 import { useContext } from '@renderer/context'
 import { ContextState, resizeContentPanel } from '@renderer/context_actions'
 
-//as a percentage of the window width, the range of widths that content panel can take up
-const maxWidthPercentage = 0.6
-const minWidthPercentage = 0.2
-
 export default function ContentPanel() {
    const [state, dispatch] = useContext()
    const draggableEdgeRef = useRef()
@@ -44,13 +40,8 @@ export default function ContentPanel() {
 function contentPanelStyle(state: ContextState) {
    var { isCollapsed, width } = state.contentPanel
 
-   var minWidth = window.innerWidth * minWidthPercentage
-   var maxWidth = window.innerWidth * maxWidthPercentage
-
-   var actualWidth = Math.max(Math.min(maxWidth, width), minWidth)
-
    return {
-      right: `${isCollapsed ? -actualWidth : 0}px`,
-      width: actualWidth,
+      right: `${isCollapsed ? -width : 0}px`,
+      width: width,
    }
 }

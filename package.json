@@ -30,6 +30,7 @@
    "author": "Matt Smith",
    "license": "MIT",
    "dependencies": {
+      "@types/js-yaml": "^3.12.5",
       "@types/react": "^16.9.13",
       "@types/react-dom": "^16.9.4",
       "classnames": "^2.2.6",

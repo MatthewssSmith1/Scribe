@@ -3,7 +3,7 @@ import Document from '@main/document'
 import Link, { ToAddress } from '@main/link'
 import { FromAddress } from './link'
 
-const yaml = require('js-yaml')
+// import yaml from 'js-yaml'
 
 export default class WorkspaceManager {
    private static _workspacePath: string

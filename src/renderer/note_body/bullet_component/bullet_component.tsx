@@ -37,8 +37,6 @@ export default class BulletComponent extends React.Component {
    }
 
    render(): JSX.Element {
-      console.log('bullet rebuilt')
-
       let bullet = this.props.bullet
 
       let children = bullet.isCollapsed

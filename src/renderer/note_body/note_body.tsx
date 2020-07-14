@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React, { useState } from 'react'
 import { writeFileSync } from 'fs'
 
 import Bullet from '@main/bullet'
@@ -8,10 +8,9 @@ import WorkspaceManager from '@main/workspace_manager'
 import Document from '@main/document'
 import Link from '@main/link'
 
-import { useContext } from '@renderer/context'
-
-//! remove
-import { initCtxState } from '../context_actions'
+import { useContextState, useContextDispatchAsync } from '@renderer/context'
+import { ContextState } from '@renderer/context_actions'
+import { loadInitDocument } from '@renderer/context_actions_async'
 
 // private static _singleton: NoteBody
 
@@ -109,20 +108,17 @@ import { initCtxState } from '../context_actions'
 // }
 
 export default function NoteBody() {
-   // const [state, dispatch] = useContext()
+   var [isInit, setIsInit] = useState(() => false)
+   const state = useContextState()
+   const dispatchAsync = useContextDispatchAsync()
 
-   //! remove
-   var state = initCtxState
+   if (!isInit) {
+      setIsInit(true)
 
-   var rightProp = state.contentPanel.isCollapsed ? 0 : Math.max(state.contentPanel.width, state.contentPanel.minWidth)
-   var leftProp = state.actionPanel.isCollapsed ? 0 : state.actionPanel.width
-
-   var style = {
-      right: `${rightProp}px`,
-      left: `${leftProp}px`,
+      dispatchAsync(loadInitDocument)
    }
 
-   var bullets = [] //this.state.bullets
+   var bullets = state.noteBody.focusedBullets || []
 
    let bulletElements = bullets.map((child: Bullet) => {
       return <BulletComponent bullet={child} key={child.key} />
@@ -136,9 +132,19 @@ export default function NoteBody() {
    // )
 
    return (
-      <div className="note-body" style={style}>
-         <div className="note-body__top-element-wrapper">{bullets.length > 0 && documentTopElement}</div>
+      <div className="note-body" style={getStyle(state)}>
+         <div className="note-body__top-element-wrapper">{documentTopElement}</div>
          <div className="note-body__bullet-list">{bulletElements}</div>
       </div>
    )
+}
+
+function getStyle(state: ContextState): React.CSSProperties {
+   var rightProp = state.contentPanel.isCollapsed ? 0 : state.contentPanel.width
+   var leftProp = state.actionPanel.isCollapsed ? 0 : state.actionPanel.width
+
+   return {
+      right: `${rightProp}px`,
+      left: `${leftProp}px`,
+   }
 }

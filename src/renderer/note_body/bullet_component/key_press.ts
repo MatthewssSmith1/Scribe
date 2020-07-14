@@ -39,7 +39,7 @@ function handleEnter(evt: React.KeyboardEvent<HTMLDivElement>, bullet: Bullet, s
 
       return true
    } else if (evt.key == 'Enter') {
-      LinkMenu.handleEnterPressedOnSelection(bullet, selection)
+      // LinkMenu.handleEnterPressedOnSelection(bullet, selection)
 
       evt.preventDefault()
       return false
