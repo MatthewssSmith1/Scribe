@@ -58,6 +58,10 @@ const ENQUEUE_SAVE_DOCUMENT = 'ENQUEUE_SAVE_DOCUMENT'
 export function enqueueSaveDocument() {
    return { type: ENQUEUE_SAVE_DOCUMENT }
 }
+const DEQUEUE_SAVE_DOCUMENT = 'DEQUEUE_SAVE_DOCUMENT'
+export function dequeueSaveDocument() {
+   return { type: DEQUEUE_SAVE_DOCUMENT }
+}
 const LOAD_DOCUMENT = 'LOAD_DOCUMENT'
 export function loadDocument(document: Document, rootBullet: Bullet) {
    return {
@@ -65,6 +69,10 @@ export function loadDocument(document: Document, rootBullet: Bullet) {
       document,
       rootBullet,
    }
+}
+const DOCUMENT_SAVE_COMPLETE = 'DOCUMENT_SAVE_COMPLETE'
+export function documentSaveComplete() {
+   return { type: DOCUMENT_SAVE_COMPLETE }
 }
 
 //* REDUCER
@@ -85,6 +93,9 @@ export function contextReducer(state: ContextState, action: any): ContextState {
       case ENQUEUE_SAVE_DOCUMENT:
          return { ...state, noteBody: { ...state.noteBody, shouldSave: true } }
 
+      case DEQUEUE_SAVE_DOCUMENT:
+         return { ...state, noteBody: { ...state.noteBody, shouldSave: false } }
+
       case LOAD_DOCUMENT:
          var nb = {
             document: action.document,
@@ -94,6 +105,10 @@ export function contextReducer(state: ContextState, action: any): ContextState {
             isRootSelected: true,
          }
          return { ...state, noteBody: nb }
+
+      case DOCUMENT_SAVE_COMPLETE:
+         //TODO potentially implement subscribing to events and send it out from here
+         return state
 
       default:
          return state

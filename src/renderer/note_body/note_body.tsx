@@ -10,7 +10,8 @@ import Breadcrumbs from '@renderer/note_body/breadcrumbs/breadcrumbs'
 
 import { useContextState, useContextDispatchAsync } from '@/renderer/state/context'
 import { ContextState } from '@renderer/state/context_actions'
-import { loadInitDocument } from '@renderer/state/context_actions_async'
+import { loadInitDocument, trySaveDocument } from '@renderer/state/context_actions_async'
+import { useInterval } from '@renderer/state/hooks'
 
 // private static _singleton: NoteBody
 
@@ -49,15 +50,6 @@ import { loadInitDocument } from '@renderer/state/context_actions_async'
 //    this.rebuild()
 // }
 
-// static rebuild() {
-//    this._singleton.forceUpdate()
-//    NoteBody.queueSaveDocument()
-// }
-
-// static get currentDocument(): Document {
-//    return this._singleton.state.document
-// }
-
 // static loadLink(link: Link): void {
 //    //find the document that the link goes to
 //    //TODO abstract into WorkspaceManager method
@@ -65,30 +57,6 @@ import { loadInitDocument } from '@renderer/state/context_actions_async'
 //    var docRootBullet: Bullet = document.toBullet()
 
 //    this._singleton.setState({ document: document, rootBullet: docRootBullet, bullets: docRootBullet.children })
-// }
-
-// static queueSaveDocument(immediate: boolean = false): void {
-//    NoteBody._singleton._shouldSave = true
-//    if (immediate) NoteBody._singleton.save()
-// }
-
-//every four seconds (while the component is mounted) save the document
-// componentDidMount() {
-//    this._saveInterval = setInterval(() => {
-//       if (this._shouldSave) this.save()
-//    }, 4000)
-// }
-// componentWillUnmount() {
-//    clearInterval(this._saveInterval)
-// }
-// private save() {
-//    this._shouldSave = false
-
-//    return
-
-//    var textFilePath = WorkspaceManager.workspacePath + NoteBody._singleton.state.document.name + '.txt'
-//    writeFileSync(textFilePath, NoteBody._singleton.state.rootBullet.toString())
-//    console.log('doc saved')
 // }
 
 //called when any bullet is clicked, loads what a link points to if ctrl is pressed
@@ -119,6 +87,9 @@ export default function NoteBody() {
    }
 
    var { document, rootBullet, focusedBullets, shouldSave, isRootSelected } = state.noteBody
+
+   // check to save the document every 3 seconds
+   setInterval(() => dispatchAsync(trySaveDocument), 3000)
 
    var bullets = focusedBullets || []
    var docName = document ? document.name : '[Document Name]'

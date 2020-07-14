@@ -28,20 +28,20 @@ export default function ContentPanel() {
       })
    }
 
-   var contentPanelStyle = (state: ContextState): React.CSSProperties => {
-      var { isCollapsed, width } = state.contentPanel
-
-      return {
-         right: `${isCollapsed ? -width : 0}px`,
-         width: width,
-      }
-   }
-
    return (
-      <div id="content-panel-wrapper" className={cx({ collapsed: state.contentPanel.isCollapsed })} style={contentPanelStyle(state)}>
+      <div id="content-panel-wrapper" className={cx({ collapsed: state.contentPanel.isCollapsed })} style={getStyle(state)}>
          <div id="content-panel">
             <div className="content-panel__draggable-edge" ref={draggableEdgeRef} />
          </div>
       </div>
    )
+}
+
+function getStyle(state: ContextState): React.CSSProperties {
+   var { isCollapsed, width } = state.contentPanel
+
+   return {
+      right: `${isCollapsed ? -width : 0}px`,
+      width: width,
+   }
 }

@@ -38,12 +38,13 @@ function useContext(): [ContextState, React.Dispatch<any>] {
    return [useContextState(), useContextDispatch()]
 }
 
-type AsyncCallback = (dispatch: React.Dispatch<any>) => Promise<void>
+type AsyncCallback = (state: ContextState, dispatch: React.Dispatch<any>) => Promise<void>
 
 function useContextDispatchAsync() {
-   const contextDispatch = useContextDispatch()
+   const [state, dispatch] = useContext()
+
    var dispatchAsync = (asyncCallback: AsyncCallback) => {
-      asyncCallback(contextDispatch)
+      asyncCallback(state, dispatch)
    }
 
    return dispatchAsync
