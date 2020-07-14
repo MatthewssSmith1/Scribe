@@ -1,8 +1,8 @@
 import React, { useRef, useState } from 'react'
 import cx from 'classnames'
 
-import { useContext } from '@renderer/context'
-import { ContextState, resizeContentPanel } from '@renderer/context_actions'
+import { useContext } from '@/renderer/state/context'
+import { ContextState, resizeContentPanel } from '@renderer/state/context_actions'
 
 export default function ContentPanel() {
    const [state, dispatch] = useContext()
@@ -28,6 +28,15 @@ export default function ContentPanel() {
       })
    }
 
+   var contentPanelStyle = (state: ContextState): React.CSSProperties => {
+      var { isCollapsed, width } = state.contentPanel
+
+      return {
+         right: `${isCollapsed ? -width : 0}px`,
+         width: width,
+      }
+   }
+
    return (
       <div id="content-panel-wrapper" className={cx({ collapsed: state.contentPanel.isCollapsed })} style={contentPanelStyle(state)}>
          <div id="content-panel">
@@ -35,13 +44,4 @@ export default function ContentPanel() {
          </div>
       </div>
    )
-}
-
-function contentPanelStyle(state: ContextState) {
-   var { isCollapsed, width } = state.contentPanel
-
-   return {
-      right: `${isCollapsed ? -width : 0}px`,
-      width: width,
-   }
 }

@@ -1,6 +1,6 @@
 import Document from '@main/document'
 import Bullet from '@main/bullet'
-import WorkspaceManager from '../main/workspace_manager'
+import WorkspaceManager from '@/main/workspace_manager'
 
 //these values are used in initCtxState to have them defaulted to null and have types
 var initDoc: Document = null
@@ -24,6 +24,7 @@ export const initCtxState = {
       rootBullet: initRootBullet,
       focusedBullets: initFocusedBullets,
       shouldSave: false,
+      isRootSelected: false,
    },
    keyboard: {
       isCtrlPressed: false,
@@ -90,6 +91,7 @@ export function contextReducer(state: ContextState, action: any): ContextState {
             rootBullet: action.rootBullet,
             focusedBullets: [...action.rootBullet.children],
             shouldSave: false,
+            isRootSelected: true,
          }
          return { ...state, noteBody: nb }
 

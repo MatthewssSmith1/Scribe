@@ -2,8 +2,8 @@ import * as React from 'react'
 import Icon from '@/renderer/other_components/icon'
 import cx from 'classnames'
 
-import { useContextState, useContextDispatch } from '@renderer/context'
-import { toggleActionPanel, toggleContentPanel } from '@/renderer/context_actions'
+import { useContextState, useContextDispatch } from '@/renderer/state/context'
+import { toggleActionPanel, toggleContentPanel } from '@/renderer/state/context_actions'
 
 //the panel on the left of the document body that can be collapsed/expanded
 export default function ActionPanel() {

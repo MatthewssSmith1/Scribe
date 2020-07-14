@@ -7,7 +7,6 @@ import Bullet from '@/main/bullet'
 import handleKeyPress from '@renderer/note_body/bullet_component/key_press'
 import BulletDot from '@renderer/note_body/bullet_component/bullet_dot/bullet_dot'
 import BulletDropDown from '@renderer/note_body/bullet_component/bullet_drop_down/bullet_drop_down'
-import NoteBody from '../note_body'
 
 /*
    bullet

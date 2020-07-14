@@ -1,16 +1,16 @@
 import React, { useState } from 'react'
-import { writeFileSync } from 'fs'
+// import { writeFileSync } from 'fs'
 
 import Bullet from '@main/bullet'
 import BulletComponent from '@renderer/note_body/bullet_component/bullet_component'
 import Breadcrumbs from '@renderer/note_body/breadcrumbs/breadcrumbs'
-import WorkspaceManager from '@main/workspace_manager'
-import Document from '@main/document'
-import Link from '@main/link'
+// import WorkspaceManager from '@main/workspace_manager'
+// import Document from '@main/document'
+// import Link from '@main/link'
 
-import { useContextState, useContextDispatchAsync } from '@renderer/context'
-import { ContextState } from '@renderer/context_actions'
-import { loadInitDocument } from '@renderer/context_actions_async'
+import { useContextState, useContextDispatchAsync } from '@/renderer/state/context'
+import { ContextState } from '@renderer/state/context_actions'
+import { loadInitDocument } from '@renderer/state/context_actions_async'
 
 // private static _singleton: NoteBody
 
@@ -118,22 +118,20 @@ export default function NoteBody() {
       dispatchAsync(loadInitDocument)
    }
 
-   var bullets = state.noteBody.focusedBullets || []
+   var { document, rootBullet, focusedBullets, shouldSave, isRootSelected } = state.noteBody
+
+   var bullets = focusedBullets || []
+   var docName = document ? document.name : '[Document Name]'
 
    let bulletElements = bullets.map((child: Bullet) => {
       return <BulletComponent bullet={child} key={child.key} />
    })
 
-   var documentTopElement = <h1 className="document-title">"Document title"</h1>
-   // var documentTopElement = this.state.isRootSelected ? (
-   //    <h1 className="document-title">{this.state.rootBullet && this.state.rootBullet.text}</h1>
-   // ) : (
-   //    <Breadcrumbs selectedBullets={bullets} isRootSelected={this.state.isRootSelected} />
-   // )
+   var topElement = isRootSelected ? <h1 className="document-title">{docName}</h1> : <Breadcrumbs />
 
    return (
       <div className="note-body" style={getStyle(state)}>
-         <div className="note-body__top-element-wrapper">{documentTopElement}</div>
+         <div className="note-body__top-element-wrapper">{topElement}</div>
          <div className="note-body__bullet-list">{bulletElements}</div>
       </div>
    )

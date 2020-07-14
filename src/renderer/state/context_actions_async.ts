@@ -1,4 +1,4 @@
-import { loadDocument } from '@renderer/context_actions'
+import { loadDocument } from '@renderer/state/context_actions'
 
 import WorkspaceManager from '@main/workspace_manager'
 

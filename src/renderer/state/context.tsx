@@ -1,6 +1,6 @@
 import React, { createContext, useReducer } from 'react'
 
-import { contextReducer, initCtxState, ContextState } from '@/renderer/context_actions'
+import { contextReducer, initCtxState, ContextState } from '@/renderer/state/context_actions'
 
 const ContextState = createContext(initCtxState)
 const ContextDispatch = createContext<React.Dispatch<any>>(null)

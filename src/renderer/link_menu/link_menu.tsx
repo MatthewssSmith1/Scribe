@@ -1,8 +1,4 @@
 import * as React from 'react'
-import Bullet from '@main/bullet'
-import Link, { FromAddress, ToAddress } from '@main/link'
-import WorkspaceManager from '@main/workspace_manager'
-import NoteBody from '../note_body/note_body'
 
 export default class LinkMenu extends React.Component {
    // private static _singleton: LinkMenu
