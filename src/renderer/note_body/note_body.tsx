@@ -9,109 +9,87 @@ import Document from '@main/document'
 import Link from '@main/link'
 
 export default class NoteBody extends React.Component {
-   private static _singleton: NoteBody
+   // state: {
+   //    document: Document
+   //    rootBullet: Bullet
+   //    isRootSelected: boolean
+   //    bullets: Array<Bullet>
+   // }
 
-   private _shouldSave: boolean = false
-   private _saveInterval: NodeJS.Timeout
+   // this.state = { document: null, rootBullet: null, isRootSelected: true, bullets: [] }
+   // WorkspaceManager.onceInitialized(() => {
+   //    var currentDocument = WorkspaceManager.documents[0]
+   //    var rootBullet = currentDocument.toBullet()
 
-   props: {
-      shouldAnimateLeft: boolean
-      hasPanelResized: boolean
-      isActionPanelCollapsed: boolean
-      isContentPanelCollapsed: boolean
-      actionPanelWidth: number
-      contentPanelWidth: number
-   }
+   //    NoteBody._singleton.setState({ document: currentDocument, rootBullet: rootBullet, bullets: rootBullet.children })
+   // })
 
-   state: {
-      document: Document
-      rootBullet: Bullet
-      isRootSelected: boolean
-      bullets: Array<Bullet>
-   }
+   // static selectBullet(bullet: Bullet) {
+   //    var singleton = this._singleton
 
-   constructor(props: any) {
-      super(props)
+   //    var bulletIsRoot = singleton.state.rootBullet == bullet
 
-      NoteBody._singleton = this
+   //    singleton.setState({ isRootSelected: bulletIsRoot, bullets: bulletIsRoot ? bullet.children : [bullet] })
 
-      this.state = { document: null, rootBullet: null, isRootSelected: true, bullets: [] }
+   //    this.rebuild()
+   // }
 
-      WorkspaceManager.onceInitialized(() => {
-         var currentDocument = WorkspaceManager.documents[0]
-         var rootBullet = currentDocument.toBullet()
+   // static rebuild() {
+   //    this._singleton.forceUpdate()
+   //    NoteBody.queueSaveDocument()
+   // }
 
-         NoteBody._singleton.setState({ document: currentDocument, rootBullet: rootBullet, bullets: rootBullet.children })
-      })
-   }
+   // static get currentDocument(): Document {
+   //    return this._singleton.state.document
+   // }
 
-   static selectBullet(bullet: Bullet) {
-      var singleton = this._singleton
+   // static loadLink(link: Link): void {
+   //    //find the document that the link goes to
+   //    //TODO abstract into WorkspaceManager method
+   //    var document: Document = WorkspaceManager.documents.find(doc => doc.metaData.id == link.to.documentId)
+   //    var docRootBullet: Bullet = document.toBullet()
 
-      var bulletIsRoot = singleton.state.rootBullet == bullet
+   //    this._singleton.setState({ document: document, rootBullet: docRootBullet, bullets: docRootBullet.children })
+   // }
 
-      singleton.setState({ isRootSelected: bulletIsRoot, bullets: bulletIsRoot ? bullet.children : [bullet] })
-
-      this.rebuild()
-   }
-
-   static rebuild() {
-      this._singleton.forceUpdate()
-      NoteBody.queueSaveDocument()
-   }
-
-   static get currentDocument(): Document {
-      return this._singleton.state.document
-   }
-
-   static loadLink(link: Link): void {
-      //find the document that the link goes to
-      //TODO abstract into WorkspaceManager method
-      var document: Document = WorkspaceManager.documents.find(doc => doc.metaData.id == link.to.documentId)
-      var docRootBullet: Bullet = document.toBullet()
-
-      this._singleton.setState({ document: document, rootBullet: docRootBullet, bullets: docRootBullet.children })
-   }
-
-   static queueSaveDocument(immediate: boolean = false): void {
-      NoteBody._singleton._shouldSave = true
-      if (immediate) NoteBody._singleton.save()
-   }
+   // static queueSaveDocument(immediate: boolean = false): void {
+   //    NoteBody._singleton._shouldSave = true
+   //    if (immediate) NoteBody._singleton.save()
+   // }
 
    //every four seconds (while the component is mounted) save the document
-   componentDidMount() {
-      this._saveInterval = setInterval(() => {
-         if (this._shouldSave) this.save()
-      }, 4000)
-   }
-   componentWillUnmount() {
-      clearInterval(this._saveInterval)
-   }
-   private save() {
-      this._shouldSave = false
+   // componentDidMount() {
+   //    this._saveInterval = setInterval(() => {
+   //       if (this._shouldSave) this.save()
+   //    }, 4000)
+   // }
+   // componentWillUnmount() {
+   //    clearInterval(this._saveInterval)
+   // }
+   // private save() {
+   //    this._shouldSave = false
 
-      return
-
-      var textFilePath = WorkspaceManager.workspacePath + NoteBody._singleton.state.document.name + '.txt'
-      writeFileSync(textFilePath, NoteBody._singleton.state.rootBullet.toString())
-      console.log('doc saved')
-   }
+   //    var textFilePath = WorkspaceManager.workspacePath + NoteBody._singleton.state.document.name + '.txt'
+   //    writeFileSync(textFilePath, NoteBody._singleton.state.rootBullet.toString())
+   //    console.log('doc saved')
+   // }
 
    //called when any bullet is clicked, loads what a link points to if ctrl is pressed
-   handleClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-      var clickedSpan = e.target as HTMLSpanElement
+   // handleClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+   //    //TODO move to bullet component
+   //    var clickedSpan = e.target as HTMLSpanElement
 
-      if (!clickedSpan || !e.ctrlKey || !clickedSpan.classList.contains('link')) return
+   //    if (!clickedSpan || !e.ctrlKey || !clickedSpan.classList.contains('link')) return
 
-      var linkID = parseInt(clickedSpan.dataset.linkId)
-      var link: Link = WorkspaceManager.links.find(l => l.id == linkID)
-      if (link == undefined) {
-         console.warn(`could not find link of id ${linkID}`)
-         return
-      }
+   //    var linkID = parseInt(clickedSpan.dataset.linkId)
+   //    var link: Link = WorkspaceManager.links.find(l => l.id == linkID)
+   //    if (link == undefined) {
+   //       console.warn(`could not find link of id ${linkID}`)
+   //       return
+   //    }
 
-      NoteBody.loadLink(link)
-   }
+   //    NoteBody.loadLink(link)
+   // }
 
    render(): JSX.Element {
       var bullets = this.state.bullets

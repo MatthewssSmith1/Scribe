@@ -8,17 +8,17 @@ export default function handleKeyPress(e: React.KeyboardEvent<HTMLDivElement>, b
 
    var sel = window.getSelection()
 
-   if (
-      handleEnter(e, blt, sel) ||
-      handleBackspace(e, blt, sel) ||
-      handleTab(e, blt, sel) ||
-      handleBrackets(e, blt, sel) ||
-      handleCtrlArrows(e, blt, sel) ||
-      handleAltArrows(e, blt, sel)
-   ) {
-      e.preventDefault()
-      NoteBody.rebuild()
-   }
+   // if (
+   //    handleEnter(e, blt, sel) ||
+   //    handleBackspace(e, blt, sel) ||
+   //    handleTab(e, blt, sel) ||
+   //    handleBrackets(e, blt, sel) ||
+   //    handleCtrlArrows(e, blt, sel) ||
+   //    handleAltArrows(e, blt, sel)
+   // ) {
+   //    e.preventDefault()
+   //    NoteBody.rebuild()
+   // }
 }
 
 function handleEnter(evt: React.KeyboardEvent<HTMLDivElement>, bullet: Bullet, selection: Selection): boolean {
