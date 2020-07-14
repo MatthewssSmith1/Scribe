@@ -1,89 +1,73 @@
 import * as React from 'react'
+import RootChildren from '../renderer'
 import cx from 'classnames'
 
-import { Store } from 'redux'
-import { contentPanelSelector, resize, setIsDragging, State } from '@/reducers/content_panel_reducer'
+export default class ContentPanel extends React.Component {
+   panelWrapperRef: any
+   draggableEdgeRef: any
 
-export default function ContentPanel() {
-   var { isDragging, isCollapsed, width, minWidth } = contentPanelSelector((state: State) => state)
+   isDragging: boolean = false
 
-   var actualWidth = Math.max(width, minWidth)
-
-   var style = {
-      right: isCollapsed ? `${-actualWidth}px` : '0px',
-      width: actualWidth,
+   props: {
+      isCollapsed: boolean
+      width: number
    }
 
-   return (
-      <div id="content-panel-wrapper" className={cx({ collapsed: isCollapsed })} style={style}>
-         <div id="content-panel">
-            <div className="content-panel__draggable-edge" />
-         </div>
-      </div>
-   )
-}
+   state: {
+      isDragging: boolean
+   }
 
-export function initContentPanelCallbacks(store: Store) {
-   var handleDrag = (e: MouseEvent) => {
+   constructor(props: any) {
+      super(props)
+
+      this.draggableEdgeRef = React.createRef()
+      this.panelWrapperRef = React.createRef()
+      this.state = { isDragging: false }
+
+      document.addEventListener('mousedown', (e: MouseEvent) => {
+         if (e.button != 0) return
+
+         if (e.target != this.draggableEdgeRef.current) return
+
+         document.addEventListener('mousemove', this.handleDrag, false)
+         this.isDragging = true
+      })
+
+      document.addEventListener('mouseup', e => {
+         if (!this.isDragging || e.button != 0) return
+
+         document.removeEventListener('mousemove', this.handleDrag, false)
+         this.isDragging = false
+      })
+   }
+
+   render(): JSX.Element {
+      return (
+         <div
+            id="content-panel-wrapper"
+            className={cx({ collapsed: this.props.isCollapsed })}
+            ref={this.panelWrapperRef}
+            style={this.getStyle()} /* style based on being collapsed or not */
+         >
+            <div id="content-panel">
+               <div className="content-panel__draggable-edge" ref={this.draggableEdgeRef} />
+            </div>
+         </div>
+      )
+   }
+
+   handleDrag = (e: MouseEvent) => {
       var newWidth = window.innerWidth - e.clientX
 
-      store.dispatch(resize(newWidth))
+      RootChildren.setContentPanelWidth(newWidth)
    }
 
-   document.addEventListener('mousedown', (e: MouseEvent) => {
-      if (e.button != 0) return
+   getStyle() {
+      var props = this.props
 
-      var target = e.target as HTMLElement
-      if (!target.classList.contains('content-panel__draggable-edge')) return
-
-      document.addEventListener('mousemove', handleDrag, false)
-      store.dispatch(setIsDragging(true))
-   })
-
-   document.addEventListener('mouseup', e => {
-      var isDragging = store.getState().contentPanel.isDragging
-      if (!isDragging || e.button != 0) return
-
-      document.removeEventListener('mousemove', handleDrag, false)
-      store.dispatch(setIsDragging(false))
-   })
+      return {
+         right: props.isCollapsed ? `${-props.width}px` : '0px',
+         width: props.width,
+      }
+   }
 }
-
-//* //////////////////////////////////////////////////////////////////////////////
-import * as React from 'react'
-import * as Redux from 'redux'
-
-import { MyReduxState } from './my-root-reducer.ts'
-
-export interface OwnProps {
-  propFromParent: number
-}
-
-interface StateProps {
-  propFromReduxStore: string
-}
-
-interface DispatchProps {
-  onSomeEvent: () => void
-}
-
-type Props = StateProps & DispatchProps & OwnProps
-
-interface State {
-  internalComponentStateField: string
-}
-
-class MyComponent extends React.Component<Props, State> {
-  ...
-}
-
-function mapStateToProps(state: MyReduxState, ownProps: OwnProps): StateProps {
-  ...
-}
-
-function mapDispatchToProps(dispatch: Redux.Dispatch<any>, ownProps: OwnProps): DispatchProps {
-  ...
-}
-
-export default connect<StateProps, DispatchProps, OwnProps>
-  (mapStateToProps, mapDispatchToProps)(MyComponent)

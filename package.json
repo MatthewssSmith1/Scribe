@@ -30,18 +30,14 @@
    "author": "Matt Smith",
    "license": "MIT",
    "dependencies": {
-      "@types/classnames": "^2.2.10",
       "@types/react": "^16.9.13",
       "@types/react-dom": "^16.9.4",
-      "@types/react-redux": "^7.1.9",
       "classnames": "^2.2.6",
       "custom-electron-titlebar": "^3.2.2-hotfix62",
       "js-yaml": "^3.14.0",
       "react": "^16.12.0",
       "react-contenteditable": "^3.3.5",
-      "react-dom": "^16.12.0",
-      "react-redux": "^7.2.0",
-      "redux": "^4.0.5"
+      "react-dom": "^16.12.0"
    },
    "devDependencies": {
       "@types/mocha": "^5.2.7",
