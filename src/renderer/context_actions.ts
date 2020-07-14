@@ -7,7 +7,6 @@ export const initCtxState = {
    contentPanel: {
       isCollapsed: false,
       width: 350,
-      minWidth: 300,
    },
    keyboard: {
       isCtrlPressed: false,
