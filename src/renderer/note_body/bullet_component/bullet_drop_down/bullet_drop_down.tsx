@@ -1,6 +1,6 @@
 import * as React from 'react'
 
-import * as cx from 'classnames'
+import cx from 'classnames'
 
 import Bullet from '@/main/bullet'
 import Icon from '@/renderer/other_components/icon'
@@ -22,7 +22,7 @@ export default class BulletDropDown extends React.Component {
          bullet.setCollapsedForAllDescendants(newState)
       }
 
-      NoteBody.rebuild()
+      // NoteBody.rebuild()
    }
 
    render(): JSX.Element {

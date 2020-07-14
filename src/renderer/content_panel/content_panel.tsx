@@ -1,73 +1,49 @@
-import * as React from 'react'
-import RootChildren from '../renderer'
+import React, { useState, useRef } from 'react'
 import cx from 'classnames'
 
-export default class ContentPanel extends React.Component {
-   panelWrapperRef: any
-   draggableEdgeRef: any
+import { useContext } from '@renderer/context'
 
-   isDragging: boolean = false
+// document.addEventListener('mousedown', (e: MouseEvent) => {
+//    if (e.button != 0) return
 
-   props: {
-      isCollapsed: boolean
-      width: number
+//    if (e.target != this.draggableEdgeRef.current) return
+
+//    document.addEventListener('mousemove', this.handleDrag, false)
+//    this.isDragging = true
+// })
+
+// document.addEventListener('mouseup', e => {
+//    if (!this.isDragging || e.button != 0) return
+
+//    document.removeEventListener('mousemove', this.handleDrag, false)
+//    this.isDragging = false
+// })
+
+// handleDrag = (e: MouseEvent) => {
+//    var newWidth = window.innerWidth - e.clientX
+
+// RootChildren.setContentPanelWidth(newWidth)
+// }
+
+export default function ContentPanel() {
+   const [state, dispatch] = useContext()
+   // const [isDragging, setIsDragging] = useState(() => false)
+   const draggableEdgeRef = useRef(null)
+
+   var { isCollapsed, width, minWidth } = state.contentPanel
+
+   var actualWidth = Math.max(minWidth, width)
+
+   var style = {
+      right: `${isCollapsed ? -actualWidth : 0}px`,
+      width: actualWidth,
    }
 
-   state: {
-      isDragging: boolean
-   }
-
-   constructor(props: any) {
-      super(props)
-
-      this.draggableEdgeRef = React.createRef()
-      this.panelWrapperRef = React.createRef()
-      this.state = { isDragging: false }
-
-      document.addEventListener('mousedown', (e: MouseEvent) => {
-         if (e.button != 0) return
-
-         if (e.target != this.draggableEdgeRef.current) return
-
-         document.addEventListener('mousemove', this.handleDrag, false)
-         this.isDragging = true
-      })
-
-      document.addEventListener('mouseup', e => {
-         if (!this.isDragging || e.button != 0) return
-
-         document.removeEventListener('mousemove', this.handleDrag, false)
-         this.isDragging = false
-      })
-   }
-
-   render(): JSX.Element {
-      return (
-         <div
-            id="content-panel-wrapper"
-            className={cx({ collapsed: this.props.isCollapsed })}
-            ref={this.panelWrapperRef}
-            style={this.getStyle()} /* style based on being collapsed or not */
-         >
-            <div id="content-panel">
-               <div className="content-panel__draggable-edge" ref={this.draggableEdgeRef} />
-            </div>
+   return (
+      <div id="content-panel-wrapper" className={cx({ collapsed: state.contentPanel.isCollapsed })} style={style} /* style based on being collapsed or not */>
+         <div id="content-panel">
+            <div className="content-panel__draggable-edge" ref={draggableEdgeRef} />
          </div>
-      )
-   }
-
-   handleDrag = (e: MouseEvent) => {
-      var newWidth = window.innerWidth - e.clientX
-
-      RootChildren.setContentPanelWidth(newWidth)
-   }
-
-   getStyle() {
-      var props = this.props
-
-      return {
-         right: props.isCollapsed ? `${-props.width}px` : '0px',
-         width: props.width,
-      }
-   }
+      </div>
+   )
 }
