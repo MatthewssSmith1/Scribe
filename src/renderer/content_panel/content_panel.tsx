@@ -1,7 +1,7 @@
-import React, { useRef, useEffect, useState } from 'react'
+import React, { useRef, useState } from 'react'
 import cx from 'classnames'
 
-import { useContext, useWindowEvent } from '@renderer/context'
+import { useContext } from '@renderer/context'
 import { ContextState, resizeContentPanel } from '@renderer/context_actions'
 
 //as a percentage of the window width, the range of widths that content panel can take up

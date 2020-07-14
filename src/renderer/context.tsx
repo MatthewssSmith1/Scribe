@@ -1,21 +1,9 @@
-import React, { createContext, useReducer, useEffect } from 'react'
+import React, { createContext, useReducer } from 'react'
 
 import { contextReducer, initCtxState, ContextState } from '@/renderer/context_actions'
 
 const ContextState = createContext(initCtxState)
 const ContextDispatch = createContext(null)
-
-function useWindowEvent(event: string, handler: any, passive = false) {
-   useEffect(() => {
-      // initiate the event handler
-      window.addEventListener(event, handler, passive)
-
-      // this will clean up the event every time the component is re-rendered
-      return function cleanup() {
-         window.removeEventListener(event, handler)
-      }
-   })
-}
 
 //the component which wraps the app root
 function ContextProvider({ children }) {
