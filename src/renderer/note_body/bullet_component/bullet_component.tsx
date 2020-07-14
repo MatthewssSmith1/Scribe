@@ -22,6 +22,23 @@ interface BulletProps {
    bullet: Bullet
 }
 
+//TODO implement link clicking for bullets
+//called when any bullet is clicked, loads what a link points to if ctrl is pressed
+// handleClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+//    var clickedSpan = e.target as HTMLSpanElement
+
+//    if (!clickedSpan || !e.ctrlKey || !clickedSpan.classList.contains('link')) return
+
+//    var linkID = parseInt(clickedSpan.dataset.linkId)
+//    var link: Link = WorkspaceManager.links.find(l => l.id == linkID)
+//    if (link == undefined) {
+//       console.warn(`could not find link of id ${linkID}`)
+//       return
+//    }
+
+//    NoteBody.loadLink(link)
+// }
+
 export default class BulletComponent extends React.Component {
    props: BulletProps
 

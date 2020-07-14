@@ -13,68 +13,6 @@ import { ContextState } from '@renderer/state/context_actions'
 import { loadInitDocument, trySaveDocument } from '@renderer/state/context_actions_async'
 import { useInterval } from '@renderer/state/hooks'
 
-// private static _singleton: NoteBody
-
-// private _shouldSave: boolean = false
-// private _saveInterval: NodeJS.Timeout
-
-// state: {
-//    document: Document
-//    rootBullet: Bullet
-//    isRootSelected: boolean
-//    bullets: Array<Bullet>
-// }
-
-// constructor(props: any) {
-//    super(props)
-
-//    NoteBody._singleton = this
-
-//    this.state = { document: null, rootBullet: null, isRootSelected: true, bullets: [] }
-
-//    WorkspaceManager.onceInitialized(() => {
-//       var currentDocument = WorkspaceManager.documents[0]
-//       var rootBullet = currentDocument.toBullet()
-
-//       NoteBody._singleton.setState({ document: currentDocument, rootBullet: rootBullet, bullets: rootBullet.children })
-//    })
-// }
-
-// static selectBullet(bullet: Bullet) {
-//    var singleton = this._singleton
-
-//    var bulletIsRoot = singleton.state.rootBullet == bullet
-
-//    singleton.setState({ isRootSelected: bulletIsRoot, bullets: bulletIsRoot ? bullet.children : [bullet] })
-
-//    this.rebuild()
-// }
-
-// static loadLink(link: Link): void {
-//    //find the document that the link goes to
-//    //TODO abstract into WorkspaceManager method
-//    var document: Document = WorkspaceManager.documents.find(doc => doc.metaData.id == link.to.documentId)
-//    var docRootBullet: Bullet = document.toBullet()
-
-//    this._singleton.setState({ document: document, rootBullet: docRootBullet, bullets: docRootBullet.children })
-// }
-
-//called when any bullet is clicked, loads what a link points to if ctrl is pressed
-// handleClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-//    var clickedSpan = e.target as HTMLSpanElement
-
-//    if (!clickedSpan || !e.ctrlKey || !clickedSpan.classList.contains('link')) return
-
-//    var linkID = parseInt(clickedSpan.dataset.linkId)
-//    var link: Link = WorkspaceManager.links.find(l => l.id == linkID)
-//    if (link == undefined) {
-//       console.warn(`could not find link of id ${linkID}`)
-//       return
-//    }
-
-//    NoteBody.loadLink(link)
-// }
-
 export default function NoteBody() {
    var [isInit, setIsInit] = useState(() => false)
    const state = useContextState()
