@@ -13,17 +13,23 @@
 
    border-radius: 50%;
 
-   &.has-on-click {
-      cursor: pointer;
+   &.disabled .icon__glyph {
+      display: none;
    }
 
-   & .icon__glyph {
-      cursor: inherit;
-      transition: transform $transition-time-normal;
-   }
+   &:not(.disabled) {
+      &.has-on-click {
+         cursor: pointer;
+      }
 
-   //if the icon has an onClick function and its hovered, scale up the inner glyph
-   &.has-on-click:hover .icon__glyph {
-      transform: scale(1.1);
+      & .icon__glyph {
+         cursor: inherit;
+         transition: transform $transition-time-normal;
+      }
+
+      //if the icon has an onClick function and its hovered, scale up the inner glyph
+      &.has-on-click:hover .icon__glyph {
+         transform: scale(1.1);
+      }
    }
 }

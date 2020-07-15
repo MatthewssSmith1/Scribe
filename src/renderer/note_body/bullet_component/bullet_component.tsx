@@ -4,11 +4,10 @@ import ContentEditable, { ContentEditableEvent } from 'react-contenteditable'
 import cx from 'classnames'
 
 import Bullet from '@/main/bullet'
+import Icon from '@/renderer/other_components/icon'
 import handleKeyPress from '@renderer/note_body/bullet_component/key_press'
-import BulletDot from '@renderer/note_body/bullet_component/bullet_dot/bullet_dot'
-import BulletDropDown from '@renderer/note_body/bullet_component/bullet_drop_down/bullet_drop_down'
-import { useContextDispatch } from '@/renderer/state/context'
-import { enqueueSaveDocument } from '@/renderer/state/context_actions'
+import { useContextDispatch, useContext } from '@/renderer/state/context'
+import { enqueueSaveDocument, focusBullet } from '@/renderer/state/context_actions'
 
 /*
    bullet
@@ -37,9 +36,10 @@ import { enqueueSaveDocument } from '@/renderer/state/context_actions'
 //    NoteBody.loadLink(link)
 // }
 
-var BulletComponent = (props: { bullet: Bullet }) => {
-   const [ignored, forceUpdate] = useReducer(x => x + 1, 0)
-   var bullet = props.bullet
+//memoize for more efficient rendering
+var BulletComponent = memo((props: { bullet: Bullet }) => {
+   const [, forceUpdate] = useReducer(x => x + 1, 0)
+   var { bullet } = props
 
    var bulletToChildrenComponents = (bullet: Bullet) => {
       return bullet.children.map((child: Bullet) => {
@@ -55,22 +55,21 @@ var BulletComponent = (props: { bullet: Bullet }) => {
          {shouldDisplayChildren && <div className="bullet__children-container">{bulletToChildrenComponents(bullet)}</div>}
       </div>
    )
-}
-// BulletComponent = memo(BulletComponent)
+})
 
 var BulletLine = (props: { bullet: Bullet; forceUpdate: React.Dispatch<unknown> }) => {
-   const dispatch = useContextDispatch()
-   const innerRef = useRef(null)
+   const [state, dispatch] = useContext()
+   const contentEditableRef = useRef(null)
 
    var { bullet, forceUpdate } = props
 
-   //after the bullet is rendered, select the text if the bullet data contains a caretIndex that != -1
+   //after rendered, select the text if bullet.select(index) has been called
    useEffect(() => {
       if (bullet.caretIndex == -1) return
 
-      innerRef.current.focus()
+      contentEditableRef.current.focus()
 
-      var textNode = innerRef.current.childNodes[0]
+      var textNode = contentEditableRef.current.childNodes[0]
       if (!textNode) return
 
       if (bullet.caretIndex > bullet.text.length - 1) throw `caret index is outside of bounds for the text of ${bullet}`
@@ -86,10 +85,8 @@ var BulletLine = (props: { bullet: Bullet; forceUpdate: React.Dispatch<unknown> 
       bullet.unselect()
    })
 
-   console.log('rendered')
-
    //when text is typed into a bullet, update the bullet data in the tree
-   var handleChange = (evt: ContentEditableEvent) => {
+   var handleTextChange = (evt: ContentEditableEvent) => {
       if (evt.type !== 'input') return
 
       //? whenever edited, this removes an unknown character at the end of the text node (appears to be both delete and new line)
@@ -99,16 +96,40 @@ var BulletLine = (props: { bullet: Bullet; forceUpdate: React.Dispatch<unknown> 
       dispatch(enqueueSaveDocument())
    }
 
+   var handleDropDownClick = (evt: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+      bullet.toggleCollapsed()
+
+      if (evt.altKey) bullet.setCollapsedForAllDescendants(bullet.isCollapsed)
+
+      forceUpdate(0)
+   }
+
    var bulletIsCollapsed = props.bullet.isCollapsed
    return (
       <div className={cx('bullet__line', { collapsed: bulletIsCollapsed })}>
-         <BulletDropDown bullet={props.bullet} forceUpdate={forceUpdate} />
-         <BulletDot bullet={props.bullet} />
+         <Icon
+            glyph="keyboard_arrow_down"
+            className={cx({
+               'bullet__line__drop-down': true,
+               rotated: bullet.isCollapsed,
+            })}
+            onClick={handleDropDownClick}
+            disabled={bullet.childCount == 0}
+         />
+         <div className="bullet__line__dot">
+            <div
+               className={cx('bullet__line__dot__circle', {
+                  'click-disabled': state.noteBody.focusedBullets.includes(bullet),
+                  highlighted: bullet.isCollapsed,
+               })}
+               onClick={() => dispatch(focusBullet(bullet))}
+            />
+         </div>
          <ContentEditable
             className={cx('bullet__line__editable', { childless: props.bullet.isChildless })}
-            innerRef={innerRef}
+            innerRef={contentEditableRef}
             html={props.bullet.text}
-            onChange={handleChange}
+            onChange={handleTextChange}
             onKeyDown={(evt: any) => handleKeyPress(evt, props.bullet)}
          />
       </div>

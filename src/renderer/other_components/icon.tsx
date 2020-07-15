@@ -1,23 +1,30 @@
 import * as React from 'react'
+import cx from 'classnames'
 
-//TODO use or uninstall package 'materialize-css'
-export default class Icon extends React.Component {
-   props: {
-      glyph: string
-      className?: string
-      onClick?: (event: React.MouseEvent<HTMLElement, MouseEvent>) => void
-   }
+interface IconProps {
+   glyph: string
+   className?: string
+   onClick?: (event: React.MouseEvent<HTMLElement, MouseEvent>) => void
+   disabled?: boolean
+}
 
-   render() {
-      var classes = ''
-      if (this.props.className) classes += this.props.className + ' '
-      classes += 'icon'
-      if (this.props.onClick != null) classes += ' has-on-click'
+//TODO don't use link tab to get materialize css over the internet
+export default function Icon(props: IconProps) {
+   var { glyph, className, onClick, disabled } = props
 
-      return (
-         <div className={classes} onClick={this.props.onClick}>
-            <i className="material-icons icon__glyph">{this.props.glyph}</i>
-         </div>
-      )
-   }
+   //convert null to default values
+   if (disabled == null) disabled = false
+   if (className == null) className = ''
+
+   return (
+      <div
+         className={cx(className, 'icon', {
+            'has-on-click': onClick != null,
+            disabled: disabled,
+         })}
+         onClick={disabled ? () => {} : onClick}
+      >
+         <i className="material-icons icon__glyph">{glyph}</i>
+      </div>
+   )
 }
