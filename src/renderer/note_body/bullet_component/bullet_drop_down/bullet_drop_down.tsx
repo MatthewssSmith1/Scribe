@@ -1,37 +1,31 @@
-import * as React from 'react'
+import React from 'react'
 
 import cx from 'classnames'
 
 import Bullet from '@/main/bullet'
 import Icon from '@/renderer/other_components/icon'
-import NoteBody from '@renderer/note_body/note_body'
 
-export default class BulletDropDown extends React.Component {
-   props: {
-      bullet: Bullet
+var BulletDropDown = (props: { bullet: Bullet; forceUpdate: React.Dispatch<unknown> }) => {
+   var { bullet, forceUpdate } = props
+
+   var onClick = (evt: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+      bullet.toggleCollapsed()
+
+      if (evt.altKey) bullet.setCollapsedForAllDescendants(bullet.isCollapsed)
+
+      forceUpdate(0)
    }
 
-   onClick = (evt: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-      var bullet = this.props.bullet
+   var className = cx({
+      'bullet__line__drop-down': true,
+      rotated: bullet.isCollapsed,
+   })
 
-      var newState = !bullet.isCollapsed
-
-      bullet.isCollapsed = newState
-
-      if (evt.altKey) {
-         bullet.setCollapsedForAllDescendants(newState)
-      }
-
-      // NoteBody.rebuild()
+   if (!bullet.hasChildren) {
+      return <div className={className} />
    }
 
-   render(): JSX.Element {
-      var bullet = this.props.bullet
-
-      if (!bullet.hasChildren) {
-         return <div className="bullet__line__drop-down" />
-      }
-
-      return <Icon glyph="keyboard_arrow_down" className={cx('bullet__line__drop-down', { rotated: bullet.isCollapsed })} onClick={this.onClick} />
-   }
+   return <Icon glyph="keyboard_arrow_down" className={className} onClick={onClick} />
 }
+
+export default BulletDropDown

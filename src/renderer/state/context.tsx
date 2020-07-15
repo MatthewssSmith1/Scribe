@@ -1,6 +1,6 @@
 import React, { createContext, useReducer } from 'react'
 
-import { contextReducer, initCtxState, ContextState } from '@/renderer/state/context_actions'
+import { contextReducer, initCtxState, ContextStateType } from '@/renderer/state/context_actions'
 
 const ContextState = createContext(initCtxState)
 const ContextDispatch = createContext<React.Dispatch<any>>(null)
@@ -17,7 +17,7 @@ function ContextProvider({ children }) {
 }
 
 //provides the state in function components
-function useContextState(): ContextState {
+function useContextState(): ContextStateType {
    const contextState = React.useContext(ContextState)
    if (contextState === undefined) {
       throw new Error('useCountState must be used on a component that is a child of CountProvider')
@@ -34,11 +34,11 @@ function useContextDispatch(): React.Dispatch<any> {
 }
 
 //allows more concise "const [state, dispatch] = useContext()"
-function useContext(): [ContextState, React.Dispatch<any>] {
+function useContext(): [ContextStateType, React.Dispatch<any>] {
    return [useContextState(), useContextDispatch()]
 }
 
-type AsyncCallback = (state: ContextState, dispatch: React.Dispatch<any>) => Promise<void>
+type AsyncCallback = (state: ContextStateType, dispatch: React.Dispatch<any>) => Promise<void>
 
 function useContextDispatchAsync() {
    const [state, dispatch] = useContext()
@@ -50,4 +50,4 @@ function useContextDispatchAsync() {
    return dispatchAsync
 }
 
-export { ContextProvider, useContext, useContextState, useContextDispatch, useContextDispatchAsync }
+export { ContextProvider, useContext, useContextState, useContextDispatch, useContextDispatchAsync, ContextStateType }

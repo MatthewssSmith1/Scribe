@@ -1,11 +1,11 @@
-import { ContextState } from '@renderer/state/context_actions'
+import { ContextStateType } from '@renderer/state/context_actions'
 
 import { loadDocument, documentSaveComplete, dequeueSaveDocument } from '@renderer/state/context_actions'
 
 import WorkspaceManager from '@main/workspace_manager'
 import { writeFileSync } from 'fs'
 
-export async function loadInitDocument(state: ContextState, dispatch: React.Dispatch<any>) {
+export async function loadInitDocument(state: ContextStateType, dispatch: React.Dispatch<any>) {
    dispatch(dequeueSaveDocument)
 
    await WorkspaceManager.init()
@@ -15,7 +15,7 @@ export async function loadInitDocument(state: ContextState, dispatch: React.Disp
    dispatch(loadDocument(doc, doc.toBullet()))
 }
 
-export async function trySaveDocument(state: ContextState, dispatch: React.Dispatch<any>) {
+export async function trySaveDocument(state: ContextStateType, dispatch: React.Dispatch<any>) {
    //TODO fix bugs before allowing to save again
    return
 

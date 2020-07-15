@@ -29,7 +29,7 @@ export const initCtxState = {
       isCtrlPressed: false,
    },
 }
-export type ContextState = typeof initCtxState
+export type ContextStateType = typeof initCtxState
 
 //* ACTIONS
 
@@ -84,7 +84,7 @@ export function focusBullet(bullet: Bullet) {
 }
 
 //* REDUCER
-export function contextReducer(state: ContextState, action: any): ContextState {
+export function contextReducer(state: ContextStateType, action: any): ContextStateType {
    switch (action.type) {
       //* panels
       case toggleActionPanel.name:
