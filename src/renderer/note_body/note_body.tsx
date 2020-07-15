@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, memo, useReducer } from 'react'
 
 import Bullet from '@main/bullet'
 import BulletComponent from '@renderer/note_body/bullet_component/bullet_component'
@@ -8,7 +8,7 @@ import { useContextState, useContextDispatchAsync, ContextStateType } from '@/re
 import { loadInitDocument, trySaveDocument } from '@renderer/state/context_actions_async'
 import { useInterval } from '@renderer/state/hooks'
 
-export default function NoteBody() {
+var NoteBody = memo(() => {
    var [isInit, setIsInit] = useState(() => false)
    const state = useContextState()
    const dispatchAsync = useContextDispatchAsync()
@@ -28,7 +28,7 @@ export default function NoteBody() {
          <BulletList />
       </div>
    )
-}
+})
 
 function getStyle(state: ContextStateType): React.CSSProperties {
    var rightProp = state.contentPanel.isCollapsed ? 0 : state.contentPanel.width
@@ -53,11 +53,16 @@ function TitleOrBreadCrumbs() {
 function BulletList() {
    const state = useContextState()
 
-   var bullets = state.noteBody.focusedBullets || []
+   var { focusedBullets } = state.noteBody
 
-   var children = bullets.map((child: Bullet) => {
+   // const [, forceUpdate] = useReducer(x => x + 1, 0)
+   // if (rootBullet) rootBullet.setComponentCallback(forceUpdate)
+
+   var children = (focusedBullets || []).map((child: Bullet) => {
       return <BulletComponent bullet={child} key={child.key} />
    })
 
    return <div className="note-body__bullet-list">{children}</div>
 }
+
+export default NoteBody

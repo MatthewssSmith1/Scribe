@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useReducer, memo } from 'react'
+import React, { useRef, useEffect, useReducer, memo, useState } from 'react'
 
 import ContentEditable, { ContentEditableEvent } from 'react-contenteditable'
 import cx from 'classnames'
@@ -36,62 +36,73 @@ import { enqueueSaveDocument, focusBullet } from '@/renderer/state/context_actio
 //    NoteBody.loadLink(link)
 // }
 
-//memoize for more efficient rendering
+const bulletComponentReducer = ([counter, oldCaretIndex], caretIndex?: number): [number, number] => {
+   return [counter + 1, caretIndex == null ? oldCaretIndex : caretIndex]
+}
+
 var BulletComponent = memo((props: { bullet: Bullet }) => {
-   const [, forceUpdate] = useReducer(x => x + 1, 0)
    var { bullet } = props
 
-   var bulletToChildrenComponents = (bullet: Bullet) => {
-      return bullet.children.map((child: Bullet) => {
-         return <BulletComponent bullet={child} key={child.key} />
-      })
-   }
+   const [[, caretIndex], forceUpdate] = useReducer(bulletComponentReducer, [0, -1])
+   bullet.setComponentCallback(forceUpdate)
+
+   console.log('bullet component rendered')
 
    var shouldDisplayChildren = bullet.children.length >= 0 && !bullet.isCollapsed
+   var bulletToChildrenComponents = (bullet: Bullet) => {
+      return bullet.children.map((child: Bullet) => <BulletComponent bullet={child} key={child.key} />)
+   }
 
    return (
       <div className="bullet">
-         <BulletLine bullet={bullet} forceUpdate={forceUpdate} />
+         <BulletLine bullet={bullet} caretIndex={caretIndex} />
          {shouldDisplayChildren && <div className="bullet__children-container">{bulletToChildrenComponents(bullet)}</div>}
       </div>
    )
 })
 
-var BulletLine = (props: { bullet: Bullet; forceUpdate: React.Dispatch<unknown> }) => {
+var BulletLine = (props: { bullet: Bullet; caretIndex: number }) => {
    const [state, dispatch] = useContext()
    const contentEditableRef = useRef(null)
 
-   var { bullet, forceUpdate } = props
+   var { bullet, caretIndex } = props
 
-   //after rendered, select the text if bullet.select(index) has been called
+   // after rendered, select the text if bullet.select(index) has been called
    useEffect(() => {
-      if (bullet.caretIndex == -1) return
+      if (caretIndex == -1) return
 
-      contentEditableRef.current.focus()
+      var divElm = contentEditableRef.current
+      // divElm.focus()
 
-      var textNode = contentEditableRef.current.childNodes[0]
+      var textNode = divElm.childNodes[0]
       if (!textNode) return
 
-      if (bullet.caretIndex > bullet.text.length - 1) throw `caret index is outside of bounds for the text of ${bullet}`
+      if (caretIndex > bullet.text.length - 1) {
+         console.warn(`caret index is outside of bounds for the text of ${bullet}`)
+         return
+      }
 
       var range = document.createRange()
-      range.setStart(textNode, bullet.caretIndex)
+      range.setStart(textNode, caretIndex)
       range.collapse(true)
 
       var selection = window.getSelection()
       selection.removeAllRanges()
       selection.addRange(range)
-
-      bullet.unselect()
    })
 
    //when text is typed into a bullet, update the bullet data in the tree
    var handleTextChange = (evt: ContentEditableEvent) => {
       if (evt.type !== 'input') return
 
-      //? whenever edited, this removes an unknown character at the end of the text node (appears to be both delete and new line)
-      var newText = evt.target.value
-      props.bullet.text = newText.slice(0, newText.length - 1)
+      // maintain selection when rebuilding
+      bullet.selectComponent(window.getSelection().anchorOffset)
+
+      var str = evt.target.value
+      if (str.charAt(str.length - 1) == '\n') {
+         str = str.slice(0, -1)
+      }
+      props.bullet.text = str
 
       dispatch(enqueueSaveDocument())
    }
@@ -101,7 +112,7 @@ var BulletLine = (props: { bullet: Bullet; forceUpdate: React.Dispatch<unknown> 
 
       if (evt.altKey) bullet.setCollapsedForAllDescendants(bullet.isCollapsed)
 
-      forceUpdate(0)
+      bullet.updateComponent()
    }
 
    return (

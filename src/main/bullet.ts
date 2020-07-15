@@ -4,11 +4,8 @@ export default class Bullet {
    children: Array<Bullet> = []
    //used to show/hide children if it is collapsed or not
    isCollapsed: boolean = false
-   //used for setting the cursor/caret position on rebuild
-   caretIndex: number = -1
    //passed to react.js components in children lists
    key: number = 0
-   shouldRebuild: boolean = false
 
    // #region Constructor, Factory, Serializing
    constructor(text: string = '', children: Array<Bullet> = [], parent: Bullet = null) {
@@ -85,8 +82,6 @@ export default class Bullet {
       if (offset < 0) offset += 1
 
       this.parent.addChildren(this.indexInParent + offset, bullet)
-
-      bullet.enqueueRebuild()
    }
 
    get siblingBefore(): Bullet {
@@ -230,30 +225,6 @@ export default class Bullet {
    // #endregion
 
    // #region Tree Interaction
-   select(_caretIndex: number): Bullet {
-      this.caretIndex = _caretIndex
-
-      //make sure that the selected bullet is not a child of a collapsed bullet
-      if (this.hasParent) {
-         var ancestor = this.parent
-
-         while (ancestor != null) {
-            ancestor.isCollapsed = false
-            ancestor = ancestor.parent
-         }
-      }
-
-      this.enqueueRebuild
-
-      return this
-   }
-
-   unselect(): Bullet {
-      this.caretIndex = -1
-
-      return this
-   }
-
    childAt(_indexOrCoords: number | Array<number>): Bullet {
       if (!Array.isArray(_indexOrCoords)) {
          var index = _indexOrCoords
@@ -280,9 +251,6 @@ export default class Bullet {
 
          this.children.splice(index, 0, newChild)
       }
-
-      bullets.forEach(b => (b.shouldRebuild = true))
-      this.enqueueRebuild()
    }
 
    addChildrenToEnd(_bullets: Bullet | Array<Bullet>) {
@@ -297,14 +265,10 @@ export default class Bullet {
 
          this.children.push(newChild)
       }
-
-      bullets.forEach(b => (b.shouldRebuild = true))
-      this.enqueueRebuild()
    }
 
    remove(): Bullet {
       if (this.hasParent) {
-         this.parent.enqueueRebuild()
          this.parent.removeChild(this.parent.children.indexOf(this))
       }
 
@@ -321,10 +285,8 @@ export default class Bullet {
 
       removedBullet.parent = null
       removedBullet.key = null
-      removedBullet.caretIndex = -1
+      // removedBullet.caretIndex = -1
       this.children.splice(index, 1)
-
-      this.enqueueRebuild()
 
       return removedBullet
    }
@@ -340,35 +302,63 @@ export default class Bullet {
          removedBullets.push(this.removeChild(index))
       }
 
-      this.enqueueRebuild()
-
       return removedBullets
    }
 
    toggleCollapsed() {
       this.isCollapsed = !this.isCollapsed
-
-      this.enqueueRebuild()
    }
 
    setCollapsed(isCollapsed: boolean) {
       this.isCollapsed = isCollapsed
-
-      this.enqueueRebuild()
    }
 
    setCollapsedForAllDescendants(isCollapsed: boolean) {
       if (!this.hasChildren) return
-      
+
       this.children.forEach(c => c.setCollapsedForAllDescendants(isCollapsed))
       this.isCollapsed = isCollapsed
-      this.enqueueRebuild()
+   }
+   // #endregion
+
+   // #region BulletComponent methods
+
+   //both of these functions are set by the BulletComponent that corresponds to this object
+
+   private _componentCallback: (caretIndex?: number) => void = null
+
+   setComponentCallback(callback: (caretIndex?: number) => void = null) {
+      this._componentCallback = callback
    }
 
-   enqueueRebuild() {
-      this.shouldRebuild = true
-
-      if (this.parent) this.parent.enqueueRebuild()
+   updateComponent() {
+      if (this._componentCallback) this._componentCallback()
+      else console.warn(`updateComponent() called on ${this} but no componentCallback was set`)
    }
+
+   selectComponent(caretIndex: number = 0) {
+      if (this._componentCallback) this._componentCallback(caretIndex)
+      else console.warn(`updateComponent() called on ${this} but no componentCallback was set`)
+   }
+
+   // private _updateComponent: Function = null
+   // private _selectComponent: (caretIndex: number) => void = null
+
+   // setUpdateComponent(callback: () => void) {
+   //    this._updateComponent = callback
+   // }
+
+   // updateComponent() {
+   //    if (this._updateComponent != null) this._updateComponent()
+   // }
+
+   // setSelectComponent(callback: (caretIndex: number) => void) {
+   //    this._selectComponent = callback
+   // }
+
+   // selectComponent(caretIndex: number) {
+   //    if (this._selectComponent != null) this._selectComponent(caretIndex)
+   // }
+
    // #endregion
 }
