@@ -11,13 +11,13 @@ export function loadInitDocument(): AsyncCallback {
    return async (state: ContextStateType, dispatch: ContextDispatchType) => {
       if (!WorkspaceManager.isInitialized) await WorkspaceManager.init()
 
-      var loadDocCallback = loadDocumentById(WorkspaceManager.documents[0].metaData.id)
+      var loadDocCallback = loadDocumentByID(WorkspaceManager.documents[0].metaData.id)
 
       loadDocCallback(state, dispatch)
    }
 }
 
-export function loadDocumentById(id: number): AsyncCallback {
+export function loadDocumentByID(id: number): AsyncCallback {
    return async (state: ContextStateType, dispatch: ContextDispatchType) => {
       dispatch(dequeueSaveDocument)
 
