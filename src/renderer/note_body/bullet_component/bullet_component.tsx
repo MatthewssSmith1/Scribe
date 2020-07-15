@@ -104,9 +104,8 @@ var BulletLine = (props: { bullet: Bullet; forceUpdate: React.Dispatch<unknown> 
       forceUpdate(0)
    }
 
-   var bulletIsCollapsed = props.bullet.isCollapsed
    return (
-      <div className={cx('bullet__line', { collapsed: bulletIsCollapsed })}>
+      <div className={cx('bullet__line', { collapsed: bullet.isCollapsed })}>
          <Icon
             glyph="keyboard_arrow_down"
             className={cx({

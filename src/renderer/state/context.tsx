@@ -3,7 +3,8 @@ import React, { createContext, useReducer } from 'react'
 import { contextReducer, initCtxState, ContextStateType } from '@/renderer/state/context_actions'
 
 const ContextState = createContext(initCtxState)
-const ContextDispatch = createContext<React.Dispatch<any>>(null)
+type ContextDispatchType = React.Dispatch<any>
+const ContextDispatch = createContext<ContextDispatchType>(null)
 
 //the component which wraps the app root and provides both the state and dispatch from reducer
 function ContextProvider({ children }) {
@@ -43,11 +44,9 @@ type AsyncCallback = (state: ContextStateType, dispatch: React.Dispatch<any>) =>
 function useContextDispatchAsync() {
    const [state, dispatch] = useContext()
 
-   var dispatchAsync = (asyncCallback: AsyncCallback) => {
+   return (asyncCallback: AsyncCallback) => {
       asyncCallback(state, dispatch)
    }
-
-   return dispatchAsync
 }
 
-export { ContextProvider, useContext, useContextState, useContextDispatch, useContextDispatchAsync, ContextStateType }
+export { ContextProvider, useContext, useContextState, useContextDispatch, useContextDispatchAsync, ContextStateType, ContextDispatchType, AsyncCallback }

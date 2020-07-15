@@ -1,18 +1,37 @@
-import { ContextStateType } from '@renderer/state/context_actions'
+import { ContextStateType, ContextDispatchType } from '@renderer/state/context'
 
 import { loadDocument, documentSaveComplete, dequeueSaveDocument } from '@renderer/state/context_actions'
+
+import { AsyncCallback } from '@renderer/state/context'
 
 import WorkspaceManager from '@main/workspace_manager'
 import { writeFileSync } from 'fs'
 
-export async function loadInitDocument(state: ContextStateType, dispatch: React.Dispatch<any>) {
-   dispatch(dequeueSaveDocument)
+export function loadInitDocument(): AsyncCallback {
+   return async (state: ContextStateType, dispatch: ContextDispatchType) => {
+      if (!WorkspaceManager.isInitialized) await WorkspaceManager.init()
 
-   await WorkspaceManager.init()
+      var loadDocCallback = loadDocumentById(WorkspaceManager.documents[0].metaData.id)
 
-   var doc = WorkspaceManager.documents[0]
+      loadDocCallback(state, dispatch)
+   }
+}
 
-   dispatch(loadDocument(doc, doc.toBullet()))
+export function loadDocumentById(id: number): AsyncCallback {
+   return async (state: ContextStateType, dispatch: ContextDispatchType) => {
+      dispatch(dequeueSaveDocument)
+
+      if (!WorkspaceManager.isInitialized) await WorkspaceManager.init()
+
+      var doc = WorkspaceManager.documents.find(doc => doc.metaData.id == id)
+
+      if (doc == undefined) {
+         console.warn(`attempted to load document with id ${id}, but it could not be found`)
+         return
+      }
+
+      dispatch(loadDocument(doc, doc.toBullet()))
+   }
 }
 
 export async function trySaveDocument(state: ContextStateType, dispatch: React.Dispatch<any>) {

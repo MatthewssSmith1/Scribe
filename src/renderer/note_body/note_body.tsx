@@ -16,7 +16,7 @@ export default function NoteBody() {
    if (!isInit) {
       setIsInit(true)
 
-      dispatchAsync(loadInitDocument)
+      dispatchAsync(loadInitDocument())
    }
 
    // check to save the document every 3 seconds
