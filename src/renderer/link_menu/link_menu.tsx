@@ -16,10 +16,11 @@ export default function LinkMenu() {
 
    var isHidden = linkMenuState.isHidden
 
+   //while the link menu is active: if clicked away from it => hide it, ignore keydown events
    useEffect(() => {
       if (isHidden) return
 
-      var handleClick = (e: MouseEvent) => {
+      var handleMouseDown = (e: MouseEvent) => {
          var clickedElm = e.target
 
          var menuDiv = domRef.current
@@ -29,10 +30,16 @@ export default function LinkMenu() {
          } else e.preventDefault()
       }
 
-      window.addEventListener('mousedown', handleClick, false)
+      var handleKeyDown = (e: KeyboardEvent) => {
+         e.preventDefault()
+      }
+
+      window.addEventListener('mousedown', handleMouseDown, false)
+      window.addEventListener('keydown', handleKeyDown, false)
 
       return () => {
-         window.removeEventListener('mousedown', handleClick, false)
+         window.removeEventListener('mousedown', handleMouseDown, false)
+         window.removeEventListener('keydown', handleKeyDown, false)
       }
    })
 
