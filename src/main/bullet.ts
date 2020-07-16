@@ -6,6 +6,8 @@ export default class Bullet {
    isCollapsed: boolean = false
    //passed to react.js components in children lists
    key: number = 0
+   //used to set the caret position of the corresponding BulletComponent
+   private _caretIndex = -1
 
    // #region Constructor, Factory, Serializing
    constructor(text: string = '', children: Array<Bullet> = [], parent: Bullet = null) {
@@ -337,28 +339,17 @@ export default class Bullet {
    }
 
    selectComponent(caretIndex: number = 0) {
-      if (this._componentCallback) this._componentCallback(caretIndex)
-      else console.warn(`updateComponent() called on ${this} but no componentCallback was set`)
+      this._caretIndex = caretIndex
+      this.updateComponent()
    }
 
-   // private _updateComponent: Function = null
-   // private _selectComponent: (caretIndex: number) => void = null
+   getCaretIndex(): number {
+      return this._caretIndex
+   }
 
-   // setUpdateComponent(callback: () => void) {
-   //    this._updateComponent = callback
-   // }
-
-   // updateComponent() {
-   //    if (this._updateComponent != null) this._updateComponent()
-   // }
-
-   // setSelectComponent(callback: (caretIndex: number) => void) {
-   //    this._selectComponent = callback
-   // }
-
-   // selectComponent(caretIndex: number) {
-   //    if (this._selectComponent != null) this._selectComponent(caretIndex)
-   // }
+   unselect(): void {
+      this._caretIndex = -1
+   }
 
    // #endregion
 }

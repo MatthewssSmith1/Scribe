@@ -82,6 +82,13 @@ export function focusBullet(bullet: Bullet) {
       bullet,
    }
 }
+export function addFocusBulletToIndex(bullet: Bullet, index: number) {
+   return {
+      type: focusBullet.name,
+      bullet,
+      index,
+   }
+}
 
 //* REDUCER
 export function contextReducer(state: ContextStateType, action: any): ContextStateType {
@@ -156,6 +163,17 @@ export function contextReducer(state: ContextStateType, action: any): ContextSta
                ...state.noteBody,
                focusedBullets,
             },
+         }
+
+      case addFocusBulletToIndex.name:
+         // var newFocusedBullets = state.noteBody.focusedBullets
+         // newFocusedBullets.push(action.bullet)
+         return {
+            ...state,
+            // noteBody: {
+            //    ...state.noteBody,
+            //    focusedBullets: newFocusedBullets,
+            // },
          }
 
       case documentSaveComplete.name:

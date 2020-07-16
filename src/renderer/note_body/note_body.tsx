@@ -1,4 +1,4 @@
-import React, { useState, memo, useReducer } from 'react'
+import React, { useState, useReducer, memo } from 'react'
 
 import Bullet from '@main/bullet'
 import BulletComponent from '@renderer/note_body/bullet_component/bullet_component'
@@ -53,10 +53,10 @@ function TitleOrBreadCrumbs() {
 function BulletList() {
    const state = useContextState()
 
-   var { focusedBullets } = state.noteBody
+   var { focusedBullets, rootBullet } = state.noteBody
 
-   // const [, forceUpdate] = useReducer(x => x + 1, 0)
-   // if (rootBullet) rootBullet.setComponentCallback(forceUpdate)
+   const [, forceUpdate] = useReducer(x => x + 1, 0)
+   if (rootBullet) rootBullet.setComponentCallback(forceUpdate)
 
    var children = (focusedBullets || []).map((child: Bullet) => {
       return <BulletComponent bullet={child} key={child.key} />

@@ -1,26 +1,33 @@
 import * as React from 'react'
 import Bullet from '@main/bullet'
 // import LinkMenu from '@renderer/link_menu/link_menu'
+import { ContextStateType, ContextDispatchType } from '@renderer/state/context'
+import { addFocusBulletToIndex } from '@renderer/state/context_actions'
 
-export default function handleKeyPress(e: React.KeyboardEvent<HTMLDivElement>, blt: Bullet) {
+export default function handleKeyPress(state: ContextStateType, dispatch: ContextDispatchType, e: React.KeyboardEvent<HTMLDivElement>, blt: Bullet) {
    //TODO make enter with selection not collapsed start linking process
 
    var sel = window.getSelection()
 
    if (
-      handleEnter(e, blt, sel) ||
-      handleBackspace(e, blt, sel) //||
+      handleEnter(state, dispatch, e, blt, sel) ||
+      handleBackspace(state, dispatch, e, blt, sel) //||
       // handleTab(e, blt, sel) ||
       // handleBrackets(e, blt, sel) ||
       // handleCtrlArrows(e, blt, sel) ||
       // handleAltArrows(e, blt, sel)
    ) {
       e.preventDefault()
-      // NoteBody.rebuild()
    }
 }
 
-function handleEnter(evt: React.KeyboardEvent<HTMLDivElement>, bullet: Bullet, selection: Selection): boolean {
+function handleEnter(
+   state: ContextStateType,
+   dispatch: ContextDispatchType,
+   evt: React.KeyboardEvent<HTMLDivElement>,
+   bullet: Bullet,
+   selection: Selection
+): boolean {
    if (evt.key != 'Enter') return false
 
    if (selection.isCollapsed) {
@@ -33,62 +40,76 @@ function handleEnter(evt: React.KeyboardEvent<HTMLDivElement>, bullet: Bullet, s
       bullet.parent.updateComponent()
 
       bullet.selectComponent(0)
-
-      return true
    }
 
-   // LinkMenu.handleEnterPressedOnSelection(bullet, selection)
-
-   return true
+   evt.preventDefault()
 }
 
 //TODO potentially rework because the last character being messed up may have been corrected elsewhere
-function handleBackspace(evt: React.KeyboardEvent<HTMLDivElement>, bullet: Bullet, selection: Selection): boolean {
-   if (evt.key == 'Backspace' && selection.isCollapsed && selection.anchorOffset == 0 && bullet.hasParent) {
-      if (bullet.isFirstSibling) {
-         //move siblings following bullet to be children of bullet
-         // var siblingsAfterBullet = bullet.parent.removeChildren(1)
-         // bullet.addChildrenToEnd(siblingsAfterBullet)
+function handleBackspace(
+   state: ContextStateType,
+   dispatch: ContextDispatchType,
+   evt: React.KeyboardEvent<HTMLDivElement>,
+   bullet: Bullet,
+   selection: Selection
+): boolean {
+   if (evt.key != 'Backspace' || !selection.isCollapsed || selection.anchorOffset != 0) return
 
-         // bullet.parent.updateComponent()
-         // bullet.updateComponent()
+   if (bullet.isFirstSibling) {
+      if (bullet.parent.isRoot) return
+      //move siblings following bullet to be children of bullet
+      var siblingsAfterBullet = bullet.parent.removeChildren(1)
+      bullet.addChildrenToEnd(siblingsAfterBullet)
 
-         //move bullet to be the sibling after its old parent
-         // bullet.parent.addSibling(1, bullet)
+      //move bullet to be the sibling after its old parent
+      bullet.parent.addSibling(1, bullet)
 
-         // bullet.parent.updateComponent()
-         // bullet.selectComponent(selection.anchorOffset)
-      } else {
-         var sibling = bullet.siblingBefore
-         var caretIndex = sibling.text.length
-
-         sibling.text += bullet.text
-
-         bullet.remove()
-
-         sibling.selectComponent(caretIndex)
-         sibling.parent.updateComponent()
+      var sibFocusedBulletsIndex = state.noteBody.focusedBullets.indexOf(bullet.siblingBefore)
+      if (sibFocusedBulletsIndex != -1) {
+         console.log('should add to focused bullets')
+         dispatch(addFocusBulletToIndex(bullet, sibFocusedBulletsIndex + 1))
       }
 
-      return true
+      bullet.parent.updateComponent()
+      bullet.siblingBefore.updateComponent()
+      bullet.selectComponent(selection.anchorOffset)
+   } else {
+      //store length of the text in the bullet before (set cursor pos here later)
+      var sibling = bullet.siblingBefore
+      var caretIndex = sibling.text.length
+
+      //concat the two bullets
+      sibling.text += bullet.text
+
+      //remove currently selected bullet
+      bullet.remove()
+
+      console.log('slct called')
+      sibling.parent.updateComponent()
+      sibling.selectComponent(caretIndex)
    }
-   return false
+
+   evt.preventDefault()
 }
 
-function handleTab(evt: React.KeyboardEvent<HTMLDivElement>, bullet: Bullet, selection: Selection): boolean {
+function handleTab(state: ContextStateType, dispatch: ContextDispatchType, evt: React.KeyboardEvent<HTMLDivElement>, bullet: Bullet, selection: Selection) {
    if (evt.key == 'Tab' && selection.anchorOffset == 0 && bullet.isFirstSibling == false) {
       bullet.siblingBefore.addChildrenToEnd(bullet)
 
       bullet.selectComponent(0)
 
-      return true
+      evt.preventDefault()
    }
-
-   return false
 }
 
-function handleBrackets(evt: React.KeyboardEvent<HTMLDivElement>, bullet: Bullet, selection: Selection): boolean {
-   if (!evt.ctrlKey) return false
+function handleBrackets(
+   state: ContextStateType,
+   dispatch: ContextDispatchType,
+   evt: React.KeyboardEvent<HTMLDivElement>,
+   bullet: Bullet,
+   selection: Selection
+) {
+   if (!evt.ctrlKey) return
 
    if (evt.key == '[' && bullet.hasGrandParent) {
       //move siblings following bullet to be children of bullet
@@ -100,29 +121,39 @@ function handleBrackets(evt: React.KeyboardEvent<HTMLDivElement>, bullet: Bullet
 
       bullet.selectComponent(selection.anchorOffset)
 
-      return true
+      evt.preventDefault()
    } else if (evt.key == ']' && !bullet.isFirstSibling) {
       bullet.siblingBefore.addChildrenToEnd(bullet)
       bullet.selectComponent(selection.anchorOffset)
 
-      return true
+      evt.preventDefault()
    }
-
-   return false
 }
 
-function handleCtrlArrows(evt: React.KeyboardEvent<HTMLDivElement>, bullet: Bullet, selection: Selection): boolean {
-   if (!evt.ctrlKey) return false
+function handleCtrlArrows(
+   state: ContextStateType,
+   dispatch: ContextDispatchType,
+   evt: React.KeyboardEvent<HTMLDivElement>,
+   bullet: Bullet,
+   selection: Selection
+) {
+   if (!evt.ctrlKey) return
 
    if (evt.key == 'ArrowUp') bullet.bulletBefore.selectComponent(selection.anchorOffset)
    else if (evt.key == 'ArrowDown') bullet.bulletAfter.selectComponent(selection.anchorOffset)
-   else return false
+   else return
 
-   return true
+   evt.preventDefault()
 }
 
-function handleAltArrows(evt: React.KeyboardEvent<HTMLDivElement>, bullet: Bullet, selection: Selection): boolean {
-   if (!evt.altKey) return false
+function handleAltArrows(
+   state: ContextStateType,
+   dispatch: ContextDispatchType,
+   evt: React.KeyboardEvent<HTMLDivElement>,
+   bullet: Bullet,
+   selection: Selection
+) {
+   if (!evt.altKey) return
 
    if (evt.key == 'ArrowUp') {
       var bulletBefore = bullet.bulletBefore
@@ -133,7 +164,7 @@ function handleAltArrows(evt: React.KeyboardEvent<HTMLDivElement>, bullet: Bulle
 
       bulletBefore.selectComponent(selection.anchorOffset)
 
-      return true
+      evt.preventDefault()
    }
    if (evt.key == 'ArrowDown') {
       var bulletAfter = bullet.bulletAfter
@@ -143,7 +174,8 @@ function handleAltArrows(evt: React.KeyboardEvent<HTMLDivElement>, bullet: Bulle
       bulletAfter.text = tempText
 
       bulletAfter.selectComponent(selection.anchorOffset)
-      return true
+
+      evt.preventDefault()
    }
    if (evt.key == 'ArrowLeft' && bullet.hasGrandParent) {
       //move siblings following bullet to be children of bullet
@@ -155,14 +187,12 @@ function handleAltArrows(evt: React.KeyboardEvent<HTMLDivElement>, bullet: Bulle
 
       bullet.selectComponent(selection.anchorOffset)
 
-      return true
+      evt.preventDefault()
    }
    if (evt.key == 'ArrowRight' && !bullet.isFirstSibling) {
       bullet.siblingBefore.addChildrenToEnd(bullet)
       bullet.selectComponent(selection.anchorOffset)
 
-      return true
+      evt.preventDefault()
    }
-
-   return false
 }

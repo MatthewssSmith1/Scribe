@@ -36,17 +36,13 @@ import { enqueueSaveDocument, focusBullet } from '@/renderer/state/context_actio
 //    NoteBody.loadLink(link)
 // }
 
-const bulletComponentReducer = ([counter, oldCaretIndex], caretIndex?: number): [number, number] => {
-   return [counter + 1, caretIndex == null ? oldCaretIndex : caretIndex]
-}
-
 var BulletComponent = memo((props: { bullet: Bullet }) => {
    var { bullet } = props
 
-   const [[, caretIndex], forceUpdate] = useReducer(bulletComponentReducer, [0, -1])
+   const [, forceUpdate] = useReducer(x => x + 1, 0)
    bullet.setComponentCallback(forceUpdate)
 
-   console.log('bullet component rendered')
+   // console.log('bullet component rendered')
 
    var shouldDisplayChildren = bullet.children.length >= 0 && !bullet.isCollapsed
    var bulletToChildrenComponents = (bullet: Bullet) => {
@@ -55,31 +51,36 @@ var BulletComponent = memo((props: { bullet: Bullet }) => {
 
    return (
       <div className="bullet">
-         <BulletLine bullet={bullet} caretIndex={caretIndex} />
+         <BulletLine bullet={bullet} />
          {shouldDisplayChildren && <div className="bullet__children-container">{bulletToChildrenComponents(bullet)}</div>}
       </div>
    )
 })
 
-var BulletLine = (props: { bullet: Bullet; caretIndex: number }) => {
+var BulletLine = (props: { bullet: Bullet }) => {
    const [state, dispatch] = useContext()
    const contentEditableRef = useRef(null)
 
-   var { bullet, caretIndex } = props
+   var { bullet } = props
 
    // after rendered, select the text if bullet.select(index) has been called
    useEffect(() => {
+      //fetches the caret index and sets it to -1
+      var caretIndex = bullet.getCaretIndex()
+      bullet.unselect()
+
       if (caretIndex == -1) return
 
       var divElm = contentEditableRef.current
-      // divElm.focus()
+
+      divElm.focus()
 
       var textNode = divElm.childNodes[0]
       if (!textNode) return
 
-      if (caretIndex > bullet.text.length - 1) {
+      if (caretIndex > bullet.text.length) {
          console.warn(`caret index is outside of bounds for the text of ${bullet}`)
-         return
+         caretIndex == bullet.text.length
       }
 
       var range = document.createRange()
@@ -140,7 +141,7 @@ var BulletLine = (props: { bullet: Bullet; caretIndex: number }) => {
             innerRef={contentEditableRef}
             html={props.bullet.text}
             onChange={handleTextChange}
-            onKeyDown={(evt: any) => handleKeyPress(evt, props.bullet)}
+            onKeyDown={(evt: any) => handleKeyPress(state, dispatch, evt, props.bullet)}
          />
       </div>
    )
