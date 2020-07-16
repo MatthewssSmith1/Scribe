@@ -5,6 +5,8 @@ import Bullet from '@main/bullet'
 var initDoc: Document = null
 var initRootBullet: Bullet = null
 var initFocusedBullets: Array<Bullet> = null
+var initShouldSave: boolean = null
+var initIsRootSelected: boolean = null
 
 //* STATE
 export const initCtxState = {
@@ -22,8 +24,8 @@ export const initCtxState = {
       document: initDoc,
       rootBullet: initRootBullet,
       focusedBullets: initFocusedBullets,
-      shouldSave: false,
-      isRootSelected: false,
+      shouldSave: initShouldSave,
+      isRootSelected: initIsRootSelected,
    },
    keyboard: {
       isCtrlPressed: false,
@@ -84,8 +86,14 @@ export function focusBullet(bullet: Bullet) {
 }
 export function addFocusBulletToIndex(bullet: Bullet, index: number) {
    return {
-      type: focusBullet.name,
+      type: addFocusBulletToIndex.name,
       bullet,
+      index,
+   }
+}
+export function removeFocusedBullet(index: number) {
+   return {
+      type: removeFocusedBullet.name,
       index,
    }
 }
@@ -156,24 +164,37 @@ export function contextReducer(state: ContextStateType, action: any): ContextSta
          }
 
       case focusBullet.name:
-         var focusedBullets = action.bullet == state.noteBody.rootBullet ? [...action.bullet.children] : [action.bullet]
+         var isRootSelected = action.bullet == state.noteBody.rootBullet
+         var focusedBullets = isRootSelected ? [...action.bullet.children] : [action.bullet]
          return {
             ...state,
             noteBody: {
                ...state.noteBody,
                focusedBullets,
+               isRootSelected,
             },
          }
 
       case addFocusBulletToIndex.name:
-         // var newFocusedBullets = state.noteBody.focusedBullets
-         // newFocusedBullets.push(action.bullet)
+         var newFocusedBullets = state.noteBody.focusedBullets
+         newFocusedBullets.splice(action.index, 0, action.bullet)
          return {
             ...state,
-            // noteBody: {
-            //    ...state.noteBody,
-            //    focusedBullets: newFocusedBullets,
-            // },
+            noteBody: {
+               ...state.noteBody,
+               focusedBullets: newFocusedBullets,
+            },
+         }
+
+      case removeFocusedBullet.name:
+         var newFocusedBullets = state.noteBody.focusedBullets
+         newFocusedBullets.splice(action.index, 1)
+         return {
+            ...state,
+            noteBody: {
+               ...state.noteBody,
+               focusedBullets: newFocusedBullets,
+            },
          }
 
       case documentSaveComplete.name:

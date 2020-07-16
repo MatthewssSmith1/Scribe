@@ -25,7 +25,7 @@ var NoteBody = memo(() => {
    return (
       <div className="note-body" style={getStyle(state)}>
          <TitleOrBreadCrumbs />
-         <BulletList />
+         <BulletList focusedBullets={state.noteBody.focusedBullets} rootBullet={state.noteBody.rootBullet} />
       </div>
    )
 })
@@ -42,27 +42,27 @@ function getStyle(state: ContextStateType): React.CSSProperties {
 
 function TitleOrBreadCrumbs() {
    const state = useContextState()
+
    var { document, isRootSelected } = state.noteBody
 
    var docName = document ? document.name : '[Document Name]'
-   var topElement = isRootSelected ? <h1 className="document-title">{docName}</h1> : <Breadcrumbs />
+   var topElement = isRootSelected != false ? <h1 className="document-title">{docName}</h1> : <Breadcrumbs />
 
    return <div className="note-body__top-element-wrapper">{topElement}</div>
 }
 
-function BulletList() {
-   const state = useContextState()
+class BulletList extends React.Component {
+   props: { focusedBullets: Array<Bullet>; rootBullet: Bullet }
 
-   var { focusedBullets, rootBullet } = state.noteBody
+   render() {
+      var { focusedBullets, rootBullet } = this.props
 
-   const [, forceUpdate] = useReducer(x => x + 1, 0)
-   if (rootBullet) rootBullet.setComponentCallback(forceUpdate)
+      if (rootBullet) rootBullet.setComponentCallback(() => this.forceUpdate())
 
-   var children = (focusedBullets || []).map((child: Bullet) => {
-      return <BulletComponent bullet={child} key={child.key} />
-   })
+      var children = (focusedBullets || []).map(c => <BulletComponent bullet={c} key={c.key} />)
 
-   return <div className="note-body__bullet-list">{children}</div>
+      return <div className="note-body__bullet-list">{children}</div>
+   }
 }
 
 export default NoteBody

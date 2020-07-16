@@ -6,7 +6,7 @@ import cx from 'classnames'
 import Bullet from '@/main/bullet'
 import Icon from '@/renderer/other_components/icon'
 import handleKeyPress from '@renderer/note_body/bullet_component/key_press'
-import { useContextDispatch, useContext } from '@/renderer/state/context'
+import { useContext } from '@/renderer/state/context'
 import { enqueueSaveDocument, focusBullet } from '@/renderer/state/context_actions'
 
 /*
@@ -36,26 +36,40 @@ import { enqueueSaveDocument, focusBullet } from '@/renderer/state/context_actio
 //    NoteBody.loadLink(link)
 // }
 
-var BulletComponent = memo((props: { bullet: Bullet }) => {
-   var { bullet } = props
+class BulletComponent extends React.Component {
+   props: { bullet: Bullet }
 
-   const [, forceUpdate] = useReducer(x => x + 1, 0)
-   bullet.setComponentCallback(forceUpdate)
+   shouldComponentUpdate(nextProps: { bullet: Bullet }, nextState): boolean {
+      var { bullet } = nextProps
 
-   // console.log('bullet component rendered')
+      if (bullet.shouldComponentRebuild) {
+         bullet.shouldComponentRebuild = false
+         return true
+      }
 
-   var shouldDisplayChildren = bullet.children.length >= 0 && !bullet.isCollapsed
-   var bulletToChildrenComponents = (bullet: Bullet) => {
-      return bullet.children.map((child: Bullet) => <BulletComponent bullet={child} key={child.key} />)
+      return false
    }
 
-   return (
-      <div className="bullet">
-         <BulletLine bullet={bullet} />
-         {shouldDisplayChildren && <div className="bullet__children-container">{bulletToChildrenComponents(bullet)}</div>}
-      </div>
-   )
-})
+   render() {
+      var { bullet } = this.props
+
+      bullet.setComponentCallback(() => this.forceUpdate())
+
+      console.log('bullet component rendered')
+
+      var shouldDisplayChildren = bullet.children.length >= 0 && !bullet.isCollapsed
+      var bulletToChildrenComponents = (bullet: Bullet) => {
+         return bullet.children.map((child: Bullet) => <BulletComponent bullet={child} key={child.key} />)
+      }
+
+      return (
+         <div className="bullet">
+            <BulletLine bullet={bullet} />
+            {shouldDisplayChildren && <div className="bullet__children-container">{bulletToChildrenComponents(bullet)}</div>}
+         </div>
+      )
+   }
+}
 
 var BulletLine = (props: { bullet: Bullet }) => {
    const [state, dispatch] = useContext()

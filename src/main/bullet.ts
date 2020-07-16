@@ -5,7 +5,9 @@ export default class Bullet {
    //used to show/hide children if it is collapsed or not
    isCollapsed: boolean = false
    //passed to react.js components in children lists
-   key: number = 0
+   key: number = null
+   //only rebuild component if this is set to true
+   shouldComponentRebuild: boolean = false
    //used to set the caret position of the corresponding BulletComponent
    private _caretIndex = -1
 
@@ -189,8 +191,8 @@ export default class Bullet {
       return null
    }
 
-   get childrenKeys() {
-      return this.children.map<number>(c => c.key)
+   get childrenKeys(): Array<number> {
+      return this.children.map(c => c.key)
    }
 
    get newChildKey(): number {
@@ -253,6 +255,10 @@ export default class Bullet {
 
          this.children.splice(index, 0, newChild)
       }
+
+      this.children.forEach(c => (c.shouldComponentRebuild = true))
+
+      this.enqueueRebuild()
    }
 
    addChildrenToEnd(_bullets: Bullet | Array<Bullet>) {
@@ -267,6 +273,10 @@ export default class Bullet {
 
          this.children.push(newChild)
       }
+
+      this.children.forEach(c => (c.shouldComponentRebuild = true))
+
+      this.enqueueRebuild()
    }
 
    remove(): Bullet {
@@ -287,8 +297,10 @@ export default class Bullet {
 
       removedBullet.parent = null
       removedBullet.key = null
-      // removedBullet.caretIndex = -1
+      removedBullet._caretIndex = -1
       this.children.splice(index, 1)
+
+      this.enqueueRebuild()
 
       return removedBullet
    }
@@ -309,10 +321,14 @@ export default class Bullet {
 
    toggleCollapsed() {
       this.isCollapsed = !this.isCollapsed
+
+      this.enqueueRebuild()
    }
 
    setCollapsed(isCollapsed: boolean) {
       this.isCollapsed = isCollapsed
+
+      this.enqueueRebuild()
    }
 
    setCollapsedForAllDescendants(isCollapsed: boolean) {
@@ -325,11 +341,9 @@ export default class Bullet {
 
    // #region BulletComponent methods
 
-   //both of these functions are set by the BulletComponent that corresponds to this object
+   private _componentCallback: Function = null
 
-   private _componentCallback: (caretIndex?: number) => void = null
-
-   setComponentCallback(callback: (caretIndex?: number) => void = null) {
+   setComponentCallback(callback: Function = null) {
       this._componentCallback = callback
    }
 
@@ -338,9 +352,20 @@ export default class Bullet {
       else console.warn(`updateComponent() called on ${this} but no componentCallback was set`)
    }
 
+   enqueueRebuild() {
+      this.shouldComponentRebuild = true
+
+      if (this.hasParent) this.parent.enqueueRebuild()
+   }
+
+   dequeueRebuild() {
+      this.shouldComponentRebuild = false
+   }
+
    selectComponent(caretIndex: number = 0) {
       this._caretIndex = caretIndex
-      this.updateComponent()
+
+      this.enqueueRebuild()
    }
 
    getCaretIndex(): number {

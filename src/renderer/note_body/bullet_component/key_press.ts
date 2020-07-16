@@ -2,23 +2,19 @@ import * as React from 'react'
 import Bullet from '@main/bullet'
 // import LinkMenu from '@renderer/link_menu/link_menu'
 import { ContextStateType, ContextDispatchType } from '@renderer/state/context'
-import { addFocusBulletToIndex } from '@renderer/state/context_actions'
+import { addFocusBulletToIndex, removeFocusedBullet } from '@renderer/state/context_actions'
 
 export default function handleKeyPress(state: ContextStateType, dispatch: ContextDispatchType, e: React.KeyboardEvent<HTMLDivElement>, blt: Bullet) {
    //TODO make enter with selection not collapsed start linking process
 
    var sel = window.getSelection()
 
-   if (
-      handleEnter(state, dispatch, e, blt, sel) ||
-      handleBackspace(state, dispatch, e, blt, sel) //||
-      // handleTab(e, blt, sel) ||
-      // handleBrackets(e, blt, sel) ||
-      // handleCtrlArrows(e, blt, sel) ||
-      // handleAltArrows(e, blt, sel)
-   ) {
-      e.preventDefault()
-   }
+   handleEnter(state, dispatch, e, blt, sel)
+   handleBackspace(state, dispatch, e, blt, sel)
+   handleTab(state, dispatch, e, blt, sel)
+   handleBrackets(state, dispatch, e, blt, sel)
+   handleCtrlArrows(state, dispatch, e, blt, sel)
+   handleAltArrows(state, dispatch, e, blt, sel)
 }
 
 function handleEnter(
@@ -37,22 +33,22 @@ function handleEnter(
       bullet.addSibling(-1, new Bullet(textBeforeCaret))
       bullet.text = textAfterCaret
 
+      bullet.selectComponent(0)
       bullet.parent.updateComponent()
 
-      bullet.selectComponent(0)
+      bullet.updateComponent()
    }
 
    evt.preventDefault()
 }
 
-//TODO potentially rework because the last character being messed up may have been corrected elsewhere
 function handleBackspace(
    state: ContextStateType,
    dispatch: ContextDispatchType,
    evt: React.KeyboardEvent<HTMLDivElement>,
    bullet: Bullet,
    selection: Selection
-): boolean {
+) {
    if (evt.key != 'Backspace' || !selection.isCollapsed || selection.anchorOffset != 0) return
 
    if (bullet.isFirstSibling) {
@@ -66,27 +62,20 @@ function handleBackspace(
 
       var sibFocusedBulletsIndex = state.noteBody.focusedBullets.indexOf(bullet.siblingBefore)
       if (sibFocusedBulletsIndex != -1) {
-         console.log('should add to focused bullets')
          dispatch(addFocusBulletToIndex(bullet, sibFocusedBulletsIndex + 1))
       }
 
-      bullet.parent.updateComponent()
-      bullet.siblingBefore.updateComponent()
       bullet.selectComponent(selection.anchorOffset)
-   } else {
+      state.noteBody.rootBullet.updateComponent()
+   } else if (bullet.siblingBefore.childCount == 0) {
       //store length of the text in the bullet before (set cursor pos here later)
       var sibling = bullet.siblingBefore
-      var caretIndex = sibling.text.length
+      bullet.selectComponent(sibling.text.length)
 
       //concat the two bullets
-      sibling.text += bullet.text
+      bullet.text = sibling.remove().text + bullet.text
 
-      //remove currently selected bullet
-      bullet.remove()
-
-      console.log('slct called')
-      sibling.parent.updateComponent()
-      sibling.selectComponent(caretIndex)
+      state.noteBody.rootBullet.updateComponent()
    }
 
    evt.preventDefault()
@@ -94,9 +83,12 @@ function handleBackspace(
 
 function handleTab(state: ContextStateType, dispatch: ContextDispatchType, evt: React.KeyboardEvent<HTMLDivElement>, bullet: Bullet, selection: Selection) {
    if (evt.key == 'Tab' && selection.anchorOffset == 0 && bullet.isFirstSibling == false) {
-      bullet.siblingBefore.addChildrenToEnd(bullet)
+      var newParent = bullet.siblingBefore
+
+      newParent.addChildrenToEnd(bullet)
 
       bullet.selectComponent(0)
+      state.noteBody.rootBullet.updateComponent()
 
       evt.preventDefault()
    }
@@ -119,12 +111,26 @@ function handleBrackets(
       //move bullet to be the sibling following its existing parent
       bullet.parent.addSibling(1, bullet)
 
+      //add bullet to the list of focussed bullets if its new sibling is in the list
+      var sibFocusedBulletsIndex = state.noteBody.focusedBullets.indexOf(bullet.siblingBefore)
+      if (sibFocusedBulletsIndex != -1) {
+         dispatch(addFocusBulletToIndex(bullet, sibFocusedBulletsIndex + 1))
+      }
+
       bullet.selectComponent(selection.anchorOffset)
+      state.noteBody.rootBullet.updateComponent()
 
       evt.preventDefault()
    } else if (evt.key == ']' && !bullet.isFirstSibling) {
-      bullet.siblingBefore.addChildrenToEnd(bullet)
-      bullet.selectComponent(selection.anchorOffset)
+      var focusedBulletsIndex = state.noteBody.focusedBullets.indexOf(bullet)
+      if (focusedBulletsIndex != -1) dispatch(removeFocusedBullet(focusedBulletsIndex))
+
+      var newParent = bullet.siblingBefore
+
+      newParent.addChildrenToEnd(bullet)
+
+      bullet.selectComponent(0)
+      state.noteBody.rootBullet.updateComponent()
 
       evt.preventDefault()
    }
@@ -142,6 +148,8 @@ function handleCtrlArrows(
    if (evt.key == 'ArrowUp') bullet.bulletBefore.selectComponent(selection.anchorOffset)
    else if (evt.key == 'ArrowDown') bullet.bulletAfter.selectComponent(selection.anchorOffset)
    else return
+
+   state.noteBody.rootBullet.updateComponent()
 
    evt.preventDefault()
 }
@@ -163,6 +171,7 @@ function handleAltArrows(
       bulletBefore.text = tempText
 
       bulletBefore.selectComponent(selection.anchorOffset)
+      state.noteBody.rootBullet.updateComponent()
 
       evt.preventDefault()
    }
@@ -174,6 +183,7 @@ function handleAltArrows(
       bulletAfter.text = tempText
 
       bulletAfter.selectComponent(selection.anchorOffset)
+      state.noteBody.rootBullet.updateComponent()
 
       evt.preventDefault()
    }
@@ -186,12 +196,15 @@ function handleAltArrows(
       bullet.parent.addSibling(1, bullet)
 
       bullet.selectComponent(selection.anchorOffset)
+      state.noteBody.rootBullet.updateComponent()
 
       evt.preventDefault()
    }
    if (evt.key == 'ArrowRight' && !bullet.isFirstSibling) {
       bullet.siblingBefore.addChildrenToEnd(bullet)
       bullet.selectComponent(selection.anchorOffset)
+
+      state.noteBody.rootBullet.updateComponent()
 
       evt.preventDefault()
    }

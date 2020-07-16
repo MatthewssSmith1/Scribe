@@ -2,7 +2,7 @@ import React, { createContext, useReducer } from 'react'
 
 import { contextReducer, initCtxState, ContextStateType } from '@/renderer/state/context_actions'
 
-const ContextState = createContext(initCtxState)
+const ContextState = createContext<ContextStateType>(initCtxState)
 type ContextDispatchType = React.Dispatch<any>
 const ContextDispatch = createContext<ContextDispatchType>(null)
 
