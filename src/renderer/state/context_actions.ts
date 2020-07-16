@@ -2,13 +2,6 @@ import Document from '@main/document'
 import Bullet from '@main/bullet'
 import { ToAddress } from '@main/link'
 
-//these values are used in initCtxState to have them defaulted to null and have types
-var initDoc: Document = null
-var initRootBullet: Bullet = null
-var initFocusedBullets: Array<Bullet> = null
-var initShouldSave: boolean = null
-var initIsRootSelected: boolean = null
-
 //* STATE
 export const initCtxState = {
    actionPanel: {
@@ -22,11 +15,11 @@ export const initCtxState = {
       maxWidthPercentage: 0.6,
    },
    noteBody: {
-      document: initDoc,
-      rootBullet: initRootBullet,
-      focusedBullets: initFocusedBullets,
-      shouldSave: initShouldSave,
-      isRootSelected: initIsRootSelected,
+      document: (null as Document),
+      rootBullet: (null as Bullet),
+      focusedBullets: (null as Array<Bullet>),
+      shouldSave: (null as boolean),
+      isRootSelected: (null as boolean),
    },
    keyboard: {
       isCtrlPressed: false,
@@ -36,8 +29,8 @@ export const initCtxState = {
       viewportPos: null as [number, number],
       bulletWithSelection: null as Bullet,
       selectionBounds: null as [number, number],
-      selectedText: [null as string],
-      suggestedLinks: [null as Array<[string, ToAddress]>],
+      selectedText: (null as string),
+      suggestedLinks: (null as Array<[string, ToAddress]>),
    },
 }
 export type ContextStateType = typeof initCtxState

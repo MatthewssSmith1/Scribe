@@ -55,7 +55,7 @@ class BulletComponent extends React.Component {
 
       bullet.setComponentCallback(() => this.forceUpdate())
 
-      console.log('bullet component rendered')
+      // console.log('bullet component rendered')
 
       var shouldDisplayChildren = bullet.children.length >= 0 && !bullet.isCollapsed
       var bulletToChildrenComponents = (bullet: Bullet) => {

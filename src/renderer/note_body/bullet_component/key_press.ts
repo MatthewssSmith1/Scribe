@@ -1,8 +1,8 @@
 import * as React from 'react'
 import Bullet from '@main/bullet'
-// import LinkMenu from '@renderer/link_menu/link_menu'
 import { ContextStateType, ContextDispatchType } from '@renderer/state/context'
-import { addFocusBulletToIndex, removeFocusedBullet } from '@renderer/state/context_actions'
+import { addFocusBulletToIndex, removeFocusedBullet, LinkMenuState, showLinkMenu } from '@renderer/state/context_actions'
+import WorkspaceManager from '@main/workspace_manager'
 
 export default function handleKeyPress(state: ContextStateType, dispatch: ContextDispatchType, e: React.KeyboardEvent<HTMLDivElement>, blt: Bullet) {
    //TODO make enter with selection not collapsed start linking process
@@ -37,6 +37,20 @@ function handleEnter(
       bullet.parent.updateComponent()
 
       bullet.updateComponent()
+   } else {
+      var selectedText = selection.toString()
+      var selectionRect = selection.getRangeAt(0).getBoundingClientRect()
+
+      var linkMenuState: LinkMenuState = {
+         isHidden: false,
+         viewportPos: [selectionRect.left, selectionRect.bottom],
+         bulletWithSelection: bullet,
+         selectionBounds: [selection.anchorOffset, selection.focusOffset],
+         selectedText,
+         suggestedLinks: WorkspaceManager.getSuggestedLinks(selectedText),
+      }
+
+      dispatch(showLinkMenu(linkMenuState))
    }
 
    evt.preventDefault()
