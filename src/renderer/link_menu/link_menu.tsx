@@ -1,20 +1,40 @@
-import React, { useRef } from 'react'
+import React, { useRef, useEffect } from 'react'
 
 import cx from 'classnames'
 
-import { useContext, useContextState } from '@renderer/state/context'
-import { LinkMenuState } from '../state/context_actions'
+import { useContext } from '@renderer/state/context'
+import { LinkMenuState, hideLinkMenu } from '@renderer/state/context_actions'
 
 import { FromAddress, ToAddress } from '@main/link'
 import WorkspaceManager from '@main/workspace_manager'
 
 export default function LinkMenu() {
-   var state = useContextState()
-   var domRef = useRef()
+   var [state, dispatch] = useContext()
+   var domRef = useRef(null)
 
    var linkMenuState: LinkMenuState = state.linkMenu
 
    var isHidden = linkMenuState.isHidden
+
+   useEffect(() => {
+      if (isHidden) return
+
+      var handleClick = (e: MouseEvent) => {
+         var clickedElm = e.target
+
+         var menuDiv = domRef.current
+
+         if (clickedElm != menuDiv && !menuDiv.contains(clickedElm)) {
+            dispatch(hideLinkMenu())
+         } else e.preventDefault()
+      }
+
+      window.addEventListener('mousedown', handleClick, false)
+
+      return () => {
+         window.removeEventListener('mousedown', handleClick, false)
+      }
+   })
 
    return (
       <div id="link-menu" className={cx({ enabled: isHidden })} style={isHidden ? {} : positionStyle(linkMenuState)} ref={domRef}>

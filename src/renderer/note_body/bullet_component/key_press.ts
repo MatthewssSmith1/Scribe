@@ -38,9 +38,9 @@ function handleEnter(
 
       bullet.updateComponent()
    } else {
+      evt.preventDefault()
       var selectedText = selection.toString()
       var selectionRect = selection.getRangeAt(0).getBoundingClientRect()
-
       var linkMenuState: LinkMenuState = {
          isHidden: false,
          viewportPos: [selectionRect.left, selectionRect.bottom],
@@ -49,11 +49,8 @@ function handleEnter(
          selectedText,
          suggestedLinks: WorkspaceManager.getSuggestedLinks(selectedText),
       }
-
       dispatch(showLinkMenu(linkMenuState))
    }
-
-   evt.preventDefault()
 }
 
 function handleBackspace(
