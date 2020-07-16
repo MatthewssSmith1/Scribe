@@ -1,5 +1,6 @@
 import Document from '@main/document'
 import Bullet from '@main/bullet'
+import { ToAddress } from '@main/link'
 
 //these values are used in initCtxState to have them defaulted to null and have types
 var initDoc: Document = null
@@ -30,8 +31,17 @@ export const initCtxState = {
    keyboard: {
       isCtrlPressed: false,
    },
+   linkMenu: {
+      isHidden: true,
+      viewportPos: null as [number, number],
+      bulletWithSelection: null as Bullet,
+      selectionBounds: null as [number, number],
+      selectedText: [null as string],
+      suggestedLinks: [null as Array<[string, ToAddress]>],
+   },
 }
 export type ContextStateType = typeof initCtxState
+export type LinkMenuState = typeof initCtxState.linkMenu
 
 //* ACTIONS
 
@@ -95,6 +105,19 @@ export function removeFocusedBullet(index: number) {
    return {
       type: removeFocusedBullet.name,
       index,
+   }
+}
+
+//link menu
+export function showLinkMenu(state: LinkMenuState) {
+   return {
+      type: showLinkMenu.name,
+      state,
+   }
+}
+export function hideLinkMenu() {
+   return {
+      type: hideLinkMenu.name,
    }
 }
 
@@ -200,6 +223,19 @@ export function contextReducer(state: ContextStateType, action: any): ContextSta
       case documentSaveComplete.name:
          //? potentially implement subscribing to events and send it out from here
          return state
+
+      //* Link Menu
+      case showLinkMenu.name:
+         return {
+            ...state,
+            linkMenu: action.state as LinkMenuState,
+         }
+
+      case hideLinkMenu.name:
+         return {
+            ...state,
+            linkMenu: initCtxState.linkMenu,
+         }
 
       //* default
       default:
