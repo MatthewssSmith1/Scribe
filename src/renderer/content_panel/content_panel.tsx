@@ -18,12 +18,14 @@ export default function ContentPanel() {
       document.addEventListener('mousedown', (e: MouseEvent) => {
          if (e.button == 0 && e.target == draggableEdgeRef.current) {
             document.addEventListener('mousemove', handleDrag, false)
+            document.body.classList.add('all-descendants-w-resize')
          }
       })
 
       document.addEventListener('mouseup', e => {
          if (e.button == 0) {
             document.removeEventListener('mousemove', handleDrag, false)
+            document.body.classList.remove('all-descendants-w-resize')
          }
       })
    }

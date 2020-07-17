@@ -61,3 +61,7 @@ $action-panel__search-bar-anim: 200ms ease-in;
 @import 'note_body/bullet_component/bullet_component.scss';
 @import 'note_body/bullet_component/bullet_dot.scss';
 @import 'note_body/bullet_component/bullet_drop_down.scss';
+
+.all-descendants-w-resize * {
+   cursor: w-resize;
+}
