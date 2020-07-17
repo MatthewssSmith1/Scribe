@@ -11,9 +11,8 @@ export default function handleKeyPress(state: ContextStateType, dispatch: Contex
 
    handleEnter(state, dispatch, e, blt, sel)
    handleBackspace(state, dispatch, e, blt, sel)
-   handleTab(state, e, blt, sel)
-   handleBrackets(state, e, blt, sel)
-   handleArrows(state, e, blt, sel)
+   handleBracketsAndTab(state, e, blt)
+   handleArrows(state, e, blt)
 }
 
 function handleEnter(
@@ -168,38 +167,24 @@ function handleBackspace(
    evt.preventDefault()
 }
 
-function handleTab(state: ContextStateType, evt: React.KeyboardEvent<HTMLDivElement>, bullet: Bullet, selection: Selection) {
-   if (evt.key == 'Tab' && selection.anchorOffset == 0 && bullet.isFirstSibling == false) {
-      var newParent = bullet.siblingBefore
+function handleBracketsAndTab(state: ContextStateType, evt: React.KeyboardEvent<HTMLDivElement>, bullet: Bullet) {
+   const lBracketCtrl = evt.key == '[' && evt.ctrlKey
+   const rBracketCtrl = evt.key == ']' && evt.ctrlKey
 
-      newParent.addChildrenToEnd(bullet)
-
-      bullet.selectComponent(0)
-      state.noteBody.rootBullet.updateComponent()
-
-      evt.preventDefault()
-   }
-}
-
-function handleBrackets(
-   state: ContextStateType,
-   evt: React.KeyboardEvent<HTMLDivElement>,
-   bullet: Bullet,
-   selection: Selection
-) {
-   if (!evt.ctrlKey) return
-
-   if (evt.key == '[') bullet.moveLeft()
-   else if (evt.key == ']') bullet.moveRight()
+   if (lBracketCtrl) bullet.moveLeft()
+   else if (!bullet.isFirstSibling && (rBracketCtrl || evt.key == 'Tab')) bullet.moveRight()
    else return
 
-   bullet.selectComponent(0)
+   // TODO select the bullet in the same place it was before
+
+   //rebuild tree
    state.noteBody.rootBullet.updateComponent()
 
+   //stop normal key behavior
    evt.preventDefault()
 }
 
-function handleArrows(state: ContextStateType, evt: React.KeyboardEvent<HTMLDivElement>, bullet: Bullet, selection: Selection) {
+function handleArrows(state: ContextStateType, evt: React.KeyboardEvent<HTMLDivElement>, bullet: Bullet) {
    if (!evt.altKey && !evt.ctrlKey) return
 
    var otherBullet: Bullet
@@ -210,11 +195,9 @@ function handleArrows(state: ContextStateType, evt: React.KeyboardEvent<HTMLDivE
 
    if (evt.altKey) bullet.swapTextWith(otherBullet)
 
-   otherBullet.selectComponent(selection.anchorOffset)
-
    //rebuild tree
    state.noteBody.rootBullet.updateComponent()
 
-   //stop normal behavior
+   //stop normal key behavior
    evt.preventDefault()
 }

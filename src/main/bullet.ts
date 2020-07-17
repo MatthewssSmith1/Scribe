@@ -376,6 +376,11 @@ export default class Bullet {
    }
 
    moveRight(): Bullet {
+      if (this.isFirstSibling) {
+         console.warn('bullet.moveRight() called on bullet without a sibling before it')
+         return this
+      }
+
       this.siblingBefore.addChildrenToEnd(this)
 
       this.enqueueRebuild()
