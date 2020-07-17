@@ -83,26 +83,37 @@ function NewPageItem(props: { selectedText: string }): JSX.Element {
 }
 
 function SuggestionItem(props: { name: string; toAddress: ToAddress }): JSX.Element {
-   // var state = useContextState()
+   var [state, dispatch] = useContext()
 
    var handleClick = () => {
-      // var fromAddress: FromAddress = {
-      //    documentId: state.noteBody.document.metaData.id,
-      //    bulletCoords: this.state.bulletWithSelection.coords,
-      //    selectionBounds: this.state.selectionBounds,
-      // }
-      // var link = WorkspaceManager.createLink(fromAddress, props.toAddress)
-      // this.hide()
-      // var selection = window.getSelection()
-      // var editable = selection.anchorNode.parentElement
-      // var span = document.createElement('SPAN')
-      // span.textContent = selection.toString()
-      // span.dataset.linkId = link.id.toString()
-      // span.classList.add('link')
-      // var range = selection.getRangeAt(0)
-      // range.deleteContents()
-      // range.insertNode(span)
-      // this.state.bulletWithSelection.text = editable.innerHTML
+      var { isHidden, viewportPos, bulletWithSelection, selectionBounds, selectedText, suggestedLinks }: LinkMenuState = state.linkMenu
+
+      var fromAddress: FromAddress = {
+         documentId: state.noteBody.document.metaData.id,
+         bulletCoords: bulletWithSelection.coords,
+         selectionBounds: selectionBounds,
+      }
+
+      //creates the link and adds it to the documents linksFromThis list
+      var link = WorkspaceManager.createLink(fromAddress, props.toAddress)
+
+      var textBeforeSelection = bulletWithSelection.text.substr(0, selectionBounds[0])
+      var textAfterSelection = bulletWithSelection.text.substr(selectionBounds[1])
+
+      console.log(textBeforeSelection)
+
+      //surrounds the selected text with a span tag
+      bulletWithSelection.text = textBeforeSelection + `<span data-link-id="${link.id}">` + selectedText + '</span>' + textAfterSelection
+
+      //set cursor to the end of the selection and rebuild it
+      console.log(selectionBounds[1])
+      bulletWithSelection.selectComponent(selectionBounds[1])
+      state.noteBody.rootBullet.updateComponent()
+
+      //hide this menu
+      dispatch(hideLinkMenu())
+
+      //TODO save at end
       // NoteBody.queueSaveDocument(true)
    }
 
@@ -112,99 +123,3 @@ function SuggestionItem(props: { name: string; toAddress: ToAddress }): JSX.Elem
       </div>
    )
 }
-
-// class LinkMenuOld extends React.Component {
-//    render(): JSX.Element {
-//       return <div />
-//    }
-
-// NewPageItem = (): JSX.Element => {
-//    return (
-//       <div className="link-menu__item">
-//          <p>{this.state.selectedText}</p>
-//       </div>
-//    )
-// }
-
-// SuggestionItem = (props: { name: string; toAddress: ToAddress }): JSX.Element => {
-//    var handleClick = (e: React.MouseEvent<HTMLParagraphElement, MouseEvent>) => {
-//       var fromAddress: FromAddress = {
-//          documentId: NoteBody.currentDocument.metaData.id,
-//          bulletCoords: this.state.bulletWithSelection.coords,
-//          selectionBounds: this.state.selectionBounds,
-//       }
-
-//       var link = WorkspaceManager.createLink(fromAddress, props.toAddress)
-
-//       this.hide()
-
-//       var selection = window.getSelection()
-//       var editable = selection.anchorNode.parentElement
-
-//       var span = document.createElement('SPAN')
-//       span.textContent = selection.toString()
-//       span.dataset.linkId = link.id.toString()
-//       span.classList.add('link')
-
-//       var range = selection.getRangeAt(0)
-//       range.deleteContents()
-//       range.insertNode(span)
-
-//       this.state.bulletWithSelection.text = editable.innerHTML
-
-//       // NoteBody.queueSaveDocument(true)
-//    }
-
-//    return (
-//       <div className="link-menu__item">
-//          <p onClick={handleClick}>{props.name}</p>
-//       </div>
-//    )
-// }
-
-// get positionStyle() {
-//    return {
-//       left: `${this.state.viewportPos[0]}px`,
-//       top: `${this.state.viewportPos[1]}px`,
-//    }
-// }
-
-// static handleEnterPressedOnSelection = (bullet: Bullet, selection: Selection) => {
-//    var selectedText = selection.toString()
-
-//    var selectionRect = selection.getRangeAt(0).getBoundingClientRect()
-
-//    var suggestedLinks = WorkspaceManager.getSuggestedLinks(selectedText)
-
-//    LinkMenu._singleton.setState({
-//       isHidden: false,
-//       viewportPos: [selectionRect.left, selectionRect.bottom],
-//       bulletWithSelection: bullet,
-//       selectionBounds: [selection.anchorOffset, selection.focusOffset],
-//       selectedText: selectedText,
-//       suggestedLinks: suggestedLinks,
-//    })
-// }
-
-// hide() {
-//    this.setState({ isHidden: true })
-// }
-
-// componentDidMount() {
-//    document.addEventListener('mousedown', this.handleClick)
-// }
-
-// componentWillUnmount() {
-//    document.removeEventListener('mousedown', this.handleClick)
-// }
-
-// handleClick = (e: MouseEvent) => {
-//    var clickedElm = e.target
-
-//    var menuDiv = LinkMenu._singleton.domRef.current
-
-//    if (clickedElm != menuDiv && !menuDiv.contains(clickedElm)) {
-//       LinkMenu._singleton.hide()
-//    } else e.preventDefault()
-// }
-// }

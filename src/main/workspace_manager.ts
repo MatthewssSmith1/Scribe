@@ -80,10 +80,6 @@ export default class WorkspaceManager {
          ])
    }
 
-   static saveLink(link: Link): void {
-      appendFileSync(this.workspacePath + 'links.list', '\n' + link.toString())
-   }
-
    static get newLinkID(): number {
       return Date.now()
 
@@ -93,9 +89,15 @@ export default class WorkspaceManager {
    static createLink(from: FromAddress, to: ToAddress): Link {
       var link = new Link(this.newLinkID, { ...from }, { ...to })
 
-      this.links.push(link)
+      //find document that the link is from
+      var docID = from.documentId
+      var doc = this.documents.find(d => d.metaData.id == docID)
 
-      this.saveLink(link)
+      if (doc == undefined) {
+         console.warn(`the from docId on a link created by WorkspaceManager.createLink() does not point to a document`)
+      } else {
+         doc.linksFromThis.push(link)
+      }
 
       return link
    }

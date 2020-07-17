@@ -111,10 +111,6 @@ export default class Bullet {
    }
    // #endregion
 
-   // #region Setters
-
-   // #endregion
-
    // #region Getters & Setters
    get text() {
       return this._text
@@ -242,7 +238,7 @@ export default class Bullet {
    }
    // #endregion
 
-   // #region Tree Interaction
+   // #region Children
    childAt(_indexOrCoords: number | Array<number>): Bullet {
       if (!Array.isArray(_indexOrCoords)) {
          var index = _indexOrCoords
@@ -332,24 +328,59 @@ export default class Bullet {
 
       return removedBullets
    }
+   // #endregion
 
-   toggleCollapsed() {
+   // #region Tree Interaction
+   toggleCollapsed(): Bullet {
       this.isCollapsed = !this.isCollapsed
 
       this.enqueueRebuild()
+
+      return this
    }
 
-   setCollapsed(isCollapsed: boolean) {
+   setCollapsed(isCollapsed: boolean): Bullet {
       this.isCollapsed = isCollapsed
 
       this.enqueueRebuild()
+
+      return this
    }
 
-   setCollapsedForAllDescendants(isCollapsed: boolean) {
+   setCollapsedForAllDescendants(isCollapsed: boolean): void {
       if (!this.hasChildren) return
 
       this.children.forEach(c => c.setCollapsedForAllDescendants(isCollapsed))
       this.isCollapsed = isCollapsed
+   }
+
+   swapTextWith(other: Bullet): void {
+      var tempText = this.text
+      this.text = other.text
+      other.text = tempText
+   }
+
+   moveLeft(): Bullet {
+      if (!this.hasGrandParent) throw 'bullet.moveLeft() called on bullet that is a child of the root (would create 2 roots)'
+
+      while (!this.isLastSibling) {
+         this.addChildrenToEnd(this.siblingAfter)
+      }
+
+      this.parent.addSibling(1, this)
+
+      this.siblingBefore.enqueueRebuild()
+      this.enqueueRebuild()
+
+      return this
+   }
+
+   moveRight(): Bullet {
+      this.siblingBefore.addChildrenToEnd(this)
+
+      this.enqueueRebuild()
+
+      return this
    }
    // #endregion
 

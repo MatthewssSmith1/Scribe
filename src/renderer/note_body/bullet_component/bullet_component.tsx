@@ -105,8 +105,11 @@ var BulletLine = (props: { bullet: Bullet }) => {
       if (!selectedNode) return
 
       if (caretIndex > bullet.text.length) {
-         console.warn(`caret index is outside of bounds for the text of ${bullet}`)
-         caretIndex == bullet.text.length
+         console.warn(`caret index is outside of bounds (> length) for the text of ${bullet}`)
+         caretIndex = bullet.text.length
+      } else if (caretIndex < 0) {
+         console.warn(`caret index is outside of bounds (< 0) for the text of ${bullet}`)
+         caretIndex = 0
       }
 
       var range = document.createRange()
@@ -123,6 +126,8 @@ var BulletLine = (props: { bullet: Bullet }) => {
       if (evt.type !== 'input') return
 
       // maintain selection when rebuilding
+      //TODO move the anchor/focus caret pos functions from key_press to a more general location and use it here
+      console.log(window.getSelection().anchorOffset)
       bullet.selectComponent(window.getSelection().anchorOffset)
 
       var str = evt.target.value
