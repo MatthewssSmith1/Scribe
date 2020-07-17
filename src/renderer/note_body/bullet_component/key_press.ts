@@ -26,9 +26,43 @@ function handleEnter(
 ): boolean {
    if (evt.key != 'Enter') return false
 
+   // if any part of the selected text is in a span link, do nothing
+   if (
+      selection.anchorNode.parentElement.tagName == 'SPAN' ||
+      selection.focusNode.parentElement.tagName == 'SPAN' ||
+      selection.getRangeAt(0).cloneContents().querySelector('span') != null
+   ) {
+      evt.preventDefault()
+      return
+   }
+
    if (selection.isCollapsed) {
-      var textBeforeCaret = bullet.text.substring(0, selection.anchorOffset)
-      var textAfterCaret = bullet.text.substring(selection.anchorOffset)
+      var caretPos = selection.anchorOffset
+
+      var node: Node = selection.anchorNode
+
+      //traverse up the DOM until at an element that is a child of the contenteditable div
+      while (node.parentElement.tagName != 'DIV') {
+         //add the length of the opening tag to the caretPos
+         caretPos += node.parentElement.outerHTML.indexOf('>') + 1
+
+         node = node.parentElement
+      }
+
+      //traverse across the DOM for each sibling before the node from the previous while loop
+      while (node.previousSibling != null) {
+         node = node.previousSibling
+
+         //add the length of the node (either the textContent of text nodes or the html string of elements) to the caret pos
+         if (node.nodeType == Node.TEXT_NODE) {
+            caretPos += node.textContent.length
+         } else {
+            caretPos += (node as HTMLElement).outerHTML.length
+         }
+      }
+
+      var textBeforeCaret = bullet.text.substring(0, caretPos)
+      var textAfterCaret = bullet.text.substring(caretPos).trim() //? the trim should be unnecessary
 
       bullet.addSibling(-1, new Bullet(textBeforeCaret))
       bullet.text = textAfterCaret
@@ -49,8 +83,9 @@ function handleEnter(
          suggestedLinks: WorkspaceManager.getSuggestedLinks(selectedText),
       }
       dispatch(showLinkMenu(linkMenuState))
-      evt.preventDefault()
    }
+
+   evt.preventDefault()
 }
 
 function handleBackspace(
@@ -177,7 +212,7 @@ function handleAltArrows(
    if (evt.key == 'ArrowUp') {
       var bulletBefore = bullet.bulletBefore
 
-      var tempText = bullet.text
+      var tempText = `${bullet.text}`
       bullet.text = bulletBefore.text
       bulletBefore.text = tempText
 

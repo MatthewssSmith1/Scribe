@@ -59,7 +59,7 @@ class BulletComponent extends React.Component {
 var BulletLine = (props: { bullet: Bullet }) => {
    const [state, dispatch] = useContext()
    const dispatchAsync = useContextDispatchAsync()
-   const contentEditableRef = useRef(null)
+   const contentEditableRef = useRef<HTMLDivElement>(null)
 
    var { bullet } = props
 
@@ -71,12 +71,38 @@ var BulletLine = (props: { bullet: Bullet }) => {
 
       if (caretIndex == -1) return
 
-      var divElm = contentEditableRef.current
+      var divElm = contentEditableRef.current as HTMLDivElement
 
       divElm.focus()
 
-      var textNode = divElm.childNodes[0]
-      if (!textNode) return
+      var strLengthInBullet = (node: Node) => {
+         if (node.nodeType == Node.TEXT_NODE) {
+            return node.textContent.length
+         } else {
+            return (node as HTMLElement).outerHTML.length
+         }
+      }
+
+      var nodes = [...divElm.childNodes]
+      // iterate through children nodes (either text nodes or tag elements) until the caretIndex points inside of one
+      while (caretIndex > strLengthInBullet(nodes[0])) {
+         caretIndex -= strLengthInBullet(nodes[0])
+         nodes.shift()
+      }
+      if (nodes.length == 0) {
+         console.warn(`caretIndex out of range on: ${bullet}`)
+         return
+      }
+      var selectedNode = nodes[0]
+
+      //? make while loop for nested tags
+      // removes the str length of the opening html tag from caretIndex
+      if (selectedNode.nodeType != Node.TEXT_NODE) {
+         caretIndex -= (selectedNode as HTMLElement).outerHTML.indexOf('>') + 1
+         selectedNode = selectedNode.childNodes[0]
+      }
+
+      if (!selectedNode) return
 
       if (caretIndex > bullet.text.length) {
          console.warn(`caret index is outside of bounds for the text of ${bullet}`)
@@ -84,7 +110,7 @@ var BulletLine = (props: { bullet: Bullet }) => {
       }
 
       var range = document.createRange()
-      range.setStart(textNode, caretIndex)
+      range.setStart(selectedNode, caretIndex)
       range.collapse(true)
 
       var selection = window.getSelection()
@@ -92,7 +118,7 @@ var BulletLine = (props: { bullet: Bullet }) => {
       selection.addRange(range)
    })
 
-   //when text is typed into a bullet, update the bullet data in the tree
+   // when text is typed into a bullet, update the bullet data in the tree
    var handleTextChange = (evt: ContentEditableEvent) => {
       if (evt.type !== 'input') return
 
@@ -100,15 +126,19 @@ var BulletLine = (props: { bullet: Bullet }) => {
       bullet.selectComponent(window.getSelection().anchorOffset)
 
       var str = evt.target.value
+
       if (str.charAt(str.length - 1) == '\n') {
          str = str.slice(0, -1)
+
+         var div = contentEditableRef.current as HTMLDivElement
+         div.innerHTML = str
       }
       props.bullet.text = str
 
       dispatch(enqueueSaveDocument())
    }
 
-   //expand/collapse the children of this bullet by toggling the chevron button to the left of the bullet
+   // expand/collapse the children of this bullet by toggling the chevron button to the left of the bullet
    var handleDropDownClick = (evt: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
       bullet.toggleCollapsed()
 
@@ -117,7 +147,7 @@ var BulletLine = (props: { bullet: Bullet }) => {
       bullet.updateComponent()
    }
 
-   //called when any bullet is clicked, loads what a link points to if ctrl is pressed
+   // called when any bullet is clicked, loads what a link points to if ctrl is pressed
    var handleEditableClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
       var clickedSpan = e.target as HTMLSpanElement
 

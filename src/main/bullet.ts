@@ -1,5 +1,5 @@
 export default class Bullet {
-   text: string
+   private _text: string
    parent: Bullet
    children: Array<Bullet> = []
    //used to show/hide children if it is collapsed or not
@@ -13,7 +13,7 @@ export default class Bullet {
 
    // #region Constructor, Factory, Serializing
    constructor(text: string = '', children: Array<Bullet> = [], parent: Bullet = null) {
-      this.text = text.replace('\t', '')
+      this._text = text.replace('\t', '')
 
       this.parent = parent
 
@@ -51,7 +51,7 @@ export default class Bullet {
    toStringList(strList: Array<string> = [], depth: number = 0): Array<string> {
       const childrenDepth = depth + 1
       this.children.forEach(c => {
-         strList.push('\t'.repeat(childrenDepth) + c.text)
+         strList.push('\t'.repeat(childrenDepth) + c._text)
          c.toStringList(strList, childrenDepth)
       })
 
@@ -111,7 +111,21 @@ export default class Bullet {
    }
    // #endregion
 
-   // #region Getters
+   // #region Setters
+
+   // #endregion
+
+   // #region Getters & Setters
+   get text() {
+      return this._text
+   }
+
+   set text(text: string) {
+      this.enqueueRebuild()
+
+      this._text = text
+   }
+
    get childCount(): number {
       return this.children.length
    }
