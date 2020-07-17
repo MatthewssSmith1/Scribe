@@ -56,8 +56,6 @@
    }
 }
 
-#root.ctrl-pressed {
-   & .link {
-      cursor: pointer;
-   }
+body.ctrl-is-pressed .bullet__line__editable span {
+   cursor: pointer;
 }

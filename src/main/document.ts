@@ -7,6 +7,7 @@ const yaml = require('js-yaml')
 
 interface MetaData {
    id: number
+   linksFromThisStrings: Array<string>
 }
 
 export default class Document {
@@ -23,8 +24,7 @@ export default class Document {
       else this.generateMetaData()
 
       var id = this.metaData.id
-      this.linksFromThis = WorkspaceManager.links.filter(link => link.from.documentId == id)
-      this.linksToThis = WorkspaceManager.links.filter(link => link.to.documentId == id)
+      this.linksFromThis = this.metaData.linksFromThisStrings.map(lnkStr => Link.fromString(lnkStr))
    }
 
    private generateMetaData() {
@@ -40,7 +40,7 @@ export default class Document {
          return hash
       }
 
-      this.metaData = { id: hashCode(this.name) }
+      this.metaData = { id: hashCode(this.name), linksFromThisStrings: [] }
 
       this.saveMetaData()
    }
@@ -56,6 +56,8 @@ export default class Document {
    }
 
    saveMetaData() {
+      this.metaData.linksFromThisStrings = this.linksFromThis.map(l => l.toString())
+
       writeFileSync(WorkspaceManager.workspacePath + `${this.name}.meta`, yaml.safeDump(this.metaData))
    }
 }

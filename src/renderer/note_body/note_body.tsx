@@ -1,10 +1,10 @@
-import React, { useState, useReducer, memo } from 'react'
+import React, { useState, useEffect, memo } from 'react'
 
-import Bullet from '@main/bullet'
 import BulletComponent from '@renderer/note_body/bullet_component/bullet_component'
 import Breadcrumbs from '@renderer/note_body/breadcrumbs/breadcrumbs'
 
 import { useContextState, useContextDispatchAsync, ContextStateType } from '@/renderer/state/context'
+import { NoteBodyState } from '@renderer/state/context_actions'
 import { loadInitDocument, trySaveDocument } from '@renderer/state/context_actions_async'
 import { useInterval } from '@renderer/state/hooks'
 
@@ -17,6 +17,14 @@ var NoteBody = memo(() => {
       setIsInit(true)
 
       dispatchAsync(loadInitDocument())
+
+      document.addEventListener('keydown', (e: KeyboardEvent) => {
+         if (e.key == 'Control') document.body.classList.add('ctrl-is-pressed')
+      })
+
+      document.addEventListener('keyup', (e: KeyboardEvent) => {
+         if (e.key == 'Control') document.body.classList.remove('ctrl-is-pressed')
+      })
    }
 
    // check to save the document every 3 seconds
@@ -25,7 +33,7 @@ var NoteBody = memo(() => {
    return (
       <div className="note-body" style={getStyle(state)}>
          <TitleOrBreadCrumbs />
-         <BulletList focusedBullets={state.noteBody.focusedBullets} rootBullet={state.noteBody.rootBullet} />
+         <BulletList noteBodyState={state.noteBody} />
       </div>
    )
 })
@@ -52,14 +60,21 @@ function TitleOrBreadCrumbs() {
 }
 
 class BulletList extends React.Component {
-   props: { focusedBullets: Array<Bullet>; rootBullet: Bullet }
+   props: {
+      noteBodyState: NoteBodyState
+   }
 
    render() {
-      var { focusedBullets, rootBullet } = this.props
+      var { focusedBullets, rootBullet, bulletsKeyModifier } = this.props.noteBodyState
 
       if (rootBullet) rootBullet.setComponentCallback(() => this.forceUpdate())
 
-      var children = (focusedBullets || []).map(c => <BulletComponent bullet={c} key={c.key} />)
+      var children = (focusedBullets || []).map(c => {
+         //the modifier here alternates between -1 and 1 on new documents being loaded
+         //it is added as to avoid keys of 0 (which would overlap between rebuilds)
+         var key = c.key * bulletsKeyModifier + bulletsKeyModifier
+         return <BulletComponent bullet={c} key={key} />
+      })
 
       return <div className="note-body__bullet-list">{children}</div>
    }

@@ -1,8 +1,8 @@
-building <span>blocks of the universe</span> (two classes)
+building blocks of the universe (two classes)
 	fermions (quarks & leptons) make up matter
 		two cannot occupy the same quantum space (bosons can)
 	bosons 
-		guage bosons
+		gauge bosons
 			force carrying
 			"function as the 'glue' holding matter together"
 			bose-einstein condensation

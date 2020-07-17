@@ -42,6 +42,14 @@ export default class Link {
       return `${this.id} ${fromText} ${toText}`
    }
 
+   get pointsToDocument() {
+      return this.to.bulletCoords == null || this.to.bulletCoords.includes(-1)
+   }
+
+   get pointsToBullet() {
+      return !this.pointsToDocument
+   }
+
    static fromString(str: string) {
       // format: 31245 213453|2,5,3|2,5 42145|1,2
 

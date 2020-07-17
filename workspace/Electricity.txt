@@ -1,45 +1,45 @@
-	Electric Current <span data-link-id="1594562257278" class="link">calc</span>
-		The flow of electric charge is known as Electric Current, Electric current is carried by moving electrons through a conductor.
-			By convention, electric current flows in the opposite direction to the movement of electrons.
-				Ammeter: An apparatus to measure electric current in a circuit.,
-			Electric Circuit:
-				Electric circuit is a continuous and closed path of electric current.
-			Expression of Electric Current:
-				Electric current is denoted by the letter ‘I’. Electric current is expressed by the rate of flow of electric charges. Rate of flow means, the amount of charge flowing through a particular area in unit time.
-					If a net electric charge (Q) flows through a cross-section of a conductor in time t, then,
-					Where I is electric current, Q is a net charge and t is a time in second.
-			S.I. Unit of Electric Charge and Current:
-				S.I. unit of electric charge is coulomb (C).
-				One coulomb is nearly equal to 6 × 1018 electrons. S.I. unit of electric current is ampere (A). Ampere is the flow of electric charge through a surface at the rate of one coulomb per second. This means, if 1 coulomb of electric charge flows through a cross section for 1 second, it would be equal to 1 ampere.
-					Therefore, 1 A = 1 C/1 s
-			Small Quantity of Electric Current: Small quantity of electric current is expressed in milliampere and microampere. Milliampere is written as mA and microampere as pA.
-				1 mA (milliampere) = 10-3 A
-				1 pA (microampere) = 10-6 A
-			Charge: Like mass, the charge is the fundamental property of matter. There are two types of charge
-				(i) Positive charge.
-				(ii) Negative charge.
-			Positive and Negative Charge:
-				The charge acquired by a glass rod when rubbed with silk is called a positive charge and the charge acquired by an ebonite rod when rubbed with wool is called negative charge.
-			Properties of Electric Charge:
-				(i) Unlike charges attract each other and like charges repel each other.
-				(ii) The.force between two charges varies directly as the product of two charges and inversely as the square of the distance (r) between both charges (q1 and q2).
-			S.I. unit of charge is coulomb (C).
-				1 coulomb = 1 ampere × 1 second.
-				1C = 1A × 1s
-				Thus, the quantity of charge which flows through a circuit when one ampere of current flows through it in one second is known as a 1-coulomb charge.
-			Electric Potential and Potential Difference
-				Electric Potential:
-					The amount of electric potential energy at a point is called electric potential.
-				Potential Difference:
-					The difference in the amount of electric potential energy between two points in an electric circuit is called electric potential difference.
-				Electric potential difference is known as voltage, which is equal to the amount of work done to move the unit charge between two points against static electric field.
-				Therefore, Voltage = \frac { Workdone }{ Charge }
-				Voltage or electric potential difference is denoted by V’. Therefore, V = \frac { W }{ Q }
-				Where, W = Work done and Q = Charge
-			Since joule is the unit of work and Coulomb is the unit of charge, 1 volt of electric potential difference is equal to the 1 joule of work to be done to move a charge of 1 coulomb from one point to another in an electric circuit. Therefore
-				1V = 1Joule/1Coulomb = 1J/1C
-				1V = 1JC-1
-			Voltmeter:
-				An apparatus to measure the potential difference or electric potential difference between two points in an electric circuit.
-			Galvanometer:
-				It is a device to detect current in an electric circuit.
+
+The   <span data-link-id="92366234">calculus</span>   flow of electric charge is known as Electric Current, Electric current is carried by moving electrons through a conductor.
+By convention, electric current flows in the opposite direction to the movement of electrons.
+	Ammeter: An apparatus to measure electric current in a circuit.,
+Electric Circuit:
+	Electric circuit is a continuous and closed path of electric current.
+Expression of Electric Current:
+	Electric current is denoted by the letter ‘I’. Electric current is expressed by the rate of flow of electric charges. Rate of flow means, the amount of charge flowing through a particular area in unit time.
+		If a net electric charge (Q) flows through a cross-section of a conductor in time t, then,
+		Where I is electric current, Q is a net charge and t is a time in second.
+S.I. Unit of Electric Charge and Current:
+	S.I. unit of electric charge is coulomb (C).
+	One coulomb is nearly equal to 6 × 1018 electrons. S.I. unit of electric current is ampere (A). Ampere is the flow of electric charge through a surface at the rate of one coulomb per second. This means, if 1 coulomb of electric charge flows through a cross section for 1 second, it would be equal to 1 ampere.
+		Therefore, 1 A = 1 C/1 s
+Small Quantity of Electric Current: Small quantity of electric current is expressed in milliampere and microampere. Milliampere is written as mA and microampere as pA.
+	1 mA (milliampere) = 10-3 A
+	1 pA (microampere) = 10-6 A
+Charge: Like mass, the charge is the fundamental property of matter. There are two types of charge
+	(i) Positive charge.
+	(ii) Negative charge.
+Positive and Negative Charge:
+	The charge acquired by a glass rod when rubbed with silk is called a positive charge and the charge acquired by an ebonite rod when rubbed with wool is called negative charge.
+Properties of Electric Charge:
+	(i) Unlike charges attract each other and like charges repel each other.
+	(ii) The.force between two charges varies directly as the product of two charges and inversely as the square of the distance (r) between both charges (q1 and q2).
+S.I. unit of charge is coulomb (C).
+	1 coulomb = 1 ampere × 1 second.
+	1C = 1A × 1s
+	Thus, the quantity of charge which flows through a circuit when one ampere of current flows through it in one second is known as a 1-coulomb charge.
+Electric Potential and Potential Difference
+	Electric Potential:
+		The amount of electric potential energy at a point is called electric potential.
+	Potential Difference:
+		The difference in the amount of electric potential energy between two points in an electric circuit is called electric potential difference.
+	Electric potential difference is known as voltage, which is equal to the amount of work done to move the unit charge between two points against static electric field.
+	Therefore, Voltage = \frac { Work done }{ Charge }
+	Voltage or electric potential difference is denoted by V’. Therefore, V = \frac { W }{ Q }
+	Where, W = Work done and Q = Charge
+Since joule is the unit of work and Coulomb is the unit of charge, 1 volt of electric potential difference is equal to the 1 joule of work to be done to move a charge of 1 coulomb from one point to another in an electric circuit. Therefore
+	1V = 1Joule/1Coulomb = 1J/1C
+	1V = 1JC-1
+Voltmeter:
+	An apparatus to measure the potential difference or electric potential difference between two points in an electric circuit.
+Galvanometer:
+	It is a device to detect current in an electric circuit.

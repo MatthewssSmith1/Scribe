@@ -1,9 +1,6 @@
-import * as React from 'react'
-import { useState } from 'react'
+import React from 'react'
 import * as ReactDOM from 'react-dom'
 import { Titlebar, Color } from 'custom-electron-titlebar'
-
-import WorkspaceManager from '@/main/workspace_manager'
 
 import ActionPanel from '@/renderer/action_panel/action_panel'
 import NoteBody from '@renderer/note_body/note_body'

@@ -15,26 +15,25 @@ export const initCtxState = {
       maxWidthPercentage: 0.6,
    },
    noteBody: {
-      document: (null as Document),
-      rootBullet: (null as Bullet),
-      focusedBullets: (null as Array<Bullet>),
-      shouldSave: (null as boolean),
-      isRootSelected: (null as boolean),
-   },
-   keyboard: {
-      isCtrlPressed: false,
+      document: null as Document,
+      rootBullet: null as Bullet,
+      focusedBullets: null as Array<Bullet>,
+      shouldSave: null as boolean,
+      isRootSelected: null as boolean,
+      bulletsKeyModifier: 1,
    },
    linkMenu: {
       isHidden: true,
       viewportPos: null as [number, number],
       bulletWithSelection: null as Bullet,
       selectionBounds: null as [number, number],
-      selectedText: (null as string),
-      suggestedLinks: (null as Array<[string, ToAddress]>),
+      selectedText: null as string,
+      suggestedLinks: null as Array<[string, ToAddress]>,
    },
 }
 export type ContextStateType = typeof initCtxState
 export type LinkMenuState = typeof initCtxState.linkMenu
+export type NoteBodyState = typeof initCtxState.noteBody
 
 //* ACTIONS
 
@@ -158,6 +157,7 @@ export function contextReducer(state: ContextStateType, action: any): ContextSta
                focusedBullets: [...action.rootBullet.children],
                shouldSave: false,
                isRootSelected: true,
+               bulletsKeyModifier: state.noteBody.bulletsKeyModifier * -1,
             },
          }
 

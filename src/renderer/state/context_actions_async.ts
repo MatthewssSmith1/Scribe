@@ -6,6 +6,7 @@ import { AsyncCallback } from '@renderer/state/context'
 
 import WorkspaceManager from '@main/workspace_manager'
 import { writeFileSync } from 'fs'
+import Link, { FromAddress, ToAddress } from '@/main/link'
 
 export function loadInitDocument(): AsyncCallback {
    return async (state: ContextStateType, dispatch: ContextDispatchType) => {

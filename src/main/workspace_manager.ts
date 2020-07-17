@@ -26,7 +26,6 @@ export default class WorkspaceManager {
       this._workspacePath = `${process.cwd()}\\workspace\\`
 
       this.loadDocuments()
-      this.loadLinks()
 
       this._isInitialized = true
 
@@ -55,22 +54,10 @@ export default class WorkspaceManager {
 
          if (ext == 'txt') documentNames.push(fileName)
          else if (fullName == 'config.yaml') this.loadConfig()
-         else if (ext != 'meta' && fullName != 'links.list') console.warn(`unexpected extension on file: '${fullName}'`)
+         else if (ext != 'meta') console.warn(`unexpected extension on file: '${fullName}'`)
       })
 
       this.documents = documentNames.map(docName => new Document(docName))
-   }
-
-   static loadLinks() {
-      var linksFilePath = this._workspacePath + 'links.list'
-
-      if (!existsSync(linksFilePath)) writeFileSync(linksFilePath, '')
-
-      this.links = readFileSync(linksFilePath, 'utf8')
-         .split('\n')
-         .map(line => line.trim())
-         .filter(line => line.length > 0)
-         .map(line => Link.fromString(line))
    }
 
    static loadConfig() {

@@ -3,11 +3,13 @@ import React, { useRef, useEffect, useReducer, memo, useState } from 'react'
 import ContentEditable, { ContentEditableEvent } from 'react-contenteditable'
 import cx from 'classnames'
 
+import Link from '@main/link'
 import Bullet from '@/main/bullet'
 import Icon from '@/renderer/other_components/icon'
 import handleKeyPress from '@renderer/note_body/bullet_component/key_press'
-import { useContext } from '@/renderer/state/context'
+import { useContext, useContextDispatchAsync } from '@/renderer/state/context'
 import { enqueueSaveDocument, focusBullet } from '@/renderer/state/context_actions'
+import { loadDocumentByID } from '../../state/context_actions_async'
 
 /*
    bullet
@@ -18,23 +20,6 @@ import { enqueueSaveDocument, focusBullet } from '@/renderer/state/context_actio
          bullet__line__editable
       bullet__children-container
 */
-
-//TODO implement link clicking for bullets
-//called when any bullet is clicked, loads what a link points to if ctrl is pressed
-// handleClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-//    var clickedSpan = e.target as HTMLSpanElement
-
-//    if (!clickedSpan || !e.ctrlKey || !clickedSpan.classList.contains('link')) return
-
-//    var linkID = parseInt(clickedSpan.dataset.linkId)
-//    var link: Link = WorkspaceManager.links.find(l => l.id == linkID)
-//    if (link == undefined) {
-//       console.warn(`could not find link of id ${linkID}`)
-//       return
-//    }
-
-//    NoteBody.loadLink(link)
-// }
 
 class BulletComponent extends React.Component {
    props: { bullet: Bullet }
@@ -73,6 +58,7 @@ class BulletComponent extends React.Component {
 
 var BulletLine = (props: { bullet: Bullet }) => {
    const [state, dispatch] = useContext()
+   const dispatchAsync = useContextDispatchAsync()
    const contentEditableRef = useRef(null)
 
    var { bullet } = props
@@ -122,12 +108,29 @@ var BulletLine = (props: { bullet: Bullet }) => {
       dispatch(enqueueSaveDocument())
    }
 
+   //expand/collapse the children of this bullet by toggling the chevron button to the left of the bullet
    var handleDropDownClick = (evt: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
       bullet.toggleCollapsed()
 
       if (evt.altKey) bullet.setCollapsedForAllDescendants(bullet.isCollapsed)
 
       bullet.updateComponent()
+   }
+
+   //called when any bullet is clicked, loads what a link points to if ctrl is pressed
+   var handleEditableClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+      var clickedSpan = e.target as HTMLSpanElement
+
+      if (!clickedSpan || clickedSpan.tagName != 'SPAN' || !e.ctrlKey) return
+
+      var linkID = parseInt(clickedSpan.dataset.linkId)
+      var link: Link = state.noteBody.document.linksFromThis.find(l => l.id == linkID)
+      if (link == undefined) {
+         console.warn(`could not find link of id ${linkID}`)
+         return
+      } else {
+         dispatchAsync(loadDocumentByID(link.to.documentId))
+      }
    }
 
    return (
@@ -156,6 +159,7 @@ var BulletLine = (props: { bullet: Bullet }) => {
             html={props.bullet.text}
             onChange={handleTextChange}
             onKeyDown={(evt: any) => handleKeyPress(state, dispatch, evt, props.bullet)}
+            onClick={handleEditableClick}
          />
       </div>
    )
