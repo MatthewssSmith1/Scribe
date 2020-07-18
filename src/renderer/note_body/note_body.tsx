@@ -28,6 +28,7 @@ var NoteBody = memo(() => {
    }
 
    // check to save the document every 3 seconds
+   // TODO actually implement saving
    useInterval(() => dispatchAsync(trySaveDocument), 3000)
 
    return (

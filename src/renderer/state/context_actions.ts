@@ -30,10 +30,16 @@ export const initCtxState = {
       selectedText: null as string,
       suggestedLinks: null as Array<[string, ToAddress]>,
    },
+   selection: {
+      bullet: null as Bullet,
+      startIndex: null as number,
+      endIndex: null as number,
+   },
 }
 export type ContextStateType = typeof initCtxState
 export type LinkMenuState = typeof initCtxState.linkMenu
 export type NoteBodyState = typeof initCtxState.noteBody
+export type SelectionState = typeof initCtxState.selection
 
 //* ACTIONS
 
@@ -86,17 +92,22 @@ export function focusBullet(bullet: Bullet) {
       bullet,
    }
 }
-export function addFocusBulletToIndex(bullet: Bullet, index: number) {
-   return {
-      type: addFocusBulletToIndex.name,
-      bullet,
-      index,
+
+//selection
+export function selectBullet(bullet: Bullet, startIndex: number = 0, endIndex?: number) {
+   if (!endIndex) endIndex = startIndex
+   else if (endIndex < startIndex) {
+      //ensure that startIndex is before endIndex
+      var temp = endIndex
+      endIndex = startIndex
+      startIndex = temp
    }
-}
-export function removeFocusedBullet(index: number) {
+
    return {
-      type: removeFocusedBullet.name,
-      index,
+      type: selectBullet.name,
+      bullet,
+      startIndex,
+      endIndex,
    }
 }
 
@@ -179,6 +190,10 @@ export function contextReducer(state: ContextStateType, action: any): ContextSta
             },
          }
 
+      case documentSaveComplete.name:
+         //? potentially implement subscribing to events and send it out from here
+         return state
+
       case focusBullet.name:
          var isRootSelected = action.bullet == state.noteBody.rootBullet
          var focusedBullets = isRootSelected ? [...action.bullet.children] : [action.bullet]
@@ -191,31 +206,15 @@ export function contextReducer(state: ContextStateType, action: any): ContextSta
             },
          }
 
-      case addFocusBulletToIndex.name:
-         var newFocusedBullets = state.noteBody.focusedBullets
-         newFocusedBullets.splice(action.index, 0, action.bullet)
+      case selectBullet.name:
          return {
             ...state,
-            noteBody: {
-               ...state.noteBody,
-               focusedBullets: newFocusedBullets,
+            selection: {
+               bullet: action.bullet,
+               startIndex: action.startIndex,
+               endIndex: action.endIndex,
             },
          }
-
-      case removeFocusedBullet.name:
-         var newFocusedBullets = state.noteBody.focusedBullets
-         newFocusedBullets.splice(action.index, 1)
-         return {
-            ...state,
-            noteBody: {
-               ...state.noteBody,
-               focusedBullets: newFocusedBullets,
-            },
-         }
-
-      case documentSaveComplete.name:
-         //? potentially implement subscribing to events and send it out from here
-         return state
 
       //* Link Menu
       case showLinkMenu.name:

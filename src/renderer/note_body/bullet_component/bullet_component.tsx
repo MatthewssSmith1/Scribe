@@ -7,8 +7,9 @@ import Link from '@main/link'
 import Bullet from '@/main/bullet'
 import Icon from '@/renderer/other_components/icon'
 import handleKeyPress from '@renderer/note_body/bullet_component/key_press'
+
 import { useContext, useContextDispatchAsync } from '@/renderer/state/context'
-import { enqueueSaveDocument, focusBullet } from '@/renderer/state/context_actions'
+import { enqueueSaveDocument, focusBullet, selectBullet } from '@/renderer/state/context_actions'
 import { loadDocumentByID } from '../../state/context_actions_async'
 
 /*
@@ -65,9 +66,20 @@ var BulletLine = (props: { bullet: Bullet }) => {
 
    // after rendered, select the text if bullet.select(index) has been called
    useEffect(() => {
+      //only run this effect if this bullet is selected and it hasn't already been selected
+      if (state.selection.bullet != bullet) return
+
+      //sets state.selection.shouldRender to false so that this effect runs only once per dispatch of a bulletSelect action
+      dispatch(selectBullet(null))
+
+      var { startIndex, endIndex } = state.selection
+
+      // TODO implement selecting ranges (and use it with the link menu potentially)
+      var isCollapsed = startIndex == endIndex
+      if (!isCollapsed) return
+
       //fetches the caret index and sets it to -1
-      var caretIndex = bullet.getCaretIndex()
-      bullet.unselect()
+      var caretIndex = startIndex
 
       if (caretIndex == -1) return
 
@@ -128,7 +140,7 @@ var BulletLine = (props: { bullet: Bullet }) => {
       // maintain selection when rebuilding
       //TODO move the anchor/focus caret pos functions from key_press to a more general location and use it here
       console.log(window.getSelection().anchorOffset)
-      bullet.selectComponent(window.getSelection().anchorOffset)
+      //! bullet.selectComponent(window.getSelection().anchorOffset)
 
       var str = evt.target.value
 

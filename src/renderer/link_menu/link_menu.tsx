@@ -14,6 +14,7 @@ export default function LinkMenu() {
 
    var linkMenuState: LinkMenuState = state.linkMenu
 
+   //TODO give isHidden its own return statement
    var isHidden = linkMenuState.isHidden
 
    //while the link menu is active: if clicked away from it => hide it, ignore keydown events
@@ -44,7 +45,7 @@ export default function LinkMenu() {
    })
 
    return (
-      <div id="link-menu" className={cx({ enabled: isHidden })} style={isHidden ? {} : positionStyle(linkMenuState)} ref={domRef}>
+      <div id="link-menu" className={cx({ enabled: !isHidden })} style={isHidden ? {} : positionStyle(linkMenuState)} ref={domRef}>
          {isHidden ? [] : getMenuItems(linkMenuState)}
       </div>
    )
@@ -107,7 +108,7 @@ function SuggestionItem(props: { name: string; toAddress: ToAddress }): JSX.Elem
 
       //set cursor to the end of the selection and rebuild it
       console.log(selectionBounds[1])
-      bulletWithSelection.selectComponent(selectionBounds[1])
+      //! bulletWithSelection.selectComponent(selectionBounds[1])
       state.noteBody.rootBullet.updateComponent()
 
       //hide this menu

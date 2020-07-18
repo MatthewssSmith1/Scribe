@@ -1,7 +1,7 @@
 import * as React from 'react'
 import Bullet from '@main/bullet'
 import { ContextStateType, ContextDispatchType } from '@renderer/state/context'
-import { LinkMenuState, showLinkMenu } from '@renderer/state/context_actions'
+import { LinkMenuState, showLinkMenu, selectBullet } from '@renderer/state/context_actions'
 import WorkspaceManager from '@main/workspace_manager'
 
 type KeyEvent = React.KeyboardEvent<HTMLDivElement>
@@ -109,7 +109,7 @@ export default function handleKeyPress(state: ContextStateType, dispatch: Contex
          bullet.addSibling(-1, new Bullet(textBeforeCaret))
          bullet.text = textAfterCaret
 
-         bullet.selectComponent(0)
+         dispatch(selectBullet(bullet, 0))
          bullet.parent.updateComponent()
 
          bullet.updateComponent()
@@ -136,11 +136,13 @@ export default function handleKeyPress(state: ContextStateType, dispatch: Contex
 
          bullet.moveLeft()
 
-         bullet.selectComponent(selection.anchorOffset)
-      } else if (bullet.siblingBefore.childCount == 0) {
+         dispatch(selectBullet(bullet, selection.anchorOffset))
+      } else {
+         if (bullet.siblingBefore.childCount > 0) return
+
          //store length of the text in the bullet before (set cursor pos here later)
          var sibling = bullet.siblingBefore
-         bullet.selectComponent(sibling.text.length)
+         dispatch(selectBullet(bullet, sibling.text.length))
 
          //concat the two bullets
          bullet.text = sibling.remove().text + bullet.text
@@ -157,7 +159,7 @@ export default function handleKeyPress(state: ContextStateType, dispatch: Contex
       else if (!bullet.isFirstSibling && (rBracketCtrl || evt.key == 'Tab')) bullet.moveRight()
       else return
 
-      // TODO select the bullet in the same place it was before
+      dispatch(selectBullet(bullet, selection.anchorOffset))
 
       rebuildAndPreventDefault()
    }
@@ -173,7 +175,7 @@ export default function handleKeyPress(state: ContextStateType, dispatch: Contex
 
       if (evt.altKey) bullet.swapTextWith(otherBullet)
 
-      // TODO select the bullet in the same place it was before
+      dispatch(selectBullet(bullet, selection.anchorOffset))
 
       rebuildAndPreventDefault()
    }

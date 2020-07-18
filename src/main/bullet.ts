@@ -1,15 +1,25 @@
 export default class Bullet {
+   // #region this.text
    private _text: string
+   get text() {
+      return this._text
+   }
+
+   set text(text: string) {
+      this.enqueueRebuild()
+
+      this._text = text
+   }
+   // #endregion
    parent: Bullet
    children: Array<Bullet> = []
+
    //used to show/hide children if it is collapsed or not
    isCollapsed: boolean = false
    //passed to react.js components in children lists
    key: number = null
    //only rebuild component if this is set to true
    shouldComponentRebuild: boolean = false
-   //used to set the caret position of the corresponding BulletComponent
-   private _caretIndex = -1
 
    // #region Constructor, Factory, Serializing
    constructor(text: string = '', children: Array<Bullet> = [], parent: Bullet = null) {
@@ -112,16 +122,6 @@ export default class Bullet {
    // #endregion
 
    // #region Getters & Setters
-   get text() {
-      return this._text
-   }
-
-   set text(text: string) {
-      this.enqueueRebuild()
-
-      this._text = text
-   }
-
    get childCount(): number {
       return this.children.length
    }
@@ -307,7 +307,6 @@ export default class Bullet {
 
       removedBullet.parent = null
       removedBullet.key = null
-      removedBullet._caretIndex = -1
       this.children.splice(index, 1)
 
       this.enqueueRebuild()
@@ -410,20 +409,6 @@ export default class Bullet {
 
    dequeueRebuild() {
       this.shouldComponentRebuild = false
-   }
-
-   selectComponent(caretIndex: number = 0) {
-      this._caretIndex = caretIndex
-
-      this.enqueueRebuild()
-   }
-
-   getCaretIndex(): number {
-      return this._caretIndex
-   }
-
-   unselect(): void {
-      this._caretIndex = -1
    }
 
    // #endregion
