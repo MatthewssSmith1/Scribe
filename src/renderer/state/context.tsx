@@ -46,11 +46,11 @@ export type SelectionState = typeof initialState.selection
 
 // #region Type Definitions
 export type Action = (s: State) => void
-export type AsyncCallback = (c: Context) => Promise<void>
+export type AsyncAction = (c: Context) => Promise<void>
 export type Context = {
    state: State
    dispatch: React.Dispatch<Action>
-   dispatchAsync: (callback: AsyncCallback) => void
+   dispatchAsync: (a: AsyncAction) => void
 }
 // #endregion
 
@@ -59,7 +59,7 @@ export function actionify<T extends any[]>(callback: (state: State, ...restParam
    return (...params: T) => state => callback(state, ...params)
 }
 
-export function actionifyAsync<T extends any[]>(callback: (context: Context, ...restParams: T) => Promise<void>): (...t: T) => AsyncCallback {
+export function actionifyAsync<T extends any[]>(callback: (context: Context, ...restParams: T) => Promise<void>): (...t: T) => AsyncAction {
    return (...params: T) => ctx => callback(ctx, ...params)
 }
 //#endregion
@@ -78,12 +78,13 @@ export const ContextProvider = ({ children }) => {
 
    const [state, dispatch] = React.useReducer(contextReducer, initialState)
 
-   //done this way so ctx can be passed into its own asyncCallback
+   //initialized to null so ctx can be passed into its own dispatchAsync
+   //TODO make dispatch handle both Actions and AsyncActions
    var ctx: Context = null
    ctx = {
       state,
       dispatch,
-      dispatchAsync: (asyncCallback: AsyncCallback) => asyncCallback(ctx),
+      dispatchAsync: (action: AsyncAction) => action(ctx),
    }
 
    return <GlobalContext.Provider value={ctx}>{children}</GlobalContext.Provider>
