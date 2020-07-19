@@ -1,9 +1,9 @@
 import React, { createContext, useReducer } from 'react'
 
-import { contextReducer, initCtxState, State } from '@/renderer/state/context_actions'
+import { contextReducer, initCtxState, State, Action } from '@/renderer/state/context_actions'
 
 const ContextState = createContext<State>(initCtxState)
-type ContextDispatchType = React.Dispatch<any>
+type ContextDispatchType = React.Dispatch<Action>
 const ContextDispatch = createContext<ContextDispatchType>(null)
 
 //the component which wraps the app root and provides both the state and dispatch from reducer
