@@ -36,201 +36,95 @@ export const initCtxState = {
       endIndex: null as number,
    },
 }
-export type ContextStateType = typeof initCtxState
+export type State = typeof initCtxState
 export type LinkMenuState = typeof initCtxState.linkMenu
 export type NoteBodyState = typeof initCtxState.noteBody
 export type SelectionState = typeof initCtxState.selection
 
-//* ACTIONS
+export type Action = (s: State) => void
 
-//action panel
-export function toggleActionPanel() {
-   return {
-      type: toggleActionPanel.name,
-   }
+function actionify<T extends any[]>(callback: (state: State, ...restParams: T) => void): (...t: T) => Action {
+   return (...params: T) => state => callback(state, ...params)
 }
 
-//content panel
-export function toggleContentPanel() {
-   return {
-      type: toggleContentPanel.name,
-   }
-}
-export function resizeContentPanel(width: number) {
-   return {
-      type: resizeContentPanel.name,
-      width,
-   }
+export const contextReducer = (state: State, action: Action): State => {
+   var newState = { ...state }
+   action(newState)
+   return newState
 }
 
-//note body
-export function loadDocument(document: Document, rootBullet: Bullet) {
-   return {
-      type: loadDocument.name,
-      document,
-      rootBullet,
-   }
-}
-export function enqueueSaveDocument() {
-   return {
-      type: enqueueSaveDocument.name,
-   }
-}
-export function dequeueSaveDocument() {
-   return {
-      type: dequeueSaveDocument.name,
-   }
-}
-export function documentSaveComplete() {
-   return {
-      type: documentSaveComplete.name,
-   }
-}
-export function focusBullet(bullet: Bullet) {
-   return {
-      type: focusBullet.name,
-      bullet,
-   }
-}
+//* ACTIONS///
+//* //////////
+// #region Panels
+export const toggleActionPanel = actionify((state: State) => {
+   state.actionPanel.isCollapsed = !state.actionPanel.isCollapsed
+})
 
-//selection
-export function selectBullet(bullet: Bullet, startIndex: number = 0, endIndex?: number) {
+export const toggleContentPanel = actionify((state: State) => {
+   state.contentPanel.isCollapsed = !state.contentPanel.isCollapsed
+})
+
+export const resizeContentPanel = actionify((state: State, width: number) => {
+   var windowWidth = window.innerWidth
+   var { minWidthPercentage, maxWidthPercentage } = state.contentPanel
+
+   var minWidth = windowWidth * minWidthPercentage
+   var maxWidth = windowWidth * maxWidthPercentage
+
+   state.contentPanel.width = Math.min(maxWidth, Math.max(minWidth, width))
+})
+// #endregion
+
+// #region Note Body
+export const loadDocument = actionify((state: State, document: Document, rootBullet: Bullet) => {
+   state.noteBody = {
+      document: document,
+      rootBullet: rootBullet,
+      focusedBullets: [...rootBullet.children],
+      shouldSave: false,
+      isRootSelected: true,
+      bulletsKeyModifier: state.noteBody.bulletsKeyModifier * -1,
+   }
+})
+export const enqueueSaveDocument = actionify((state: State) => {
+   state.noteBody.shouldSave = true
+})
+export const dequeueSaveDocument = actionify((state: State) => {
+   state.noteBody.shouldSave = false
+})
+export const documentSaveComplete = actionify((state: State) => {
+   //? potentially implement subscribing to events and send it out from here
+   state = state
+})
+export const focusBullet = actionify((state: State, bullet: Bullet) => {
+   var isRootSelected = bullet == state.noteBody.rootBullet
+   var focusedBullets = isRootSelected ? [...bullet.children] : [bullet]
+
+   state.noteBody = {
+      ...state.noteBody,
+      isRootSelected,
+      focusedBullets,
+   }
+})
+// #endregion
+
+// #region Selection
+export const selectBullet = actionify((state: State, bullet: Bullet, startIndex: number = 0, endIndex?: number) => {
    if (!endIndex) endIndex = startIndex
-   else if (endIndex < startIndex) {
-      //ensure that startIndex is before endIndex
-      var temp = endIndex
-      endIndex = startIndex
-      startIndex = temp
+
+   state.selection = {
+      bullet: bullet,
+      startIndex: Math.min(startIndex, endIndex),
+      endIndex: Math.max(startIndex, endIndex),
    }
+})
+// #endregion
 
-   return {
-      type: selectBullet.name,
-      bullet,
-      startIndex,
-      endIndex,
-   }
-}
-
-//link menu
-export function showLinkMenu(state: LinkMenuState) {
-   return {
-      type: showLinkMenu.name,
-      state,
-   }
-}
-export function hideLinkMenu() {
-   return {
-      type: hideLinkMenu.name,
-   }
-}
-
-//* REDUCER
-export function contextReducer(state: ContextStateType, action: any): ContextStateType {
-   switch (action.type) {
-      //* panels
-      case toggleActionPanel.name:
-         return {
-            ...state,
-            actionPanel: {
-               ...state.actionPanel,
-               isCollapsed: !state.actionPanel.isCollapsed,
-            },
-         }
-
-      case toggleContentPanel.name:
-         return {
-            ...state,
-            contentPanel: {
-               ...state.contentPanel,
-               isCollapsed: !state.contentPanel.isCollapsed,
-            },
-         }
-
-      case resizeContentPanel.name:
-         var minWidth = window.innerWidth * state.contentPanel.minWidthPercentage
-         var maxWidth = window.innerWidth * state.contentPanel.maxWidthPercentage
-         var newWidth = Math.min(maxWidth, Math.max(minWidth, action.width))
-         return {
-            ...state,
-            contentPanel: {
-               ...state.contentPanel,
-               width: newWidth,
-            },
-         }
-
-      //* note body
-      case loadDocument.name:
-         return {
-            ...state,
-            noteBody: {
-               document: action.document,
-               rootBullet: action.rootBullet,
-               focusedBullets: [...action.rootBullet.children],
-               shouldSave: false,
-               isRootSelected: true,
-               bulletsKeyModifier: state.noteBody.bulletsKeyModifier * -1,
-            },
-         }
-
-      case enqueueSaveDocument.name:
-         return {
-            ...state,
-            noteBody: {
-               ...state.noteBody,
-               shouldSave: true,
-            },
-         }
-
-      case dequeueSaveDocument.name:
-         return {
-            ...state,
-            noteBody: {
-               ...state.noteBody,
-               shouldSave: false,
-            },
-         }
-
-      case documentSaveComplete.name:
-         //? potentially implement subscribing to events and send it out from here
-         return state
-
-      case focusBullet.name:
-         var isRootSelected = action.bullet == state.noteBody.rootBullet
-         var focusedBullets = isRootSelected ? [...action.bullet.children] : [action.bullet]
-         return {
-            ...state,
-            noteBody: {
-               ...state.noteBody,
-               focusedBullets,
-               isRootSelected,
-            },
-         }
-
-      case selectBullet.name:
-         return {
-            ...state,
-            selection: {
-               bullet: action.bullet,
-               startIndex: action.startIndex,
-               endIndex: action.endIndex,
-            },
-         }
-
-      //* Link Menu
-      case showLinkMenu.name:
-         return {
-            ...state,
-            linkMenu: action.state as LinkMenuState,
-         }
-
-      case hideLinkMenu.name:
-         return {
-            ...state,
-            linkMenu: initCtxState.linkMenu,
-         }
-
-      //* default
-      default:
-         return state
-   }
-}
+// #region Link Menu
+export const showLinkMenu = actionify((state: State, linkMenuState: LinkMenuState) => {
+   state.linkMenu = linkMenuState
+})
+export const hideLinkMenu = actionify((state: State) => {
+   state.linkMenu = initCtxState.linkMenu
+})
+// #endregion

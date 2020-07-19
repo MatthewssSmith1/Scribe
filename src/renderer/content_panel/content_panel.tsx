@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react'
 import cx from 'classnames'
 
 import { useContext } from '@/renderer/state/context'
-import { ContextStateType, resizeContentPanel } from '@renderer/state/context_actions'
+import { State, resizeContentPanel } from '@renderer/state/context_actions'
 
 export default function ContentPanel() {
    const [state, dispatch] = useContext()
@@ -39,7 +39,7 @@ export default function ContentPanel() {
    )
 }
 
-function getStyle(state: ContextStateType): React.CSSProperties {
+function getStyle(state: State): React.CSSProperties {
    var { isCollapsed, width } = state.contentPanel
 
    return {
