@@ -1,11 +1,11 @@
 import * as React from 'react'
 
 import Icon from '@renderer/other_components/icon'
-import { useContext } from '@renderer/state/context'
+import { getContext } from '@renderer/state/context'
 import { focusBullet } from '@renderer/state/context_actions'
 
 export default function Breadcrumbs() {
-   var [state, dispatch] = useContext()
+   var {state, dispatch} = getContext()
 
    var elements: Array<JSX.Element> = []
 

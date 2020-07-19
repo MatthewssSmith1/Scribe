@@ -2,14 +2,14 @@ import React, { useRef, useEffect } from 'react'
 
 import cx from 'classnames'
 
-import { useContext } from '@renderer/state/context'
-import { LinkMenuState, hideLinkMenu } from '@renderer/state/context_actions'
+import { getContext, LinkMenuState } from '@renderer/state/context'
+import { hideLinkMenu } from '@renderer/state/context_actions'
 
 import { FromAddress, ToAddress } from '@main/link'
 import WorkspaceManager from '@main/workspace_manager'
 
 export default function LinkMenu() {
-   var [state, dispatch] = useContext()
+   var { state, dispatch } = getContext()
    var domRef = useRef(null)
 
    var linkMenuState: LinkMenuState = state.linkMenu
@@ -84,7 +84,7 @@ function NewPageItem(props: { selectedText: string }): JSX.Element {
 }
 
 function SuggestionItem(props: { name: string; toAddress: ToAddress }): JSX.Element {
-   var [state, dispatch] = useContext()
+   var { state, dispatch } = getContext()
 
    var handleClick = () => {
       var { isHidden, viewportPos, bulletWithSelection, selectionBounds, selectedText, suggestedLinks }: LinkMenuState = state.linkMenu

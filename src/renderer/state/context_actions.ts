@@ -1,60 +1,8 @@
+import { actionify, State, LinkMenuState, initialState } from '@renderer/state/context';
+
 import Document from '@main/document'
 import Bullet from '@main/bullet'
-import { ToAddress } from '@main/link'
 
-//* STATE
-export const initCtxState = {
-   actionPanel: {
-      isCollapsed: true,
-      width: 224,
-   },
-   contentPanel: {
-      isCollapsed: true,
-      width: 350,
-      minWidthPercentage: 0.2,
-      maxWidthPercentage: 0.6,
-   },
-   noteBody: {
-      document: null as Document,
-      rootBullet: null as Bullet,
-      focusedBullets: null as Array<Bullet>,
-      shouldSave: null as boolean,
-      isRootSelected: null as boolean,
-      bulletsKeyModifier: 1,
-   },
-   linkMenu: {
-      isHidden: true,
-      viewportPos: null as [number, number],
-      bulletWithSelection: null as Bullet,
-      selectionBounds: null as [number, number],
-      selectedText: null as string,
-      suggestedLinks: null as Array<[string, ToAddress]>,
-   },
-   selection: {
-      bullet: null as Bullet,
-      startIndex: null as number,
-      endIndex: null as number,
-   },
-}
-export type State = typeof initCtxState
-export type LinkMenuState = typeof initCtxState.linkMenu
-export type NoteBodyState = typeof initCtxState.noteBody
-export type SelectionState = typeof initCtxState.selection
-
-export type Action = (s: State) => void
-
-function actionify<T extends any[]>(callback: (state: State, ...restParams: T) => void): (...t: T) => Action {
-   return (...params: T) => state => callback(state, ...params)
-}
-
-export const contextReducer = (state: State, action: Action): State => {
-   var newState = { ...state }
-   action(newState)
-   return newState
-}
-
-//* ACTIONS///
-//* //////////
 // #region Panels
 export const toggleActionPanel = actionify((state: State) => {
    state.actionPanel.isCollapsed = !state.actionPanel.isCollapsed
@@ -125,6 +73,6 @@ export const showLinkMenu = actionify((state: State, linkMenuState: LinkMenuStat
    state.linkMenu = linkMenuState
 })
 export const hideLinkMenu = actionify((state: State) => {
-   state.linkMenu = initCtxState.linkMenu
+   state.linkMenu = initialState.linkMenu
 })
 // #endregion

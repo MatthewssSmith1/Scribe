@@ -1,15 +1,18 @@
 import * as React from 'react'
+
+import { Context, LinkMenuState } from '@renderer/state/context'
+import { showLinkMenu, selectBullet } from '@renderer/state/context_actions'
+
 import Bullet from '@main/bullet'
-import { ContextStateType, ContextDispatchType } from '@renderer/state/context'
-import { LinkMenuState, showLinkMenu, selectBullet } from '@renderer/state/context_actions'
 import WorkspaceManager from '@main/workspace_manager'
 
 type KeyEvent = React.KeyboardEvent<HTMLDivElement>
 
-export default function handleKeyPress(state: ContextStateType, dispatch: ContextDispatchType, evt: KeyEvent, bullet: Bullet) {
-   //TODO make enter with selection not collapsed start linking process
+//TODO make enter with selection not collapsed start linking process
 
-   //TODO handle focused bullet list on enter/backspace and move left/right
+//TODO handle focused bullet list on enter/backspace and move left/right
+export default function handleKeyPress(context: Context, evt: KeyEvent, bullet: Bullet) {
+   var { state, dispatch } = context
 
    var selection = window.getSelection()
 

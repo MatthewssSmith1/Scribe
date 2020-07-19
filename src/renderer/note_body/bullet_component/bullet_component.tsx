@@ -8,9 +8,9 @@ import Bullet from '@/main/bullet'
 import Icon from '@/renderer/other_components/icon'
 import handleKeyPress from '@renderer/note_body/bullet_component/key_press'
 
-import { useContext, useContextDispatchAsync } from '@/renderer/state/context'
+import { getContext } from '@/renderer/state/context'
 import { enqueueSaveDocument, focusBullet, selectBullet } from '@/renderer/state/context_actions'
-import { loadDocumentByID } from '../../state/context_actions_async'
+import { loadDocumentByID } from '@renderer/state/context_actions_async'
 
 /*
    bullet
@@ -58,8 +58,8 @@ class BulletComponent extends React.Component {
 }
 
 var BulletLine = (props: { bullet: Bullet }) => {
-   const [state, dispatch] = useContext()
-   const dispatchAsync = useContextDispatchAsync()
+   const context = getContext()
+   const { state, dispatch, dispatchAsync } = context
    const contentEditableRef = useRef<HTMLDivElement>(null)
 
    var { bullet } = props
@@ -201,11 +201,11 @@ var BulletLine = (props: { bullet: Bullet }) => {
             />
          </div>
          <ContentEditable
-            className={cx('bullet__line__editable', { childless: props.bullet.isChildless })}
+            className={cx('bullet__line__editable', { childless: bullet.isChildless })}
             innerRef={contentEditableRef}
-            html={props.bullet.text}
+            html={bullet.text}
             onChange={handleTextChange}
-            onKeyDown={(evt: any) => handleKeyPress(state, dispatch, evt, props.bullet)}
+            onKeyDown={(evt: any) => handleKeyPress(context, evt, bullet)}
             onClick={handleEditableClick}
          />
       </div>

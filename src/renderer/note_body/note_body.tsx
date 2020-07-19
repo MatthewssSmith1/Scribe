@@ -3,15 +3,13 @@ import React, { useState, useEffect, memo } from 'react'
 import BulletComponent from '@renderer/note_body/bullet_component/bullet_component'
 import Breadcrumbs from '@renderer/note_body/breadcrumbs/breadcrumbs'
 
-import { useContextState, useContextDispatchAsync, ContextStateType } from '@/renderer/state/context'
-import { NoteBodyState } from '@renderer/state/context_actions'
+import { getContext, NoteBodyState, State } from '@/renderer/state/context'
 import { loadInitDocument, trySaveDocument } from '@renderer/state/context_actions_async'
 import { useInterval } from '@renderer/state/hooks'
 
 var NoteBody = memo(() => {
    var [isInit, setIsInit] = useState(() => false)
-   const state = useContextState()
-   const dispatchAsync = useContextDispatchAsync()
+   const { state, dispatchAsync } = getContext()
 
    if (!isInit) {
       setIsInit(true)
@@ -29,7 +27,7 @@ var NoteBody = memo(() => {
 
    // check to save the document every 3 seconds
    // TODO actually implement saving
-   useInterval(() => dispatchAsync(trySaveDocument), 3000)
+   useInterval(() => dispatchAsync(trySaveDocument()), 3000)
 
    return (
       <div className="note-body" style={getStyle(state)}>
@@ -39,7 +37,7 @@ var NoteBody = memo(() => {
    )
 })
 
-function getStyle(state: ContextStateType): React.CSSProperties {
+function getStyle(state: State): React.CSSProperties {
    var rightProp = state.contentPanel.isCollapsed ? 0 : state.contentPanel.width
    var leftProp = state.actionPanel.isCollapsed ? 0 : state.actionPanel.width
 
@@ -50,7 +48,7 @@ function getStyle(state: ContextStateType): React.CSSProperties {
 }
 
 function TitleOrBreadCrumbs() {
-   const state = useContextState()
+   const {state} = getContext()
 
    var { document, isRootSelected } = state.noteBody
 

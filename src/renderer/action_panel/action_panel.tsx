@@ -2,12 +2,12 @@ import * as React from 'react'
 import Icon from '@/renderer/other_components/icon'
 import cx from 'classnames'
 
-import { useContextState, useContextDispatch } from '@/renderer/state/context'
+import { getContext } from '@/renderer/state/context'
 import { toggleActionPanel, toggleContentPanel } from '@/renderer/state/context_actions'
 
 //the panel on the left of the document body that can be collapsed/expanded
 export default function ActionPanel() {
-   const state = useContextState()
+   const {state} = getContext()
    var { isCollapsed, width } = state.actionPanel
 
    var style = {
@@ -27,7 +27,7 @@ export default function ActionPanel() {
 
 //the row of buttons at the top of the action panel (excluding the search icon, which is rendered above this row and by the SearchBar component)
 var ButtonRow = () => {
-   var dispatch = useContextDispatch()
+   const {dispatch} = getContext()
 
    return (
       <div className="button-row">
