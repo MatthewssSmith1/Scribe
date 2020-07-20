@@ -41,6 +41,15 @@ $action-panel__search-bar-anim: 200ms ease-in;
    cursor: default;
 }
 
+*,
+*::after,
+*::before {
+   -webkit-user-select: none;
+   -webkit-user-drag: none;
+   -webkit-app-region: no-drag;
+   cursor: default;
+}
+
 #root {
    position: absolute;
    top: 0;

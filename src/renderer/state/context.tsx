@@ -46,21 +46,25 @@ export type SelectionState = typeof initialState.selection
 
 // #region Type Definitions
 export type Action = (s: State) => void
-export type AsyncAction = (c: Context) => Promise<void>
+export type AsyncAction = (d: Dispatch) => void
+
+export type Dispatch = (a: Action) => void
+export type DispatchAsync = (a: AsyncAction) => void
+
 export type Context = {
    state: State
-   dispatch: React.Dispatch<Action>
-   dispatchAsync: (a: AsyncAction) => void
+   dispatch: Dispatch
+   dispatchAsync: DispatchAsync
 }
 // #endregion
 
 // #region Action Creators
-export function actionify<T extends any[]>(callback: (state: State, ...restParams: T) => void): (...t: T) => Action {
-   return (...params: T) => state => callback(state, ...params)
+export function createAction<T extends any[]>(callback: (state: State, ...restParams: T) => void): (...t: T) => Action {
+   return (...params: T) => (state: State) => callback(state, ...params)
 }
 
-export function actionifyAsync<T extends any[]>(callback: (context: Context, ...restParams: T) => Promise<void>): (...t: T) => AsyncAction {
-   return (...params: T) => ctx => callback(ctx, ...params)
+export function createActionAsync<T extends any[]>(callback: (d: Dispatch, ...restParams: T) => Promise<void>): (...t: T) => AsyncAction {
+   return (...params: T) => (d: Dispatch) => callback(d, ...params)
 }
 //#endregion
 
@@ -78,16 +82,19 @@ export const ContextProvider = ({ children }) => {
 
    const [state, dispatch] = React.useReducer(contextReducer, initialState)
 
-   //initialized to null so ctx can be passed into its own dispatchAsync
-   //TODO make dispatch handle both Actions and AsyncActions
-   var ctx: Context = null
-   ctx = {
-      state,
-      dispatch,
-      dispatchAsync: (action: AsyncAction) => action(ctx),
-   }
+   var dispatchAsync = (asyncAction: AsyncAction) => asyncAction(dispatch)
 
-   return <GlobalContext.Provider value={ctx}>{children}</GlobalContext.Provider>
+   return (
+      <GlobalContext.Provider
+         value={{
+            state,
+            dispatch,
+            dispatchAsync,
+         }}
+      >
+         {children}
+      </GlobalContext.Provider>
+   )
 }
 
 //called within components that are children of ContextProvider and returns the context

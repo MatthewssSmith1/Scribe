@@ -5,6 +5,7 @@ import { showLinkMenu, selectBullet } from '@renderer/state/context_actions'
 
 import Bullet from '@main/bullet'
 import WorkspaceManager from '@main/workspace_manager'
+import { focusBullet } from '../../state/context_actions'
 
 type KeyEvent = React.KeyboardEvent<HTMLDivElement>
 
@@ -15,6 +16,43 @@ export default function handleKeyPress(context: Context, evt: KeyEvent, bullet: 
    var { state, dispatch } = context
 
    var selection = window.getSelection()
+
+   var doesSelectionContainSpan = (): boolean => {
+      return (
+         selection.anchorNode.parentElement.tagName == 'SPAN' ||
+         selection.focusNode.parentElement.tagName == 'SPAN' ||
+         selection.getRangeAt(0).cloneContents().querySelector('span') != null
+      )
+   }
+
+   var getRawTextIndex = (fromAnchor: boolean): number => {
+         var index: number = fromAnchor ? selection.anchorOffset : selection.focusOffset
+
+         var node: Node = fromAnchor ? selection.anchorNode : selection.focusNode
+
+         //traverse up the DOM until at an element that is a child of the contenteditable div
+         while (node.parentElement.tagName != 'DIV') {
+            //add the length of the opening tag to the caretPos
+            index += node.parentElement.outerHTML.indexOf('>') + 1
+
+            node = node.parentElement
+         }
+
+         //traverse across the DOM for each sibling before the node from the previous while loop
+         while (node.previousSibling != null) {
+            node = node.previousSibling
+
+            //add the length of the node (either the textContent of text nodes or the html string of elements) to the caret pos
+            if (node.nodeType == Node.TEXT_NODE) {
+               index += node.textContent.length
+            } else {
+               index += (node as HTMLElement).outerHTML.length
+            }
+         }
+
+         return index
+
+   }
 
    const rebuildAndPreventDefault = () => {
       //rebuild tree
@@ -30,73 +68,12 @@ export default function handleKeyPress(context: Context, evt: KeyEvent, bullet: 
       //prevent default enter behavior no matter what
       evt.preventDefault()
 
-      // if any part of the selected text is in a span link, do nothing
-      if (
-         selection.anchorNode.parentElement.tagName == 'SPAN' ||
-         selection.focusNode.parentElement.tagName == 'SPAN' ||
-         selection.getRangeAt(0).cloneContents().querySelector('span') != null
-      )
-         return
+      // if any part of the selected text is in a span link, return
+      if (doesSelectionContainSpan()) return
 
-      //TODO move this behavior to bullet
-      var getAnchorIndex = (): number => {
-         var anchorIndex: number = selection.anchorOffset
 
-         var node: Node = selection.anchorNode
-
-         //traverse up the DOM until at an element that is a child of the contenteditable div
-         while (node.parentElement.tagName != 'DIV') {
-            //add the length of the opening tag to the caretPos
-            anchorIndex += node.parentElement.outerHTML.indexOf('>') + 1
-
-            node = node.parentElement
-         }
-
-         //traverse across the DOM for each sibling before the node from the previous while loop
-         while (node.previousSibling != null) {
-            node = node.previousSibling
-
-            //add the length of the node (either the textContent of text nodes or the html string of elements) to the caret pos
-            if (node.nodeType == Node.TEXT_NODE) {
-               anchorIndex += node.textContent.length
-            } else {
-               anchorIndex += (node as HTMLElement).outerHTML.length
-            }
-         }
-
-         return anchorIndex
-      }
-
-      var getFocusIndex = (): number => {
-         var focusIndex: number = selection.focusOffset
-
-         var node: Node = selection.focusNode
-
-         //traverse up the DOM until at an element that is a child of the contenteditable div
-         while (node.parentElement.tagName != 'DIV') {
-            //add the length of the opening tag to the caretPos
-            focusIndex += node.parentElement.outerHTML.indexOf('>') + 1
-
-            node = node.parentElement
-         }
-
-         //traverse across the DOM for each sibling before the node from the previous while loop
-         while (node.previousSibling != null) {
-            node = node.previousSibling
-
-            //add the length of the node (either the textContent of text nodes or the html string of elements) to the caret pos
-            if (node.nodeType == Node.TEXT_NODE) {
-               focusIndex += node.textContent.length
-            } else {
-               focusIndex += (node as HTMLElement).outerHTML.length
-            }
-         }
-
-         return focusIndex
-      }
-
-      var selectionStartIndex = getAnchorIndex()
-      var selectionEndIndex = getFocusIndex()
+      var selectionStartIndex = getRawTextIndex(true)
+      var selectionEndIndex = getRawTextIndex(false)
 
       //ensure start index is before end index
       if (selectionStartIndex > selectionEndIndex) {
@@ -107,10 +84,14 @@ export default function handleKeyPress(context: Context, evt: KeyEvent, bullet: 
 
       if (selection.isCollapsed) {
          var textBeforeCaret = bullet.text.substring(0, selectionStartIndex)
-         var textAfterCaret = bullet.text.substring(selectionStartIndex).trim() //? the trim should be unnecessary
+         var textAfterCaret = bullet.text.substring(selectionStartIndex).trim()
 
          bullet.addSibling(-1, new Bullet(textBeforeCaret))
          bullet.text = textAfterCaret
+
+         if (state.noteBody.isRootSelected && state.noteBody.rootBullet == bullet.parent) {
+            dispatch(focusBullet(state.noteBody.rootBullet))
+         }
 
          dispatch(selectBullet(bullet, 0))
          bullet.parent.updateComponent()
@@ -149,6 +130,10 @@ export default function handleKeyPress(context: Context, evt: KeyEvent, bullet: 
 
          //concat the two bullets
          bullet.text = sibling.remove().text + bullet.text
+
+         if (state.noteBody.isRootSelected && state.noteBody.rootBullet == bullet.parent) {
+            dispatch(focusBullet(state.noteBody.rootBullet))
+         }
       }
 
       rebuildAndPreventDefault()

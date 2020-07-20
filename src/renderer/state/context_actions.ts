@@ -1,18 +1,18 @@
-import { actionify, State, LinkMenuState, initialState } from '@renderer/state/context';
+import { createAction, State, LinkMenuState, initialState } from '@renderer/state/context';
 
 import Document from '@main/document'
 import Bullet from '@main/bullet'
 
 // #region Panels
-export const toggleActionPanel = actionify((state: State) => {
+export const toggleActionPanel = createAction((state: State) => {
    state.actionPanel.isCollapsed = !state.actionPanel.isCollapsed
 })
 
-export const toggleContentPanel = actionify((state: State) => {
+export const toggleContentPanel = createAction((state: State) => {
    state.contentPanel.isCollapsed = !state.contentPanel.isCollapsed
 })
 
-export const resizeContentPanel = actionify((state: State, width: number) => {
+export const resizeContentPanel = createAction((state: State, width: number) => {
    var windowWidth = window.innerWidth
    var { minWidthPercentage, maxWidthPercentage } = state.contentPanel
 
@@ -24,7 +24,7 @@ export const resizeContentPanel = actionify((state: State, width: number) => {
 // #endregion
 
 // #region Note Body
-export const loadDocument = actionify((state: State, document: Document, rootBullet: Bullet) => {
+export const loadDocument = createAction((state: State, document: Document, rootBullet: Bullet) => {
    state.noteBody = {
       document: document,
       rootBullet: rootBullet,
@@ -34,17 +34,17 @@ export const loadDocument = actionify((state: State, document: Document, rootBul
       bulletsKeyModifier: state.noteBody.bulletsKeyModifier * -1,
    }
 })
-export const enqueueSaveDocument = actionify((state: State) => {
+export const enqueueSaveDocument = createAction((state: State) => {
    state.noteBody.shouldSave = true
 })
-export const dequeueSaveDocument = actionify((state: State) => {
+export const dequeueSaveDocument = createAction((state: State) => {
    state.noteBody.shouldSave = false
 })
-export const documentSaveComplete = actionify((state: State) => {
+export const documentSaveComplete = createAction((state: State) => {
    //? potentially implement subscribing to events and send it out from here
    state = state
 })
-export const focusBullet = actionify((state: State, bullet: Bullet) => {
+export const focusBullet = createAction((state: State, bullet: Bullet) => {
    var isRootSelected = bullet == state.noteBody.rootBullet
    var focusedBullets = isRootSelected ? [...bullet.children] : [bullet]
 
@@ -57,7 +57,7 @@ export const focusBullet = actionify((state: State, bullet: Bullet) => {
 // #endregion
 
 // #region Selection
-export const selectBullet = actionify((state: State, bullet: Bullet, startIndex: number = 0, endIndex?: number) => {
+export const selectBullet = createAction((state: State, bullet: Bullet, startIndex: number = 0, endIndex?: number) => {
    if (!endIndex) endIndex = startIndex
 
    state.selection = {
@@ -69,10 +69,10 @@ export const selectBullet = actionify((state: State, bullet: Bullet, startIndex:
 // #endregion
 
 // #region Link Menu
-export const showLinkMenu = actionify((state: State, linkMenuState: LinkMenuState) => {
+export const showLinkMenu = createAction((state: State, linkMenuState: LinkMenuState) => {
    state.linkMenu = linkMenuState
 })
-export const hideLinkMenu = actionify((state: State) => {
+export const hideLinkMenu = createAction((state: State) => {
    state.linkMenu = initialState.linkMenu
 })
 // #endregion

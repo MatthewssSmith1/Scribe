@@ -12,16 +12,6 @@ import { getContext } from '@/renderer/state/context'
 import { enqueueSaveDocument, focusBullet, selectBullet } from '@/renderer/state/context_actions'
 import { loadDocumentByID } from '@renderer/state/context_actions_async'
 
-/*
-   bullet
-      bullet__line
-         bullet__line__drop-down
-         bullet__line__dot-container
-            bullet__line__dot-container__dot
-         bullet__line__editable
-      bullet__children-container
-*/
-
 class BulletComponent extends React.Component {
    props: { bullet: Bullet }
 
@@ -137,9 +127,14 @@ var BulletLine = (props: { bullet: Bullet }) => {
    var handleTextChange = (evt: ContentEditableEvent) => {
       if (evt.type !== 'input') return
 
+      //prevent standard undo/redo behavior
+      var value = evt.target.value
+      document.execCommand('undo')
+      //at this point evt.target.value is in the state it was before this change
+      evt.target.value = value
+
       // maintain selection when rebuilding
       //TODO move the anchor/focus caret pos functions from key_press to a more general location and use it here
-      console.log(window.getSelection().anchorOffset)
       //! bullet.selectComponent(window.getSelection().anchorOffset)
 
       var str = evt.target.value
@@ -150,7 +145,7 @@ var BulletLine = (props: { bullet: Bullet }) => {
          var div = contentEditableRef.current as HTMLDivElement
          div.innerHTML = str
       }
-      props.bullet.text = str
+      bullet.text = str
 
       dispatch(enqueueSaveDocument())
    }

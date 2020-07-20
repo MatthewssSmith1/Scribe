@@ -87,7 +87,7 @@ function SuggestionItem(props: { name: string; toAddress: ToAddress }): JSX.Elem
    var { state, dispatch } = getContext()
 
    var handleClick = () => {
-      var { isHidden, viewportPos, bulletWithSelection, selectionBounds, selectedText, suggestedLinks }: LinkMenuState = state.linkMenu
+      var { bulletWithSelection, selectionBounds, selectedText }: LinkMenuState = state.linkMenu
 
       var fromAddress: FromAddress = {
          documentId: state.noteBody.document.metaData.id,
@@ -101,13 +101,10 @@ function SuggestionItem(props: { name: string; toAddress: ToAddress }): JSX.Elem
       var textBeforeSelection = bulletWithSelection.text.substr(0, selectionBounds[0])
       var textAfterSelection = bulletWithSelection.text.substr(selectionBounds[1])
 
-      console.log(textBeforeSelection)
-
       //surrounds the selected text with a span tag
       bulletWithSelection.text = textBeforeSelection + `<span data-link-id="${link.id}">` + selectedText + '</span>' + textAfterSelection
 
       //set cursor to the end of the selection and rebuild it
-      console.log(selectionBounds[1])
       //! bulletWithSelection.selectComponent(selectionBounds[1])
       state.noteBody.rootBullet.updateComponent()
 

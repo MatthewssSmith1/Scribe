@@ -4,7 +4,7 @@ import BulletComponent from '@renderer/note_body/bullet_component/bullet_compone
 import Breadcrumbs from '@renderer/note_body/breadcrumbs/breadcrumbs'
 
 import { getContext, NoteBodyState, State } from '@/renderer/state/context'
-import { loadInitDocument, trySaveDocument } from '@renderer/state/context_actions_async'
+import { trySaveDocument, loadDocumentByID } from '@renderer/state/context_actions_async'
 import { useInterval } from '@renderer/state/hooks'
 
 var NoteBody = memo(() => {
@@ -14,7 +14,7 @@ var NoteBody = memo(() => {
    if (!isInit) {
       setIsInit(true)
 
-      dispatchAsync(loadInitDocument())
+      dispatchAsync(loadDocumentByID(-115310742))
 
       document.addEventListener('keydown', (e: KeyboardEvent) => {
          if (e.key == 'Control') document.body.classList.add('ctrl-is-pressed')
@@ -48,7 +48,7 @@ function getStyle(state: State): React.CSSProperties {
 }
 
 function TitleOrBreadCrumbs() {
-   const {state} = getContext()
+   const { state } = getContext()
 
    var { document, isRootSelected } = state.noteBody
 
