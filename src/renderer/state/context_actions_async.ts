@@ -1,4 +1,4 @@
-import { Context, createActionAsync, Dispatch } from '@renderer/state/context'
+import { State, createActionAsync, Dispatch } from '@renderer/state/context'
 
 import { loadDocument, dequeueSaveDocument } from '@renderer/state/context_actions'
 
@@ -6,7 +6,7 @@ import WorkspaceManager from '@main/workspace_manager'
 // import { writeFileSync } from 'fs'
 // import Link, { FromAddress, ToAddress } from '@/main/link'
 
-export const loadDocumentByID = createActionAsync(async (dispatch: Dispatch, id: number) => {
+export const loadDocumentByID = createActionAsync(async (state: State, dispatch: Dispatch, id: number) => {
    dispatch(dequeueSaveDocument())
 
    if (!WorkspaceManager.isInitialized) await WorkspaceManager.init()
@@ -21,10 +21,13 @@ export const loadDocumentByID = createActionAsync(async (dispatch: Dispatch, id:
    dispatch(loadDocument(doc, doc.toBullet()))
 })
 
-export const trySaveDocument = createActionAsync(async (dispatch: Dispatch) => {
-   //TODO implement saving
-   // var { rootBullet, document, shouldSave } = context.state.noteBody
-   // if (!shouldSave) return
+export const trySaveDocument = createActionAsync(async (state: State, dispatch: Dispatch) => {
+   var { rootBullet, document, shouldSave } = state.noteBody
+   if (!shouldSave) return
+   dispatch(dequeueSaveDocument())
+
+   console.log('saved')
+
    // var textFilePath = WorkspaceManager.workspacePath + document.name + '.txt'
    // writeFileSync(textFilePath, rootBullet.toString())
    // context.dispatch(documentSaveComplete())

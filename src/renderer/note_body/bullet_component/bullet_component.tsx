@@ -127,24 +127,25 @@ var BulletLine = (props: { bullet: Bullet }) => {
    var handleTextChange = (evt: ContentEditableEvent) => {
       if (evt.type !== 'input') return
 
-      //prevent standard undo/redo behavior
-      var value = evt.target.value
-      document.execCommand('undo')
-      //at this point evt.target.value is in the state it was before this change
-      evt.target.value = value
+      // //prevent standard undo/redo behavior
+      // var value = evt.target.value
+      // document.execCommand('undo')
+      // //at this point evt.target.value is in the state it was before this change
+      // evt.target.value = value
 
       // maintain selection when rebuilding
       //TODO move the anchor/focus caret pos functions from key_press to a more general location and use it here
-      //! bullet.selectComponent(window.getSelection().anchorOffset)
+      // ! bullet.selectComponent(window.getSelection().anchorOffset)
+      // dispatch(selectBullet(bullet, window.getS))
 
       var str = evt.target.value
 
-      if (str.charAt(str.length - 1) == '\n') {
-         str = str.slice(0, -1)
+      // if (str.charAt(str.length - 1) == '\n') {
+      //    str = str.slice(0, -1)
 
-         var div = contentEditableRef.current as HTMLDivElement
-         div.innerHTML = str
-      }
+      //    var div = contentEditableRef.current as HTMLDivElement
+      //    div.innerHTML = str
+      // }
       bullet.text = str
 
       dispatch(enqueueSaveDocument())
