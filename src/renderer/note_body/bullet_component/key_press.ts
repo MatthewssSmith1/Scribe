@@ -9,6 +9,36 @@ import { focusBullet } from '../../state/context_actions'
 
 type KeyEvent = React.KeyboardEvent<HTMLDivElement>
 
+export const getRawTextIndex = (fromAnchor: boolean): number => {
+   var selection = window.getSelection()
+
+   var index: number = fromAnchor ? selection.anchorOffset : selection.focusOffset
+
+   var node: Node = fromAnchor ? selection.anchorNode : selection.focusNode
+
+   //traverse up the DOM until at an element that is a child of the contenteditable div
+   while (node.parentElement.tagName != 'DIV') {
+      //add the length of the opening tag to the caretPos
+      index += node.parentElement.outerHTML.indexOf('>') + 1
+
+      node = node.parentElement
+   }
+
+   //traverse across the DOM for each sibling before the node from the previous while loop
+   while (node.previousSibling != null) {
+      node = node.previousSibling
+
+      //add the length of the node (either the textContent of text nodes or the html string of elements) to the caret pos
+      if (node.nodeType == Node.TEXT_NODE) {
+         index += node.textContent.length
+      } else {
+         index += (node as HTMLElement).outerHTML.length
+      }
+   }
+
+   return index
+}
+
 //TODO make enter with selection not collapsed start linking process
 
 //TODO handle focused bullet list on enter/backspace and move left/right
@@ -23,35 +53,6 @@ export default function handleKeyPress(context: Context, evt: KeyEvent, bullet: 
          selection.focusNode.parentElement.tagName == 'SPAN' ||
          selection.getRangeAt(0).cloneContents().querySelector('span') != null
       )
-   }
-
-   var getRawTextIndex = (fromAnchor: boolean): number => {
-         var index: number = fromAnchor ? selection.anchorOffset : selection.focusOffset
-
-         var node: Node = fromAnchor ? selection.anchorNode : selection.focusNode
-
-         //traverse up the DOM until at an element that is a child of the contenteditable div
-         while (node.parentElement.tagName != 'DIV') {
-            //add the length of the opening tag to the caretPos
-            index += node.parentElement.outerHTML.indexOf('>') + 1
-
-            node = node.parentElement
-         }
-
-         //traverse across the DOM for each sibling before the node from the previous while loop
-         while (node.previousSibling != null) {
-            node = node.previousSibling
-
-            //add the length of the node (either the textContent of text nodes or the html string of elements) to the caret pos
-            if (node.nodeType == Node.TEXT_NODE) {
-               index += node.textContent.length
-            } else {
-               index += (node as HTMLElement).outerHTML.length
-            }
-         }
-
-         return index
-
    }
 
    const rebuildAndPreventDefault = () => {
@@ -70,7 +71,6 @@ export default function handleKeyPress(context: Context, evt: KeyEvent, bullet: 
 
       // if any part of the selected text is in a span link, return
       if (doesSelectionContainSpan()) return
-
 
       var selectionStartIndex = getRawTextIndex(true)
       var selectionEndIndex = getRawTextIndex(false)

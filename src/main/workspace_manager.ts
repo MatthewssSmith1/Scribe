@@ -58,6 +58,21 @@ export default class WorkspaceManager {
       })
 
       this.documents = documentNames.map(docName => new Document(docName))
+
+      this.documents.forEach(fromDoc =>
+         fromDoc.linksFromThis.forEach(lnk => {
+            var toDocID = lnk.to.documentId
+            var toDoc = this.documents.find(d => d.metaData.id == toDocID)
+
+            if (toDoc == undefined) {
+               console.warn(`the to docId on a link loaded from a meta file does not point to a document`)
+            } else {
+               toDoc.linksToThis.push(lnk)
+            }
+         })
+      )
+
+      console.log(this.documents)
    }
 
    static loadConfig() {
@@ -90,13 +105,23 @@ export default class WorkspaceManager {
       var link = new Link(this.newLinkID, { ...from }, { ...to })
 
       //find document that the link is from
-      var docID = from.documentId
-      var doc = this.documents.find(d => d.metaData.id == docID)
+      var fromDocID = from.documentId
+      var fromDoc = this.documents.find(d => d.metaData.id == fromDocID)
 
-      if (doc == undefined) {
+      if (fromDoc == undefined) {
          console.warn(`the from docId on a link created by WorkspaceManager.createLink() does not point to a document`)
       } else {
-         doc.linksFromThis.push(link)
+         fromDoc.linksFromThis.push(link)
+      }
+
+      //find document that the link is to
+      var toDocID = from.documentId
+      var toDoc = this.documents.find(d => d.metaData.id == toDocID)
+
+      if (toDoc == undefined) {
+         console.warn(`the to docId on a link created by WorkspaceManager.createLink() does not point to a document`)
+      } else {
+         toDoc.linksToThis.push(link)
       }
 
       return link

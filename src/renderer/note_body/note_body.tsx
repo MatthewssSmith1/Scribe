@@ -23,6 +23,9 @@ var NoteBody = memo(() => {
       document.addEventListener('keyup', (e: KeyboardEvent) => {
          if (e.key == 'Control') document.body.classList.remove('ctrl-is-pressed')
       })
+
+      document.body.ondragstart = () => false
+      document.body.ondrop = () => false
    }
 
    // check to save the document every 3 seconds

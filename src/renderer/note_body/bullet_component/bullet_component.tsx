@@ -6,7 +6,7 @@ import cx from 'classnames'
 import Link from '@main/link'
 import Bullet from '@/main/bullet'
 import Icon from '@/renderer/other_components/icon'
-import handleKeyPress from '@renderer/note_body/bullet_component/key_press'
+import handleKeyPress, { getRawTextIndex } from '@renderer/note_body/bullet_component/key_press'
 
 import { getContext } from '@/renderer/state/context'
 import { enqueueSaveDocument, focusBullet, selectBullet } from '@/renderer/state/context_actions'
@@ -138,7 +138,7 @@ var BulletLine = (props: { bullet: Bullet }) => {
       // ! bullet.selectComponent(window.getSelection().anchorOffset)
       // dispatch(selectBullet(bullet, window.getS))
 
-      var str = evt.target.value
+      // var str = evt.target.value
 
       // if (str.charAt(str.length - 1) == '\n') {
       //    str = str.slice(0, -1)
@@ -146,9 +146,10 @@ var BulletLine = (props: { bullet: Bullet }) => {
       //    var div = contentEditableRef.current as HTMLDivElement
       //    div.innerHTML = str
       // }
-      bullet.text = str
+      bullet.text = evt.target.value
 
       dispatch(enqueueSaveDocument())
+      dispatch(selectBullet(bullet, getRawTextIndex(true)))
    }
 
    // expand/collapse the children of this bullet by toggling the chevron button to the left of the bullet

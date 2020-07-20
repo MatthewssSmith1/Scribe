@@ -8,6 +8,10 @@ export default class Bullet {
    set text(text: string) {
       this.enqueueRebuild()
 
+      while (text.charAt(text.length - 1) === '\n') {
+         text = text.slice(0, -1)
+      }
+
       this._text = text
    }
    // #endregion
@@ -58,7 +62,7 @@ export default class Bullet {
       return this.toStringList().join('\n')
    }
 
-   toStringList(strList: Array<string> = [], depth: number = 0): Array<string> {
+   toStringList(strList: Array<string> = [], depth: number = -1): Array<string> {
       const childrenDepth = depth + 1
       this.children.forEach(c => {
          strList.push('\t'.repeat(childrenDepth) + c._text)

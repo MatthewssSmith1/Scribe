@@ -3,7 +3,8 @@ import React, { useRef, useEffect } from 'react'
 import cx from 'classnames'
 
 import { getContext, LinkMenuState } from '@renderer/state/context'
-import { hideLinkMenu } from '@renderer/state/context_actions'
+import { hideLinkMenu, enqueueSaveDocument } from '@renderer/state/context_actions'
+import { trySaveDocument } from '@renderer/state/context_actions_async'
 
 import { FromAddress, ToAddress } from '@main/link'
 import WorkspaceManager from '@main/workspace_manager'
@@ -84,7 +85,7 @@ function NewPageItem(props: { selectedText: string }): JSX.Element {
 }
 
 function SuggestionItem(props: { name: string; toAddress: ToAddress }): JSX.Element {
-   var { state, dispatch } = getContext()
+   var { state, dispatch, dispatchAsync } = getContext()
 
    var handleClick = () => {
       var { bulletWithSelection, selectionBounds, selectedText }: LinkMenuState = state.linkMenu
@@ -110,6 +111,8 @@ function SuggestionItem(props: { name: string; toAddress: ToAddress }): JSX.Elem
 
       //hide this menu
       dispatch(hideLinkMenu())
+
+      dispatchAsync(trySaveDocument(true))
 
       //TODO save at end
       // NoteBody.queueSaveDocument(true)
