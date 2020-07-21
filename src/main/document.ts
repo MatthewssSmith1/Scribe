@@ -22,11 +22,9 @@ export default class Document {
       var metaFilePath = WorkspaceManager.workspacePath + `${_name}.meta`
       if (existsSync(metaFilePath)) this.metaData = yaml.safeLoad(readFileSync(metaFilePath, 'utf8'))
       else this.generateMetaData()
-
-      var id = this.metaData.id
-      this.linksFromThis = this.metaData.linksFromThisStrings.map(lnkStr => Link.fromString(lnkStr))
    }
 
+   //creates .meta file for documents that are missing one
    private generateMetaData() {
       var hashCode = (str: string) => {
          var hash = 0

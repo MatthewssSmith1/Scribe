@@ -1,9 +1,9 @@
-import { State, createActionAsync, Dispatch } from '@renderer/state/context'
-
-import { loadDocument, dequeueSaveDocument, documentSaveComplete } from '@renderer/state/context_actions'
-
-import WorkspaceManager from '@main/workspace_manager'
 import { writeFileSync } from 'fs'
+
+import { State, createActionAsync, Dispatch } from '@renderer/state/context'
+import { loadDocument, dequeueSaveDocument, documentSaveComplete } from '@renderer/state/context_actions'
+import WorkspaceManager from '@main/workspace_manager'
+import Document from '@main/document'
 
 export const loadDocumentByID = createActionAsync(async (state: State, dispatch: Dispatch, id: number) => {
    dispatch(dequeueSaveDocument())
@@ -18,6 +18,12 @@ export const loadDocumentByID = createActionAsync(async (state: State, dispatch:
    }
 
    dispatch(loadDocument(doc, doc.toBullet()))
+})
+
+export const loadDocumentAsync = createActionAsync(async (state: State, dispatch: Dispatch, document: Document) => {
+   dispatch(dequeueSaveDocument())
+
+   dispatch(loadDocument(document, document.toBullet()))
 })
 
 export const trySaveDocument = createActionAsync(async (state: State, dispatch: Dispatch, forceSave: boolean = false) => {

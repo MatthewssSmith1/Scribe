@@ -22,12 +22,12 @@ export default class WorkspaceManager {
 
    static async init() {
       if (this.isInitialized) throw 'WorkspaceManager initialized twice'
+      this._isInitialized = true
 
       this._workspacePath = `${process.cwd()}\\workspace\\`
 
+      this.loadConfig()
       this.loadDocuments()
-
-      this._isInitialized = true
 
       this._onceInitCallbacks.forEach(cb => cb())
    }
@@ -41,7 +41,7 @@ export default class WorkspaceManager {
       //list of every .txt file name in workspace
       var documentNames: Array<string> = []
 
-      //populates documentName array with .txt file names, load .config files
+      //populates documentName array with .txt file names
       readdirSync(this.workspacePath, { withFileTypes: true }).forEach((dirent: Dirent) => {
          var fullName = `${dirent}`
          var splitName = fullName.split('.')
@@ -53,26 +53,23 @@ export default class WorkspaceManager {
          var ext = splitName.join('.') //everything after first '.'
 
          if (ext == 'txt') documentNames.push(fileName)
-         else if (fullName == 'config.yaml') this.loadConfig()
-         else if (ext != 'meta') console.warn(`unexpected extension on file: '${fullName}'`)
+         else if (ext != 'meta' && fullName != 'config.yaml') console.warn(`unexpected extension on file: '${fullName}'`)
       })
 
+      //creates a Document object for each .txt file
       this.documents = documentNames.map(docName => new Document(docName))
 
-      this.documents.forEach(fromDoc =>
-         fromDoc.linksFromThis.forEach(lnk => {
-            var toDocID = lnk.to.documentId
-            var toDoc = this.documents.find(d => d.metaData.id == toDocID)
+      //deserialize every link string into a Link object and adds it to the from/to link lists for the corresponding documents
+      this.documents.forEach(d => {
+         d.metaData.linksFromThisStrings.forEach(str => {
+            var link = Link.fromString(str)
 
-            if (toDoc == undefined) {
-               console.warn(`the to docId on a link loaded from a meta file does not point to a document`)
-            } else {
-               toDoc.linksToThis.push(lnk)
-            }
+            link.from.document.linksFromThis.push(link)
+            link.to.document.linksToThis.push(link)
          })
-      )
+      })
 
-      console.log(this.documents)
+      console.log(this.documents[0].linksFromThis)
    }
 
    static loadConfig() {
@@ -90,7 +87,7 @@ export default class WorkspaceManager {
          .map(doc => [
             doc.name,
             {
-               documentId: doc.metaData.id,
+               document: doc,
             },
          ])
    }
@@ -104,29 +101,11 @@ export default class WorkspaceManager {
    static createLink(from: FromAddress, to: ToAddress): Link {
       var link = new Link(this.newLinkID, { ...from }, { ...to })
 
-      //find document that the link is from
-      var fromDocID = from.documentId
-      var fromDoc = this.documents.find(d => d.metaData.id == fromDocID)
+      from.document.linksFromThis.push(link)
+      from.document.saveMetaData()
 
-      if (fromDoc == undefined) {
-         console.warn(`the from docId on a link created by WorkspaceManager.createLink() does not point to a document`)
-      } else {
-         fromDoc.linksFromThis.push(link)
-      }
-
-      fromDoc.saveMetaData()
-
-      //find document that the link is to
-      var toDocID = from.documentId
-      var toDoc = this.documents.find(d => d.metaData.id == toDocID)
-
-      if (toDoc == undefined) {
-         console.warn(`the to docId on a link created by WorkspaceManager.createLink() does not point to a document`)
-      } else {
-         toDoc.linksToThis.push(link)
-      }
-
-      toDoc.saveMetaData()
+      to.document.linksToThis.push(link)
+      to.document.saveMetaData()
 
       return link
    }

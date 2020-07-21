@@ -10,7 +10,7 @@ import handleKeyPress, { getRawTextIndex } from '@renderer/note_body/bullet_comp
 
 import { getContext } from '@/renderer/state/context'
 import { enqueueSaveDocument, focusBullet, selectBullet } from '@/renderer/state/context_actions'
-import { loadDocumentByID } from '@renderer/state/context_actions_async'
+import { loadDocumentAsync } from '@renderer/state/context_actions_async'
 
 class BulletComponent extends React.Component {
    props: { bullet: Bullet }
@@ -173,7 +173,7 @@ var BulletLine = (props: { bullet: Bullet }) => {
          console.warn(`could not find link of id ${linkID}`)
          return
       } else {
-         dispatchAsync(loadDocumentByID(link.to.documentId))
+         dispatchAsync(loadDocumentAsync(link.to.document))
       }
    }
 
