@@ -114,6 +114,8 @@ export default class WorkspaceManager {
          fromDoc.linksFromThis.push(link)
       }
 
+      fromDoc.saveMetaData()
+
       //find document that the link is to
       var toDocID = from.documentId
       var toDoc = this.documents.find(d => d.metaData.id == toDocID)
@@ -123,6 +125,8 @@ export default class WorkspaceManager {
       } else {
          toDoc.linksToThis.push(link)
       }
+
+      toDoc.saveMetaData()
 
       return link
    }

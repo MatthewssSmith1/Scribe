@@ -18,7 +18,8 @@ $document-color: $alice-blue; //azure
 $document-content-color: black;
 $action-panel-color: $blue-yonder; //cornflowerblue
 $action-panel-content-color: $columbia-blue;
-$content-panel-color: lighten($cadet, 20%);
+$content-panel-color: $blue-yonder; //lighten($cadet, 20%);
+$link-list-color: #99b2dd;
 
 //transition variables
 $transition-time-slow: 400ms;

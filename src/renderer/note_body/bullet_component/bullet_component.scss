@@ -30,12 +30,6 @@
          white-space: pre-wrap;
          font-weight: 500;
 
-         // & span::selection,
-         // &::selection {
-         // background-color: $blue-yonder;
-         // color: $side-panel-content-color;
-         // }
-
          & span {
             color: $bullet-list-link-color;
             font-weight: 600;

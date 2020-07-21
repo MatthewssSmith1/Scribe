@@ -2,7 +2,7 @@ import React from 'react'
 
 import Document from '@main/document'
 import Bullet from '@main/bullet'
-import { ToAddress } from '@main/link'
+import Link, { ToAddress } from '@main/link'
 
 // #region State
 export const initialState = {
@@ -23,6 +23,7 @@ export const initialState = {
       shouldSave: null as boolean,
       isRootSelected: null as boolean,
       bulletsKeyModifier: 1,
+      isLinkListCollapsed: false
    },
    linkMenu: {
       isHidden: true,
@@ -64,7 +65,7 @@ export function createAction<T extends any[]>(callback: (state: State, ...restPa
 }
 
 export function createActionAsync<T extends any[]>(callback: (s: State, d: Dispatch, ...restParams: T) => Promise<void>): (...t: T) => AsyncAction {
-   return (...params: T) => (s:State, d: Dispatch) => callback(s, d, ...params)
+   return (...params: T) => (s: State, d: Dispatch) => callback(s, d, ...params)
 }
 //#endregion
 

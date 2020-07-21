@@ -1,4 +1,4 @@
-import React, { useState, useEffect, memo } from 'react'
+import React, { useState, useReducer, memo } from 'react'
 
 import BulletComponent from '@renderer/note_body/bullet_component/bullet_component'
 import Breadcrumbs from '@renderer/note_body/breadcrumbs/breadcrumbs'
@@ -6,6 +6,12 @@ import Breadcrumbs from '@renderer/note_body/breadcrumbs/breadcrumbs'
 import { getContext, NoteBodyState, State } from '@/renderer/state/context'
 import { trySaveDocument, loadDocumentByID } from '@renderer/state/context_actions_async'
 import { useInterval } from '@renderer/state/hooks'
+
+import Icon from '@renderer/other_components/icon'
+import cx from 'classnames'
+import { toggleLinkList } from '@renderer/state/context_actions'
+
+import Link from '@main/link'
 
 var NoteBody = memo(() => {
    var [isInit, setIsInit] = useState(() => false)
@@ -36,6 +42,7 @@ var NoteBody = memo(() => {
       <div className="note-body" style={getStyle(state)}>
          <TitleOrBreadCrumbs />
          <BulletList noteBodyState={state.noteBody} />
+         <LinkList />
       </div>
    )
 })
@@ -80,6 +87,38 @@ class BulletList extends React.Component {
 
       return <div className="note-body__bullet-list">{children}</div>
    }
+}
+
+const LinkList = () => {
+   var [, forceUpdate] = useReducer(x => x * -1, 1)
+   var { state, dispatch } = getContext()
+
+   const handleDropDownClick = () => {
+      dispatch(toggleLinkList())
+      forceUpdate(0)
+   }
+
+   var doc = state.noteBody.document
+
+   var linkItems = doc ? state.noteBody.document.linksToThis.map((l, i) => <LinkItem link={l} key={i} />) : []
+
+   return (
+      <div className="link-list">
+         <div className="drop-down-line" onClick={handleDropDownClick}>
+            <Icon glyph="keyboard_arrow_down" className={cx({ rotated: state.noteBody.isLinkListCollapsed })} />
+            <h1>Links To This Page</h1>
+         </div>
+         {linkItems}
+      </div>
+   )
+}
+
+var LinkItem = (props: { link: Link }) => {
+   return (
+      <div className="link-item">
+         <h1>{props.link.id}</h1>
+      </div>
+   )
 }
 
 export default NoteBody
