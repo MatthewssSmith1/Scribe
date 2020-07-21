@@ -1,4 +1,4 @@
-import React, { useState, useReducer, memo } from 'react'
+import React, { useState, useReducer, memo, useContext } from 'react'
 
 import BulletComponent from '@renderer/note_body/bullet_component/bullet_component'
 import Breadcrumbs from '@renderer/note_body/breadcrumbs/breadcrumbs'
@@ -12,6 +12,7 @@ import cx from 'classnames'
 import { toggleLinkList } from '@renderer/state/context_actions'
 
 import Link from '@main/link'
+import { loadDocumentAsync } from '../state/context_actions_async'
 
 var NoteBody = memo(() => {
    var [isInit, setIsInit] = useState(() => false)
@@ -98,14 +99,16 @@ const LinkList = () => {
       forceUpdate(0)
    }
 
+   var isCollapsed = state.noteBody.isLinkListCollapsed
+
    var doc = state.noteBody.document
 
-   var linkItems = doc ? state.noteBody.document.linksToThis.map((l, i) => <LinkItem link={l} key={i} />) : []
+   var linkItems = doc && !isCollapsed ? doc.linksToThis.map((l, i) => <LinkItem link={l} key={i} />) : []
 
    return (
       <div className="link-list">
          <div className="drop-down-line" onClick={handleDropDownClick}>
-            <Icon glyph="keyboard_arrow_down" className={cx({ rotated: state.noteBody.isLinkListCollapsed })} />
+            <Icon glyph="keyboard_arrow_down" className={cx({ rotated: isCollapsed })} />
             <h1>Links To This Page</h1>
          </div>
          {linkItems}
@@ -114,9 +117,22 @@ const LinkList = () => {
 }
 
 var LinkItem = (props: { link: Link }) => {
+   var { dispatchAsync } = getContext()
+
+   //TODO rework the bullet text fetching because this current form is very inefficient
+
+   var handleTitleClick = () => {
+      dispatchAsync(loadDocumentAsync(props.link.from.document))
+   }
+
+   var docTitle = props.link.from.document.name
+
+   var innerHtml = { __html: props.link.from.document.toBullet().childAt(props.link.from.bulletCoords).text }
+
    return (
       <div className="link-item">
-         <h1>{props.link.id}</h1>
+         <h1 onClick={handleTitleClick}>{docTitle}</h1>
+         <div className='link-item__content' dangerouslySetInnerHTML={innerHtml}></div>
       </div>
    )
 }

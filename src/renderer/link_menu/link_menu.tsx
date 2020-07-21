@@ -91,7 +91,7 @@ function SuggestionItem(props: { name: string; toAddress: ToAddress }): JSX.Elem
       var { bulletWithSelection, selectionBounds, selectedText }: LinkMenuState = state.linkMenu
 
       var fromAddress: FromAddress = {
-         documentId: state.noteBody.document.metaData.id,
+         document: state.noteBody.document,
          bulletCoords: bulletWithSelection.coords,
          selectionBounds: selectionBounds,
       }
