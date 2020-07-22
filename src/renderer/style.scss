@@ -66,11 +66,12 @@ $action-panel__search-bar-anim: 200ms ease-in;
 @import 'other_components/icon.scss';
 @import 'action_panel/action_panel.scss';
 @import 'content_panel/content_panel.scss';
-@import 'note_body/note_body.scss';
+@import 'note_page/note_page.scss';
 @import 'link_menu/link_menu.scss';
-@import 'note_body/bullet_component/bullet_dot.scss';
-@import 'note_body/bullet_component/bullet_drop_down.scss';
-@import 'note_body/bullet_component/bullet_component.scss';
+@import 'note_page/bullet_component/bullet_dot.scss';
+@import 'note_page/bullet_component/bullet_drop_down.scss';
+@import 'note_page/bullet_component/bullet_component.scss';
+@import 'graph_page/graph_page.scss';
 
 .all-descendants-w-resize * {
    cursor: w-resize;

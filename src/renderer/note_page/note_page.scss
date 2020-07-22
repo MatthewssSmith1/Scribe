@@ -1,5 +1,4 @@
 .note-body {
-   //right and left are both modified in note_body.tsx for content/action panel expanding/collapsing
    position: absolute;
    top: 0;
    left: 0;
@@ -9,7 +8,7 @@
    transition: left $transition-time-normal;
 
    padding: 2rem;
-   padding-bottom: 80vh;
+   padding-bottom: 45vh;
 
    overflow-x: hidden;
    overflow-y: scroll;
@@ -88,10 +87,14 @@
    // background-color: rgba(255, 0, 0, 0.05);
 
    margin-top: 6rem;
+   margin-left: 2rem;
    width: 100%;
 }
 
 .drop-down-line {
+   position: relative;
+   left: -0.7rem;
+
    height: 2rem;
    width: min-content;
 
@@ -117,10 +120,6 @@
       justify-content: center;
 
       transition: transform $transition-time-normal;
-
-      &.rotated {
-         transform: rotate(-90deg);
-      }
    }
 
    & h1 {
@@ -128,6 +127,20 @@
 
       white-space: nowrap;
       overflow: visible;
+   }
+}
+
+.link-list > *:not(:first-child) {
+   transition: opacity $transition-time-normal;
+}
+
+.link-list.collapsed {
+   & .drop-down-line .icon {
+      transform: rotate(-90deg);
+   }
+
+   & > *:not(:first-child) {
+      opacity: 0;
    }
 }
 

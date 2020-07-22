@@ -10,7 +10,7 @@ function srcPaths(src) {
 const isEnvProduction = process.env.NODE_ENV === 'production'
 const isEnvDevelopment = process.env.NODE_ENV === 'development'
 
-// #region Common settings
+//#region Common settings
 const commonConfig = {
    devtool: isEnvDevelopment ? 'source-map' : false,
    mode: isEnvProduction ? 'production' : 'development',
@@ -46,7 +46,7 @@ const commonConfig = {
       ],
    },
 }
-// #endregion
+//#endregion
 
 const mainConfig = lodash.cloneDeep(commonConfig)
 mainConfig.entry = './src/main/main.ts'

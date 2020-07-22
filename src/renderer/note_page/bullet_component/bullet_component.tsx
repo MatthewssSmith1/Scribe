@@ -6,7 +6,7 @@ import cx from 'classnames'
 import Link from '@main/link'
 import Bullet from '@/main/bullet'
 import Icon from '@/renderer/other_components/icon'
-import handleKeyPress, { getRawTextIndex } from '@renderer/note_body/bullet_component/key_press'
+import handleKeyPress, { getRawTextIndex } from '@/renderer/note_page/bullet_component/key_press'
 
 import { getContext } from '@/renderer/state/context'
 import { enqueueSaveDocument, focusBullet, selectBullet } from '@/renderer/state/context_actions'

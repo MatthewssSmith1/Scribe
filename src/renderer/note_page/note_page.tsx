@@ -1,7 +1,7 @@
-import React, { useState, useReducer, memo, useContext } from 'react'
+import React, { useState, memo } from 'react'
 
-import BulletComponent from '@renderer/note_body/bullet_component/bullet_component'
-import Breadcrumbs from '@renderer/note_body/breadcrumbs/breadcrumbs'
+import BulletComponent from '@/renderer/note_page/bullet_component/bullet_component'
+import Breadcrumbs from '@/renderer/note_page/breadcrumbs/breadcrumbs'
 
 import { getContext, NoteBodyState, State } from '@/renderer/state/context'
 import { trySaveDocument, loadDocumentByID } from '@renderer/state/context_actions_async'
@@ -9,7 +9,6 @@ import { useInterval } from '@renderer/state/hooks'
 
 import Icon from '@renderer/other_components/icon'
 import cx from 'classnames'
-import { toggleLinkList } from '@renderer/state/context_actions'
 
 import Link from '@main/link'
 import { loadDocumentAsync } from '../state/context_actions_async'
@@ -35,12 +34,24 @@ var NoteBody = memo(() => {
       document.body.ondrop = () => false
    }
 
+   var getStyle = () => {
+      var rightProp = state.contentPanel.isCollapsed ? 0 : state.contentPanel.width
+      var leftProp = state.actionPanel.isCollapsed ? 0 : state.actionPanel.width
+
+      return {
+         right: `${rightProp}px`,
+         left: `${leftProp}px`,
+      }
+   }
+
    // check to save the document every 3 seconds
    // TODO actually implement saving
    useInterval(() => dispatchAsync(trySaveDocument()), 3000)
 
+   if (state.noteBody.document == null) return <div className="note-body" />
+
    return (
-      <div className="note-body" style={getStyle(state)}>
+      <div className="note-body" style={getStyle()}>
          <TitleOrBreadCrumbs />
          <BulletList noteBodyState={state.noteBody} />
          <LinkList />
@@ -48,23 +59,12 @@ var NoteBody = memo(() => {
    )
 })
 
-function getStyle(state: State): React.CSSProperties {
-   var rightProp = state.contentPanel.isCollapsed ? 0 : state.contentPanel.width
-   var leftProp = state.actionPanel.isCollapsed ? 0 : state.actionPanel.width
-
-   return {
-      right: `${rightProp}px`,
-      left: `${leftProp}px`,
-   }
-}
-
 function TitleOrBreadCrumbs() {
    const { state } = getContext()
 
    var { document, isRootSelected } = state.noteBody
 
-   var docName = document ? document.name : '[Document Name]'
-   var topElement = isRootSelected != false ? <h1 className="document-title">{docName}</h1> : <Breadcrumbs />
+   var topElement = isRootSelected != false ? <h1 className="document-title">{document.name}</h1> : <Breadcrumbs />
 
    return <div className="note-body__top-element-wrapper">{topElement}</div>
 }
@@ -91,24 +91,17 @@ class BulletList extends React.Component {
 }
 
 const LinkList = () => {
-   var [, forceUpdate] = useReducer(x => x * -1, 1)
-   var { state, dispatch } = getContext()
+   var [isCollapsed, setIsCollapsed] = useState(() => false)
+   var { state } = getContext()
 
-   const handleDropDownClick = () => {
-      dispatch(toggleLinkList())
-      forceUpdate(0)
-   }
+   var linkItems = state.noteBody.document.linksToThis.map((l, i) => <LinkItem link={l} key={i} />)
 
-   var isCollapsed = state.noteBody.isLinkListCollapsed
-
-   var doc = state.noteBody.document
-
-   var linkItems = doc && !isCollapsed ? doc.linksToThis.map((l, i) => <LinkItem link={l} key={i} />) : []
+   if (linkItems.length == 0) return <div className="link-list" />
 
    return (
-      <div className="link-list">
-         <div className="drop-down-line" onClick={handleDropDownClick}>
-            <Icon glyph="keyboard_arrow_down" className={cx({ rotated: isCollapsed })} />
+      <div className={cx('link-list', { collapsed: isCollapsed })}>
+         <div className="drop-down-line" onClick={() => setIsCollapsed(!isCollapsed)}>
+            <Icon glyph="keyboard_arrow_down" />
             <h1>Links To This Page</h1>
          </div>
          {linkItems}
@@ -132,7 +125,7 @@ var LinkItem = (props: { link: Link }) => {
    return (
       <div className="link-item">
          <h1 onClick={handleTitleClick}>{docTitle}</h1>
-         <div className='link-item__content' dangerouslySetInnerHTML={innerHtml}></div>
+         <div className="link-item__content" dangerouslySetInnerHTML={innerHtml}></div>
       </div>
    )
 }

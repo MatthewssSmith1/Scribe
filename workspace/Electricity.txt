@@ -1,4 +1,4 @@
-The   <span data-link-id="92366234">calculus</span>   flow <span data-link-id="1595297462363">particle physics </span>of electric charge is known as Electric Current, Electric current is carried by moving electrons through a conductor.
+The   <span data-link-id="92366234">calculus</span>   flow <span data-link-id="1595297462363">particle physics </span>of electric charge is known as Electric Current, Electric cujrrent is carried by moving electrons through a conductor.
 By convention, electric current flows in the opposite direction to the movement of electrons.
 	Ammeter: An apparatus to measure electric current in a circuit.,
 Electric Circuit:

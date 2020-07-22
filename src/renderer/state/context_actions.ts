@@ -1,11 +1,24 @@
-import { createAction, State, LinkMenuState, initialState } from '@renderer/state/context'
+import { createAction, State, LinkMenuState, initialState, Page } from '@renderer/state/context'
 
 import Document from '@main/document'
 import Bullet from '@main/bullet'
 
-// #region Panels
-export const toggleActionPanel = createAction((state: State) => {
-   state.actionPanel.isCollapsed = !state.actionPanel.isCollapsed
+//#region Content Body
+export const openGraphPage = createAction((state: State) => {
+   state.contentBody.activePage = Page.Graph
+   state.actionPanel.isCollapsed = true
+   state.contentPanel.isCollapsed = true
+})
+export const openNotePage = createAction((state: State) => {
+   state.contentBody.activePage = Page.Note
+})
+//#endregion
+
+//#region Panels
+export const toggleActionPanel = createAction((state: State, _isCollapsed?: boolean) => {
+   state.actionPanel.isCollapsed = _isCollapsed || !state.actionPanel.isCollapsed
+
+   console.log('action panel toggled')
 })
 
 export const toggleContentPanel = createAction((state: State) => {
@@ -21,9 +34,9 @@ export const resizeContentPanel = createAction((state: State, width: number) => 
 
    state.contentPanel.width = Math.min(maxWidth, Math.max(minWidth, width))
 })
-// #endregion
+//#endregion
 
-// #region Note Body
+//#region Note Body
 export const loadDocument = createAction((state: State, document: Document, rootBullet: Bullet) => {
    state.noteBody = {
       document: document,
@@ -63,9 +76,9 @@ export const focusBullet = createAction((state: State, bullet: Bullet) => {
       focusedBullets,
    }
 })
-// #endregion
+//#endregion
 
-// #region Selection
+//#region Selection
 export const selectBullet = createAction((state: State, bullet: Bullet, startIndex: number = 0, endIndex?: number) => {
    if (!endIndex) endIndex = startIndex
 
@@ -75,13 +88,13 @@ export const selectBullet = createAction((state: State, bullet: Bullet, startInd
       endIndex: Math.max(startIndex, endIndex),
    }
 })
-// #endregion
+//#endregion
 
-// #region Link Menu
+//#region Link Menu
 export const showLinkMenu = createAction((state: State, linkMenuState: LinkMenuState) => {
    state.linkMenu = linkMenuState
 })
 export const hideLinkMenu = createAction((state: State) => {
    state.linkMenu = initialState.linkMenu
 })
-// #endregion
+//#endregion

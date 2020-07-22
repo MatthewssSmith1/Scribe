@@ -2,12 +2,20 @@ import React from 'react'
 
 import Document from '@main/document'
 import Bullet from '@main/bullet'
-import Link, { ToAddress } from '@main/link'
+import { ToAddress } from '@main/link'
 
-// #region State
+export enum Page {
+   Note,
+   Graph,
+}
+
+//#region State
 export const initialState = {
+   contentBody: {
+      activePage: Page.Graph,
+   },
    actionPanel: {
-      isCollapsed: true,
+      isCollapsed: false,
       width: 224,
    },
    contentPanel: {
@@ -23,7 +31,7 @@ export const initialState = {
       shouldSave: null as boolean,
       isRootSelected: null as boolean,
       bulletsKeyModifier: 1,
-      isLinkListCollapsed: false
+      isLinkListCollapsed: false,
    },
    linkMenu: {
       isHidden: true,
@@ -43,9 +51,9 @@ export type State = typeof initialState
 export type LinkMenuState = typeof initialState.linkMenu
 export type NoteBodyState = typeof initialState.noteBody
 export type SelectionState = typeof initialState.selection
-// #endregion
+//#endregion
 
-// #region Type Definitions
+//#region Type Definitions
 export type Action = (s: State) => void
 export type AsyncAction = (s: State, d: Dispatch) => void
 
@@ -57,9 +65,9 @@ export type Context = {
    dispatch: Dispatch
    dispatchAsync: DispatchAsync
 }
-// #endregion
+//#endregion
 
-// #region Action Creators
+//#region Action Creators
 export function createAction<T extends any[]>(callback: (state: State, ...restParams: T) => void): (...t: T) => Action {
    return (...params: T) => (state: State) => callback(state, ...params)
 }
@@ -69,7 +77,7 @@ export function createActionAsync<T extends any[]>(callback: (s: State, d: Dispa
 }
 //#endregion
 
-// #region Context
+//#region Context
 export const GlobalContext = React.createContext<Context>(null)
 
 //the component at the root of the component tree that provides the context for descendants
@@ -106,4 +114,4 @@ export const getContext = (): Context => {
 
    return ctx
 }
-// #endregion
+//#endregion

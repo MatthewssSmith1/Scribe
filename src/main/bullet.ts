@@ -1,5 +1,5 @@
 export default class Bullet {
-   // #region this.text
+   //#region this.text
    private _text: string
    get text() {
       return this._text
@@ -14,7 +14,7 @@ export default class Bullet {
 
       this._text = text
    }
-   // #endregion
+   //#endregion
    parent: Bullet
    children: Array<Bullet> = []
 
@@ -25,7 +25,7 @@ export default class Bullet {
    //only rebuild component if this is set to true
    shouldComponentRebuild: boolean = false
 
-   // #region Constructor, Factory, Serializing
+   //#region Constructor, Factory, Serializing
    constructor(text: string = '', children: Array<Bullet> = [], parent: Bullet = null) {
       this._text = text.replace('\t', '')
 
@@ -71,9 +71,9 @@ export default class Bullet {
 
       return strList
    }
-   // #endregion
+   //#endregion
 
-   // #region Siblings
+   //#region Siblings
    sibling(offset: number): Bullet {
       if (offset == 0) throw 'bullet.sibling() called with offset of 0'
 
@@ -123,9 +123,9 @@ export default class Bullet {
       if (this.isRoot) return true
       return this.indexInParent == this.parent.childCount - 1
    }
-   // #endregion
+   //#endregion
 
-   // #region Getters & Setters
+   //#region Getters & Setters
    get childCount(): number {
       return this.children.length
    }
@@ -240,9 +240,9 @@ export default class Bullet {
 
       return [...this.parent.breadCrumbs, this.parent]
    }
-   // #endregion
+   //#endregion
 
-   // #region Children
+   //#region Children
    childAt(_indexOrCoords: number | Array<number>): Bullet {
       if (!Array.isArray(_indexOrCoords)) {
          var index = _indexOrCoords
@@ -331,9 +331,9 @@ export default class Bullet {
 
       return removedBullets
    }
-   // #endregion
+   //#endregion
 
-   // #region Tree Interaction
+   //#region Tree Interaction
    toggleCollapsed(): Bullet {
       this.isCollapsed = !this.isCollapsed
 
@@ -390,9 +390,9 @@ export default class Bullet {
 
       return this
    }
-   // #endregion
+   //#endregion
 
-   // #region BulletComponent methods
+   //#region BulletComponent methods
 
    private _componentCallback: Function = null
 
@@ -415,5 +415,5 @@ export default class Bullet {
       this.shouldComponentRebuild = false
    }
 
-   // #endregion
+   //#endregion
 }

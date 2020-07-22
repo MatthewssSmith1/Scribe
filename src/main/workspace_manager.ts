@@ -68,8 +68,6 @@ export default class WorkspaceManager {
             link.to.document.linksToThis.push(link)
          })
       })
-
-      console.log(this.documents[0].linksFromThis)
    }
 
    static loadConfig() {

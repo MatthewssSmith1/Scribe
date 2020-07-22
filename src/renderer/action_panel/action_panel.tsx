@@ -3,11 +3,11 @@ import Icon from '@/renderer/other_components/icon'
 import cx from 'classnames'
 
 import { getContext } from '@/renderer/state/context'
-import { toggleActionPanel, toggleContentPanel } from '@/renderer/state/context_actions'
+import { toggleActionPanel, toggleContentPanel, openGraphPage, openNotePage } from '@/renderer/state/context_actions'
 
 //the panel on the left of the document body that can be collapsed/expanded
 export default function ActionPanel() {
-   const {state} = getContext()
+   const { state } = getContext()
    var { isCollapsed, width } = state.actionPanel
 
    var style = {
@@ -27,15 +27,22 @@ export default function ActionPanel() {
 
 //the row of buttons at the top of the action panel (excluding the search icon, which is rendered above this row and by the SearchBar component)
 var ButtonRow = () => {
-   const {dispatch} = getContext()
+   const { dispatch } = getContext()
 
    return (
       <div className="button-row">
          <div className="search-icon-place-holder" />
-         <Icon glyph="device_hub" onClick={() => {}} />
-         <Icon glyph="note_add" onClick={() => {}} />
+         <Icon glyph="device_hub" onClick={() => dispatch(openGraphPage())} />
+         <Icon glyph="note_add" onClick={() => dispatch(openNotePage())} />
          <Icon glyph="settings" onClick={() => dispatch(toggleContentPanel())} />
-         <Icon glyph="arrow_back_ios" className="button-row__collapse-icon" onClick={() => dispatch(toggleActionPanel())} />
+         <Icon
+            glyph="arrow_back_ios"
+            className="button-row__collapse-icon"
+            onClick={() => {
+               console.log('pressed')
+               dispatch(toggleActionPanel())
+            }}
+         />
       </div>
    )
 }

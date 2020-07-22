@@ -28,7 +28,7 @@ export default class Link {
       this.to = to
    }
 
-   // #region Serialization
+   //#region Serialization
    toString(): string {
       // format: 31245 213453|2,5,3|2,5 42145|1,2
 
@@ -77,9 +77,9 @@ export default class Link {
 
       return new Link(id, from, to)
    }
-   // #endregion
+   //#endregion
 
-   // #region Getters
+   //#region Getters
    get pointsToDocument() {
       return this.to.bulletCoords == null || this.to.bulletCoords.includes(-1)
    }
@@ -87,5 +87,5 @@ export default class Link {
    get pointsToBullet() {
       return !this.pointsToDocument
    }
-   // #endregion
+   //#endregion
 }
