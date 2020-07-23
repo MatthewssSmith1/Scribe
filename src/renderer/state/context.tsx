@@ -17,6 +17,8 @@ export const initialState = {
    actionPanel: {
       isCollapsed: false,
       width: 224,
+      isSearchActive: false,
+      searchResults: null as Array<[string, Function]>,
    },
    contentPanel: {
       isCollapsed: true,

@@ -5,6 +5,9 @@ import cx from 'classnames'
 import { getContext } from '@/renderer/state/context'
 import { toggleActionPanel, toggleContentPanel, openGraphPage, openNotePage } from '@/renderer/state/context_actions'
 
+import SearchResultList from '@renderer/action_panel/search_result_list/search_result_list';
+import PinList from '@renderer/action_panel/pin_list/pin_list';
+
 //the panel on the left of the document body that can be collapsed/expanded
 export default function ActionPanel() {
    const { state } = getContext()
@@ -20,6 +23,7 @@ export default function ActionPanel() {
          <div id="action-panel">
             <SearchBar />
             <ButtonRow />
+            {state.actionPanel.isSearchActive ? <SearchResultList /> : <PinList />}
          </div>
       </div>
    )
