@@ -17,25 +17,25 @@ export const loadDocumentByID = createActionAsync(async (state: State, dispatch:
       return
    }
 
-   dispatch(loadDocument(doc, doc.toBullet()))
+   dispatch(loadDocument(doc))
 })
 
 export const loadDocumentAsync = createActionAsync(async (state: State, dispatch: Dispatch, doc: Document) => {
    dispatch(dequeueSaveDocument())
 
-   dispatch(loadDocument(doc, doc.toBullet()))
+   dispatch(loadDocument(doc))
 
    document.querySelector('.note-body').scrollTop = 0
 })
 
 export const trySaveDocument = createActionAsync(async (state: State, dispatch: Dispatch, forceSave: boolean = false) => {
-   var { rootBullet, document, shouldSave } = state.noteBody
+   // var { document, shouldSave } = state.noteBody
 
-   if (!forceSave && !shouldSave) return
-   dispatch(dequeueSaveDocument())
+   // if (!forceSave && !shouldSave) return
+   // dispatch(dequeueSaveDocument())
 
-   var textFilePath = WorkspaceManager.workspacePath + document.name + '.txt'
-   writeFileSync(textFilePath, rootBullet.toString())
+   // var textFilePath = WorkspaceManager.workspacePath + document.name + '.txt'
+   // writeFileSync(textFilePath, rootBullet.toString())
 
-   dispatch(documentSaveComplete())
+   // dispatch(documentSaveComplete())
 })

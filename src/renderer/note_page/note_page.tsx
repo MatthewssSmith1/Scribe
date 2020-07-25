@@ -1,95 +1,86 @@
 import React, { useState, memo } from 'react'
 
-import BulletComponent from '@/renderer/note_page/bullet_component/bullet_component'
-import Breadcrumbs from '@/renderer/note_page/breadcrumbs/breadcrumbs'
+import Bullet from '@/renderer/note_page/bullet/bullet'
+import Node from '@main/node'
+import Link from '@main/link'
+// import Breadcrumbs from '@/renderer/note_page/breadcrumbs/breadcrumbs'
 
-import { getContext, NoteBodyState, State } from '@/renderer/state/context'
-import { trySaveDocument, loadDocumentByID } from '@renderer/state/context_actions_async'
-import { useInterval } from '@renderer/state/hooks'
+import { getContext, GlobalContext } from '@/renderer/state/context'
+import { trySaveDocument, loadDocumentByID, loadDocumentAsync } from '@renderer/state/context_actions_async'
+import { setUpdateNoteCallback } from '@renderer/state/context_actions'
 
 import Icon from '@renderer/other_components/icon'
 import cx from 'classnames'
 
-import Link from '@main/link'
-import { loadDocumentAsync } from '../state/context_actions_async'
+class NoteBody extends React.Component {
+   static contextType = GlobalContext
 
-var NoteBody = memo(() => {
-   var [isInit, setIsInit] = useState(() => false)
-   const { state, dispatchAsync } = getContext()
+   alreadyDidMountCheck = false
 
-   if (!isInit) {
-      setIsInit(true)
+   componentDidMount() {
+      //only run these functions once, done here rather than constructor to get access to the context
+      if (this.alreadyDidMountCheck) return
+      this.alreadyDidMountCheck = true
 
+      const { dispatch, dispatchAsync } = this.context
+      dispatch(setUpdateNoteCallback(() => this.forceUpdate()))
       dispatchAsync(loadDocumentByID(-115310742))
-
-      document.addEventListener('keydown', (e: KeyboardEvent) => {
-         if (e.key == 'Control') document.body.classList.add('ctrl-is-pressed')
-      })
-
-      document.addEventListener('keyup', (e: KeyboardEvent) => {
-         if (e.key == 'Control') document.body.classList.remove('ctrl-is-pressed')
-      })
-
-      document.body.ondragstart = () => false
-      document.body.ondrop = () => false
    }
 
-   var getStyle = () => {
-      var rightProp = state.contentPanel.isCollapsed ? 0 : state.contentPanel.width
-      var leftProp = state.actionPanel.isCollapsed ? 0 : state.actionPanel.width
+   render() {
+      console.log('note rerendered')
 
-      return {
-         right: `${rightProp}px`,
-         left: `${leftProp}px`,
+      const { state, dispatchAsync } = this.context
+
+      if (state.noteBody.document == null) return <div className="note-body" />
+
+      const style = {
+         right: `${state.contentPanel.isCollapsed ? 0 : state.contentPanel.width}px`,
+         left: `${state.actionPanel.isCollapsed ? 0 : state.actionPanel.width}px`,
       }
+
+      setInterval(() => dispatchAsync(trySaveDocument()), 3000)
+
+      return (
+         <div className="note-body" style={style}>
+            <TitleOrBreadCrumbs />
+            <BulletList headNode={state.noteBody.headNode} />
+            <LinkList />
+         </div>
+      )
    }
-
-   // check to save the document every 3 seconds
-   // TODO actually implement saving
-   useInterval(() => dispatchAsync(trySaveDocument()), 3000)
-
-   if (state.noteBody.document == null) return <div className="note-body" />
-
-   return (
-      <div className="note-body" style={getStyle()}>
-         <TitleOrBreadCrumbs />
-         <BulletList noteBodyState={state.noteBody} />
-         <LinkList />
-      </div>
-   )
-})
+}
 
 function TitleOrBreadCrumbs() {
-   const { state } = getContext()
+   // const { state } = getContext()
 
-   var { document, isRootSelected } = state.noteBody
+   // var { document, isRootSelected } = state.noteBody
 
-   var topElement = isRootSelected != false ? <h1 className="document-title">{document.name}</h1> : <Breadcrumbs />
+   var topElement = <> </> //isRootSelected != false ? <h1 className="document-title">{document.name}</h1> : <Breadcrumbs />
 
    return <div className="note-body__top-element-wrapper">{topElement}</div>
 }
 
 class BulletList extends React.Component {
    props: {
-      noteBodyState: NoteBodyState
+      headNode: Node
    }
 
    render() {
-      var { focusedBullets, rootBullet, bulletsKeyModifier } = this.props.noteBodyState
+      var node = this.props.headNode
+      var children = []
 
-      if (rootBullet) rootBullet.setComponentCallback(() => this.forceUpdate())
+      while (node) {
+         children.push(<Bullet node={node} key={node.key} />)
 
-      var children = (focusedBullets || []).map(c => {
-         //the modifier here alternates between -1 and 1 on new documents being loaded
-         //it is added as to avoid keys of 0 (which would overlap between rebuilds)
-         var key = c.key * bulletsKeyModifier + bulletsKeyModifier
-         return <BulletComponent bullet={c} key={key} />
-      })
+         node = node.nextNodeToRender
+      }
 
       return <div className="note-body__bullet-list">{children}</div>
    }
 }
 
+//#region Link List
 const LinkList = () => {
    var [isCollapsed, setIsCollapsed] = useState(() => false)
    var { state } = getContext()
@@ -109,7 +100,7 @@ const LinkList = () => {
    )
 }
 
-var LinkItem = (props: { link: Link }) => {
+const LinkItem = (props: { link: Link }) => {
    var { dispatchAsync } = getContext()
 
    //TODO rework the bullet text fetching because this current form is very inefficient
@@ -120,7 +111,7 @@ var LinkItem = (props: { link: Link }) => {
 
    var docTitle = props.link.from.document.name
 
-   var innerHtml = { __html: props.link.from.document.toBullet().childAt(props.link.from.bulletCoords).text }
+   var innerHtml = { __html: 'placeholder text' } //{ __html: props.link.from.document.toBullet().childAt(props.link.from.bulletCoords).text }
 
    return (
       <div className="link-item">
@@ -129,5 +120,6 @@ var LinkItem = (props: { link: Link }) => {
       </div>
    )
 }
+//#endregion
 
 export default NoteBody

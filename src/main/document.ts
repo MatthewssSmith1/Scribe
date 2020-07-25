@@ -1,9 +1,10 @@
 import { readFileSync, writeFileSync, existsSync } from 'fs'
+const yaml = require('js-yaml')
+
 import Bullet from '@/main/bullet'
 import Link from '@/main/link'
+import Node from '@main/node'
 import WorkspaceManager from '@main/workspace_manager'
-
-const yaml = require('js-yaml')
 
 interface MetaData {
    id: number
@@ -43,15 +44,24 @@ export default class Document {
       this.saveMetaData()
    }
 
-   toBullet(): Bullet {
-      if (!WorkspaceManager.isInitialized) throw 'Document.toBullet() (reading from a file) called before WorkspaceManager.init() finished'
+   getNodeHead(): Node {
+      if (!WorkspaceManager.isInitialized) throw 'Document.toNodeList() (reading from a file) called before WorkspaceManager.init() finished'
 
       var fileLines = readFileSync(WorkspaceManager.workspacePath + `${this.name}.txt`, { encoding: 'utf8', flag: 'r' })
          .split('\n')
-         .filter(line => line.trim() !== '')
 
-      return Bullet.fromStringArray(this.name, fileLines)
+      return Node.headFromStringArray(fileLines)
    }
+
+   // toBullet(): Bullet {
+   //    if (!WorkspaceManager.isInitialized) throw 'Document.toBullet() (reading from a file) called before WorkspaceManager.init() finished'
+
+   //    var fileLines = readFileSync(WorkspaceManager.workspacePath + `${this.name}.txt`, { encoding: 'utf8', flag: 'r' })
+   //       .split('\n')
+   //       .filter(line => line.trim() !== '')
+
+   //    return Bullet.fromStringArray(this.name, fileLines)
+   // }
 
    saveMetaData() {
       this.metaData.linksFromThisStrings = this.linksFromThis.map(l => l.toString())

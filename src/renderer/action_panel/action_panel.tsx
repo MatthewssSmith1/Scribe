@@ -5,8 +5,8 @@ import cx from 'classnames'
 import { getContext } from '@/renderer/state/context'
 import { toggleActionPanel, toggleContentPanel, openGraphPage, openNotePage } from '@/renderer/state/context_actions'
 
-import SearchResultList from '@renderer/action_panel/search_result_list/search_result_list';
-import PinList from '@renderer/action_panel/pin_list/pin_list';
+import SearchResultList from '@renderer/action_panel/search_result_list/search_result_list'
+import PinList from '@renderer/action_panel/pin_list/pin_list'
 
 //the panel on the left of the document body that can be collapsed/expanded
 export default function ActionPanel() {
@@ -39,14 +39,7 @@ var ButtonRow = () => {
          <Icon glyph="device_hub" onClick={() => dispatch(openGraphPage())} />
          <Icon glyph="note_add" onClick={() => dispatch(openNotePage())} />
          <Icon glyph="settings" onClick={() => dispatch(toggleContentPanel())} />
-         <Icon
-            glyph="arrow_back_ios"
-            className="button-row__collapse-icon"
-            onClick={() => {
-               console.log('pressed')
-               dispatch(toggleActionPanel())
-            }}
-         />
+         <Icon glyph="arrow_back_ios" className="button-row__collapse-icon" onClick={() => dispatch(toggleActionPanel())} />
       </div>
    )
 }

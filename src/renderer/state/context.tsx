@@ -3,6 +3,7 @@ import React from 'react'
 import Document from '@main/document'
 import Bullet from '@main/bullet'
 import { ToAddress } from '@main/link'
+import Node from '@main/node'
 
 export enum Page {
    Note,
@@ -12,10 +13,10 @@ export enum Page {
 //#region State
 export const initialState = {
    contentBody: {
-      activePage: Page.Graph,
+      activePage: Page.Note,
    },
    actionPanel: {
-      isCollapsed: false,
+      isCollapsed: true,
       width: 224,
       isSearchActive: false,
       searchResults: null as Array<[string, Function]>,
@@ -28,11 +29,9 @@ export const initialState = {
    },
    noteBody: {
       document: null as Document,
-      rootBullet: null as Bullet,
-      focusedBullets: null as Array<Bullet>,
+      headNode: null as Node,
       shouldSave: null as boolean,
-      isRootSelected: null as boolean,
-      bulletsKeyModifier: 1,
+      updateCallback: null as () => void,
       isLinkListCollapsed: false,
    },
    linkMenu: {

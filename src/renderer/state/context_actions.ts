@@ -17,8 +17,6 @@ export const openNotePage = createAction((state: State) => {
 //#region Panels
 export const toggleActionPanel = createAction((state: State, _isCollapsed?: boolean) => {
    state.actionPanel.isCollapsed = _isCollapsed || !state.actionPanel.isCollapsed
-
-   console.log('action panel toggled')
 })
 
 export const toggleContentPanel = createAction((state: State) => {
@@ -37,14 +35,12 @@ export const resizeContentPanel = createAction((state: State, width: number) => 
 //#endregion
 
 //#region Note Body
-export const loadDocument = createAction((state: State, document: Document, rootBullet: Bullet) => {
+export const loadDocument = createAction((state: State, document: Document) => {
    state.noteBody = {
       document: document,
-      rootBullet: rootBullet,
-      focusedBullets: [...rootBullet.children],
+      headNode: document.getNodeHead(),
       shouldSave: false,
-      isRootSelected: true,
-      bulletsKeyModifier: state.noteBody.bulletsKeyModifier * -1,
+      updateCallback: state.noteBody.updateCallback,
       isLinkListCollapsed: false,
    }
 })
@@ -65,16 +61,8 @@ export const documentSaveComplete = createAction((state: State) => {
    //? potentially implement subscribing to events and send it out from here
    state = state
 })
-
-export const focusBullet = createAction((state: State, bullet: Bullet) => {
-   var isRootSelected = bullet == state.noteBody.rootBullet
-   var focusedBullets = isRootSelected ? [...bullet.children] : [bullet]
-
-   state.noteBody = {
-      ...state.noteBody,
-      isRootSelected,
-      focusedBullets,
-   }
+export const setUpdateNoteCallback = createAction((state: State, callback: () => void) => {
+   state.noteBody.updateCallback = callback
 })
 //#endregion
 

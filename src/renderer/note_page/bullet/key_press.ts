@@ -5,7 +5,6 @@ import { showLinkMenu, selectBullet } from '@renderer/state/context_actions'
 
 import Bullet from '@main/bullet'
 import WorkspaceManager from '@main/workspace_manager'
-import { focusBullet } from '../../state/context_actions'
 
 type KeyEvent = React.KeyboardEvent<HTMLDivElement>
 
@@ -47,6 +46,8 @@ export default function handleKeyPress(context: Context, evt: KeyEvent, bullet: 
 
    var selection = window.getSelection()
 
+   return
+
    var doesSelectionContainSpan = (): boolean => {
       return (
          selection.anchorNode.parentElement.tagName == 'SPAN' ||
@@ -57,7 +58,7 @@ export default function handleKeyPress(context: Context, evt: KeyEvent, bullet: 
 
    const rebuildAndPreventDefault = () => {
       //rebuild tree
-      state.noteBody.rootBullet.updateComponent()
+      // state.noteBody.rootBullet.updateComponent()
 
       //stop normal key behavior
       evt.preventDefault()
@@ -89,9 +90,9 @@ export default function handleKeyPress(context: Context, evt: KeyEvent, bullet: 
          bullet.addSibling(-1, new Bullet(textBeforeCaret))
          bullet.text = textAfterCaret
 
-         if (state.noteBody.isRootSelected && state.noteBody.rootBullet == bullet.parent) {
-            dispatch(focusBullet(state.noteBody.rootBullet))
-         }
+         // if (state.noteBody.isRootSelected && state.noteBody.rootBullet == bullet.parent) {
+         //    dispatch(focusBullet(state.noteBody.rootBullet))
+         // }
 
          dispatch(selectBullet(bullet, 0))
          bullet.parent.updateComponent()
@@ -131,9 +132,9 @@ export default function handleKeyPress(context: Context, evt: KeyEvent, bullet: 
          //concat the two bullets
          bullet.text = sibling.remove().text + bullet.text
 
-         if (state.noteBody.isRootSelected && state.noteBody.rootBullet == bullet.parent) {
-            dispatch(focusBullet(state.noteBody.rootBullet))
-         }
+         // if (state.noteBody.isRootSelected && state.noteBody.rootBullet == bullet.parent) {
+         //    dispatch(focusBullet(state.noteBody.rootBullet))
+         // }
       }
 
       rebuildAndPreventDefault()

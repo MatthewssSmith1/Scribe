@@ -2,6 +2,8 @@ import React from 'react'
 import * as ReactDOM from 'react-dom'
 import { Titlebar, Color } from 'custom-electron-titlebar'
 
+import showdown from 'showdown'
+
 import ActionPanel from '@/renderer/action_panel/action_panel'
 import NoteBody from '@/renderer/note_page/note_page'
 import ContentPanel from '@renderer/content_panel/content_panel'
@@ -45,3 +47,24 @@ ReactDOM.render(
    </ContextProvider>,
    document.querySelector('.container-after-titlebar')
 )
+
+//allow for different css behavior when ctrl is clicked
+document.addEventListener('keydown', (e: KeyboardEvent) => {
+   if (e.key == 'Control') document.body.classList.add('ctrl-is-pressed')
+})
+
+document.addEventListener('keyup', (e: KeyboardEvent) => {
+   if (e.key == 'Control') document.body.classList.remove('ctrl-is-pressed')
+})
+
+//disable dragging of things into bullets
+document.body.ondragstart = () => false
+document.body.ondrop = () => false
+
+showdown.setOption('emoji', true)
+showdown.setOption('backslashEscapesHTMLTags', true)
+showdown.setOption('tasklists', true)
+showdown.setOption('strikethrough', true)
+showdown.setOption('headerLevelStart', 2)
+
+export const markDownConverter = new showdown.Converter() //{ extensions: ['youtube'] }

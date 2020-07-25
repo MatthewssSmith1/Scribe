@@ -107,7 +107,7 @@ function SuggestionItem(props: { name: string; toAddress: ToAddress }): JSX.Elem
 
       //set cursor to the end of the selection and rebuild it
       //! bulletWithSelection.selectComponent(selectionBounds[1])
-      state.noteBody.rootBullet.updateComponent()
+      // state.noteBody.rootBullet.updateComponent()
 
       //hide this menu
       dispatch(hideLinkMenu())

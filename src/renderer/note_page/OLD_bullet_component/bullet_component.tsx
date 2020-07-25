@@ -6,25 +6,25 @@ import cx from 'classnames'
 import Link from '@main/link'
 import Bullet from '@/main/bullet'
 import Icon from '@/renderer/other_components/icon'
-import handleKeyPress, { getRawTextIndex } from '@/renderer/note_page/bullet_component/key_press'
+import handleKeyPress, { getRawTextIndex } from '@/renderer/note_page/bullet/key_press'
 
 import { getContext } from '@/renderer/state/context'
-import { enqueueSaveDocument, focusBullet, selectBullet } from '@/renderer/state/context_actions'
+import { enqueueSaveDocument, selectBullet } from '@/renderer/state/context_actions'
 import { loadDocumentAsync } from '@renderer/state/context_actions_async'
 
 class BulletComponent extends React.Component {
    props: { bullet: Bullet }
 
-   shouldComponentUpdate(nextProps: { bullet: Bullet }, nextState): boolean {
-      var { bullet } = nextProps
+   // shouldComponentUpdate(nextProps: { bullet: Bullet }, _nextState: any): boolean {
+   //    var { bullet } = nextProps
 
-      if (bullet.shouldComponentRebuild) {
-         bullet.shouldComponentRebuild = false
-         return true
-      }
+   //    if (bullet.shouldComponentRebuild) {
+   //       bullet.shouldComponentRebuild = false
+   //       return true
+   //    }
 
-      return false
-   }
+   //    return false
+   // }
 
    render() {
       var { bullet } = this.props
@@ -189,13 +189,13 @@ var BulletLine = (props: { bullet: Bullet }) => {
             disabled={bullet.childCount == 0}
          />
          <div className="bullet__line__dot">
-            <div
+            {/* <div
                className={cx('bullet__line__dot__circle', {
                   'click-disabled': state.noteBody.focusedBullets.includes(bullet),
                   highlighted: bullet.isCollapsed,
                })}
                onClick={() => dispatch(focusBullet(bullet))}
-            />
+            /> */}
          </div>
          <ContentEditable
             className={cx('bullet__line__editable', { childless: bullet.isChildless })}
@@ -208,5 +208,3 @@ var BulletLine = (props: { bullet: Bullet }) => {
       </div>
    )
 }
-
-export default BulletComponent

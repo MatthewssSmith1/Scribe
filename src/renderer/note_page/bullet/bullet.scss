@@ -1,0 +1,92 @@
+.bullet {
+   margin-bottom: 0.6em;
+   display: flex;
+
+   &__chevron {
+      width: 2rem;
+      height: 2rem;
+
+      color: $document-content-color;
+
+      opacity: 0;
+
+      //opacity is changed with the selector .bullet:hover
+      //transform is changed with the selector .bullet.collapsed
+      transition: opacity $transition-time-normal, transform $transition-time-normal;
+   }
+
+   &__dot {
+      height: 2rem;
+      width: 2rem;
+
+      margin-right: -0.2rem;
+      margin-left: -0.5rem;
+
+      //center the circle child
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      cursor: default;
+
+      &__circle {
+         background-color: $document-content-color;
+
+         width: 0.3em;
+         height: 0.3em;
+
+         border-radius: 50%;
+         border: 0.3em solid $document-color;
+
+         cursor: pointer;
+
+         transition: border-color $transition-time-fast, width $transition-time-fast, height $transition-time-fast, border $transition-time-fast;
+
+         &:hover {
+            width: 0.4em;
+            height: 0.4em;
+         }
+
+         &.no-on-click {
+            cursor: default;
+         }
+      }
+   }
+
+   &__editable {
+      cursor: text;
+
+      font-size: 1.2em;
+      font-weight: 400;
+
+      //fix issue with bullet changing size (shifting the whole editable over a little bit) when bullet dot hovered
+      width: 100%;
+
+      //to align the circle in bullet__dot to the center of the first line of text
+      margin-top: 0.1rem;
+
+      //break words larger than width of div
+      word-wrap: break-word;
+
+      //hide the default orange outline
+      outline: 0;
+
+      & p {
+         cursor: text;
+      }
+   }
+}
+
+.bullet:hover .bullet__chevron {
+   opacity: 1;
+}
+
+.bullet.collapsed {
+   & .bullet__chevron {
+      transform: rotate(-90deg);
+   }
+
+   & .bullet__dot__circle {
+      border-color: $bullet-dot-highlight-color;
+   }
+}
