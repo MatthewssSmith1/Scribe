@@ -40,10 +40,12 @@
       "custom-electron-titlebar": "^3.2.2-hotfix62",
       "d3": "^5.16.0",
       "js-yaml": "^3.14.0",
+      "material-icons": "^0.3.1",
       "react": "^16.12.0",
       "react-contenteditable": "^3.3.5",
       "react-dom": "^16.12.0",
-      "showdown": "^1.9.1"
+      "showdown": "^1.9.1",
+      "typeface-montserrat": "0.0.75"
    },
    "devDependencies": {
       "@types/mocha": "^5.2.7",
@@ -64,7 +66,7 @@
       "eslint-plugin-react": "^7.17.0",
       "file-loader": "^2.0.0",
       "html-webpack-plugin": "^3.2.0",
-      "lodash": "^4.17.17",
+      "lodash": "^4.17.19",
       "mocha": "^5.2.0",
       "rimraf": "^2.7.1",
       "sass": "^1.26.10",

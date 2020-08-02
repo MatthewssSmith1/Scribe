@@ -69,18 +69,39 @@ export default class Bullet extends React.Component {
 
    //#region Editable Callbacks
    handleEditableFocus = () => {
+      var getSelectionCharacterOffsetWithin = element => {
+         var start = 0
+         var end = 0
+
+         var sel = window.getSelection()
+
+         if (sel.rangeCount > 0) {
+            var range = sel.getRangeAt(0)
+            var preCaretRange = range.cloneRange()
+            preCaretRange.selectNodeContents(element)
+            preCaretRange.setEnd(range.startContainer, range.startOffset)
+            start = preCaretRange.toString().length
+            preCaretRange.setEnd(range.endContainer, range.endOffset)
+            end = preCaretRange.toString().length
+         }
+
+         return { start: start, end: end }
+      }
+
       //this is wrapped in a listener so that the selection from the focus event is contained in the output from window.getSelection()
       var handleSelectionChange = () => {
          document.removeEventListener('selectionchange', handleSelectionChange)
 
          var sel = window.getSelection()
 
-         var caretPos = sel.anchorOffset
+         var caretPos = getSelectionCharacterOffsetWithin(this.editableRef.current.childNodes[0]).start
+
+         console.log(caretPos);
 
          this.editableRef.current.innerHTML = this.props.node.text
 
          var range = new Range()
-         range.setStart(this.editableRef.current.childNodes[0], 0)
+         range.setStart(this.editableRef.current.childNodes[0], caretPos) //caretPos is out of range
 
          sel.removeAllRanges()
          sel.addRange(range)
@@ -89,8 +110,13 @@ export default class Bullet extends React.Component {
       document.addEventListener('selectionchange', handleSelectionChange)
    }
 
-   handleEditableBlur = (e: React.FocusEvent<HTMLDivElement>) => {
-      this.editableRef.current.innerHTML = markDownConverter.makeHtml(this.props.node.text)
+   handleEditableBlur = () => {
+      var {node} = this.props
+
+      //disable headers, but not hashtags
+      node.text = node.text.replace('# ', '')
+
+      this.editableRef.current.innerHTML = markDownConverter.makeHtml(node.text)
    }
 
    handleEditableChange = (e: ContentEditableEvent) => {

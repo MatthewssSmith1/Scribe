@@ -1,7 +1,6 @@
 import { readFileSync, writeFileSync, existsSync } from 'fs'
 const yaml = require('js-yaml')
 
-import Bullet from '@/main/bullet'
 import Link from '@/main/link'
 import Node from '@main/node'
 import WorkspaceManager from '@main/workspace_manager'

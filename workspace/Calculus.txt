@@ -1,7 +1,7 @@
 Calculus I
-	Algebra/Triginomtry __Review__ - [Electricity](612837829)Trig Functions and Equations, and this too Particle Physics Exponential Functions and Equations, Logarithm Functions and Equations.
-		Limits - Concepts, Definition, Computing, One-Sided Limits, Continuity, Limits Involving Infinity, L'Hospitals Rule
-	Derivatives - Definition, Interpretations, Derivative Formulas, Power Rule, Product Rule, Quotient Rule, Chain Rule, Higher Order Derivatives, Implicit Differentiation, Logarithmic Differentiafetion, Derdsivatives of Trig Functions, Exponential Functions, Logarithm Functions, Inverse Trig Functions, and Hyperbolic Trig Functions.
+	Algebra *Trigonometry* __Review__ hello there [Electricity](612837829)Trig Functions and Equations, and this too Particle Physics Exponential Functions and Equations, Logarithm Functions and Equations.
+		Limits - Concepts, Definition, [Computing](675823), One-Sided Limits, Continuity, Limits **Involving** Infinity, L'Hospitals Rule
+	Derivatives - Definition, Interpretations, Derivative Formulas, Power Rule, Product Rule, Quotient Rule, Chain Rule, Higher Order Derivatives, Implicit Differentiation, Logarithmic Differentiation, Derivatives of Trig Functions, Exponential Functions, Logarithm Functions, Inverse Trig Functions, and Hyperbolic Trig Functions.
 		Applications of Derivatives - Related Rates, Critical Points, Minimum and Maximum Values, Increasing/Decreasing Functions, Inflection Points, Concavity, Optimization
 			Integration - Definition, Indefinite Integrals, Definite Integrals, Substitution Rule, Evaluating Definite Integrals, Fundamental Theorem of Calculus
 		Applications of Integrals - Average Function Value, Area Between Curves, Solids of Revolution, Work.
@@ -12,10 +12,10 @@ Calculus II
 	Parametric Equations and Polar Coordinates - Parametric Equations & Curves, Calculus with Parametric Equations (Tangents, Areas, Arc Length and Surface Area), Polar Coordinates, Calculus with Polar Coordinates (Tangents, Areas, Arc Length and Surface Area).
 	Sequences and Series - Sequences, Series, Convergence/Divergence of Series, Absolute Series, Integral Test, Comparison Test, Limit Comparison Test, Alternating Series Test, Ratio Test, Root Test, Estimating the Value of a Series, Power Series, Taylor Series, Binomial Series
 	Vectors - Basics, Magnitude, Unit Vector, Arithmetic, Dot Product, Cross Product, Projection
-	Three Dimensional Coordinate System - Equations of Lines, Equations of Planes, Quadratic Surfaces, Functions of Multiple Variables, Vector Functions, Limits, Derivatives, and Integrals of Vector Functions, Tangent Vectors, Normal Vectors, Binormal Vectors, Curvature, Cylindrical Coordinates, Spherical Coordinates
+	Three Dimensional Coordinate System - Equations of Lines, Equations of Planes, Quadratic Surfaces, Functions of Multiple Variables, Vector Functions, Limits, Derivatives, and Integrals of Vector Functions, Tangent Vectors, Normal Vectors, Bi-normal Vectors, Curvature, Cylindrical Coordinates, Spherical Coordinates
 	The Calculus II notes/tutorial assume that you've got a working knowledge Calculus I, including Limits, Derivatives, and Integration (up to basic substitution). It is also assumed that you have a fairly good knowledge of Trig. Several topics rely heavily on trig and knowledge of trig functions.
 Calculus III
-	Three Dimensional Coordinate System - Equations of Lines, Equations of Planes, Quadratic Surfaces, Functions of Multiple Variables, Vector Functions, Limits, Derivatives, and Integrals of Vector Functions, Tangent Vectors, Normal Vectors, Binormal Vectors, Curvature, Cylindrical Coordinates, Spherical Coordinates
+	Three Dimensional Coordinate System - Equations of Lines, Equations of Planes, Quadratic Surfaces, Functions of Multiple Variables, Vector Functions, Limits, Derivatives, and Integrals of Vector Functions, Tangent Vectors, Normal Vectors, Bi-normal Vectors, Curvature, Cylindrical Coordinates, Spherical Coordinates
 	Partial Derivatives - Limits, Partial Derivatives, Higher Order Partial Derivatives, Differentials, Chain Rule, Directional Derivatives, Gradient.
 	Applications of Partial Derivatives - Tangent Plane, Normal Line, Relative Extrema, Absolute Extrema, Optimization, Lagrange Multipliers.
 	Multiple Integrals - Iterated Integrals, Double Integrals, Double Integrals in Polar Coordinates, Triple Integrals, Triple Integrals in Cylindrical Coordinates, Triple Integrals in Spherical Coordinates, Change of Variables, Surface Area.

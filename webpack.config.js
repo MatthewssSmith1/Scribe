@@ -43,6 +43,10 @@ const commonConfig = {
                name: '[path][name].[ext]',
             },
          },
+         {
+            test: /\.(woff|woff2|eot|ttf|otf)$/,
+            loader: 'file-loader',
+         },
       ],
    },
 }

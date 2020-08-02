@@ -4,6 +4,8 @@ import { Titlebar, Color } from 'custom-electron-titlebar'
 
 import showdown from 'showdown'
 
+require('typeface-montserrat')
+
 import ActionPanel from '@/renderer/action_panel/action_panel'
 import NoteBody from '@/renderer/note_page/note_page'
 import ContentPanel from '@renderer/content_panel/content_panel'
@@ -63,8 +65,8 @@ document.body.ondrop = () => false
 
 showdown.setOption('emoji', true)
 showdown.setOption('backslashEscapesHTMLTags', true)
-showdown.setOption('tasklists', true)
 showdown.setOption('strikethrough', true)
-showdown.setOption('headerLevelStart', 2)
+showdown.setOption('headerLevelStart', 3)
+showdown.setOption('requireSpaceBeforeHeadingText', true)
 
 export const markDownConverter = new showdown.Converter() //{ extensions: ['youtube'] }
