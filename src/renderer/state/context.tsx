@@ -1,7 +1,6 @@
 import React from 'react'
 
 import Document from '@main/document'
-import Bullet from '@main/bullet'
 import { ToAddress } from '@main/link'
 import Node from '@main/node'
 
@@ -25,7 +24,7 @@ export const initialState = {
       isCollapsed: true,
       width: 350,
       minWidthPercentage: 0.2,
-      maxWidthPercentage: 0.6,
+      maxWidthPercentage: 0.4,
    },
    noteBody: {
       document: null as Document,
@@ -37,13 +36,13 @@ export const initialState = {
    linkMenu: {
       isHidden: true,
       viewportPos: null as [number, number],
-      bulletWithSelection: null as Bullet,
+      nodeWithSelection: null as Node,
       selectionBounds: null as [number, number],
       selectedText: null as string,
       suggestedLinks: null as Array<[string, ToAddress]>,
    },
    selection: {
-      bullet: null as Bullet,
+      node: null as Node,
       startIndex: null as number,
       endIndex: null as number,
    },

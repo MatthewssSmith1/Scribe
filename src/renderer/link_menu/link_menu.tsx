@@ -85,42 +85,42 @@ function NewPageItem(props: { selectedText: string }): JSX.Element {
 }
 
 function SuggestionItem(props: { name: string; toAddress: ToAddress }): JSX.Element {
-   var { state, dispatch, dispatchAsync } = getContext()
+   // var { state, dispatch, dispatchAsync } = getContext()
 
-   var handleClick = () => {
-      var { bulletWithSelection, selectionBounds, selectedText }: LinkMenuState = state.linkMenu
+   // var handleClick = () => {
+   //    var { nodeWithSelection, selectionBounds, selectedText }: LinkMenuState = state.linkMenu
 
-      var fromAddress: FromAddress = {
-         document: state.noteBody.document,
-         bulletCoords: bulletWithSelection.coords,
-         selectionBounds: selectionBounds,
-      }
+   //    var fromAddress: FromAddress = {
+   //       document: state.noteBody.document,
+   //       bulletCoords: bulletWithSelection.coords,
+   //       selectionBounds: selectionBounds,
+   //    }
 
-      //creates the link and adds it to the documents linksFromThis list
-      var link = WorkspaceManager.createLink(fromAddress, props.toAddress)
+   //    //creates the link and adds it to the documents linksFromThis list
+   //    var link = WorkspaceManager.createLink(fromAddress, props.toAddress)
 
-      var textBeforeSelection = bulletWithSelection.text.substr(0, selectionBounds[0])
-      var textAfterSelection = bulletWithSelection.text.substr(selectionBounds[1])
+   //    var textBeforeSelection = bulletWithSelection.text.substr(0, selectionBounds[0])
+   //    var textAfterSelection = bulletWithSelection.text.substr(selectionBounds[1])
 
-      //surrounds the selected text with a span tag
-      bulletWithSelection.text = textBeforeSelection + `<span data-link-id="${link.id}">` + selectedText + '</span>' + textAfterSelection
+   //    //surrounds the selected text with a span tag
+   //    bulletWithSelection.text = textBeforeSelection + `<span data-link-id="${link.id}">` + selectedText + '</span>' + textAfterSelection
 
-      //set cursor to the end of the selection and rebuild it
-      //! bulletWithSelection.selectComponent(selectionBounds[1])
-      // state.noteBody.rootBullet.updateComponent()
+   //    //set cursor to the end of the selection and rebuild it
+   //    //! bulletWithSelection.selectComponent(selectionBounds[1])
+   //    // state.noteBody.rootBullet.updateComponent()
 
-      //hide this menu
-      dispatch(hideLinkMenu())
+   //    //hide this menu
+   //    dispatch(hideLinkMenu())
 
-      dispatchAsync(trySaveDocument(true))
+   //    dispatchAsync(trySaveDocument(true))
 
-      //TODO save at end
-      // NoteBody.queueSaveDocument(true)
-   }
+   //    //TODO save at end
+   //    // NoteBody.queueSaveDocument(true)
+   // }
 
    return (
       <div className="link-menu__item">
-         <p onClick={handleClick}>{props.name}</p>
+         {/* <p onClick={handleClick}>{props.name}</p> */}
       </div>
    )
 }

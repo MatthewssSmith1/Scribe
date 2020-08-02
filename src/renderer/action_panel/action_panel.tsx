@@ -37,7 +37,7 @@ var ButtonRow = () => {
       <div className="button-row">
          <div className="search-icon-place-holder" />
          <Icon glyph="device_hub" onClick={() => dispatch(openGraphPage())} />
-         <Icon glyph="note_add" onClick={() => dispatch(openNotePage())} />
+         <Icon glyph="calendar_today" onClick={() => dispatch(openNotePage())} />
          <Icon glyph="settings" onClick={() => dispatch(toggleContentPanel())} />
          <Icon glyph="arrow_back_ios" className="button-row__collapse-icon" onClick={() => dispatch(toggleActionPanel())} />
       </div>

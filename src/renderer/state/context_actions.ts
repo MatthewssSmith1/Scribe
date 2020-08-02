@@ -1,7 +1,6 @@
 import { createAction, State, LinkMenuState, initialState, Page } from '@renderer/state/context'
 
 import Document from '@main/document'
-import Bullet from '@main/bullet'
 
 //#region Content Body
 export const openGraphPage = createAction((state: State) => {
@@ -67,15 +66,15 @@ export const setUpdateNoteCallback = createAction((state: State, callback: () =>
 //#endregion
 
 //#region Selection
-export const selectBullet = createAction((state: State, bullet: Bullet, startIndex: number = 0, endIndex?: number) => {
-   if (!endIndex) endIndex = startIndex
+// export const selectBullet = createAction((state: State, bullet: Bullet, startIndex: number = 0, endIndex?: number) => {
+//    if (!endIndex) endIndex = startIndex
 
-   state.selection = {
-      bullet: bullet,
-      startIndex: Math.min(startIndex, endIndex),
-      endIndex: Math.max(startIndex, endIndex),
-   }
-})
+//    state.selection = {
+//       bullet: bullet,
+//       startIndex: Math.min(startIndex, endIndex),
+//       endIndex: Math.max(startIndex, endIndex),
+//    }
+// })
 //#endregion
 
 //#region Link Menu
