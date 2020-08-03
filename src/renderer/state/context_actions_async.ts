@@ -10,31 +10,6 @@ import { setWorkspaceDocuments } from './context_actions'
 
 //todo remove state from async actions parameter
 
-export const loadDocumentByID = createActionAsync(async (state: State, dispatch: Dispatch, id: number) => {
-   dispatch(dequeueSaveDocument())
-
-   //check every 200ms until workspace has been initialized
-   var sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
-   while (state.workspace.path === null || state.workspace.documents === null) sleep(200)
-
-   var doc = state.workspace.documents.find(doc => doc.metaData.id == id)
-
-   if (doc === undefined) {
-      console.warn(`attempted to load document with id ${id}, but it could not be found`)
-      return
-   }
-
-   dispatch(loadDocument(doc))
-})
-
-export const loadDocumentAsync = createActionAsync(async (_state: State, dispatch: Dispatch, doc: Document) => {
-   dispatch(dequeueSaveDocument())
-
-   dispatch(loadDocument(doc))
-
-   document.querySelector('.note-body').scrollTop = 0
-})
-
 export const trySaveDocument = createActionAsync(async (_state: State, dispatch: Dispatch, forceSave: boolean = false) => {
    // var { document, shouldSave } = state.noteBody
    // if (!forceSave && !shouldSave) return
@@ -66,7 +41,7 @@ export const loadWorkspace = createActionAsync(async (state: State, dispatch: Di
       else if (ext != 'meta' && fullName != 'config.yaml') console.warn(`unexpected file: '${fullName}'`)
    })
 
-   //deserialize every link from the metadata and register it with the to and from documents
+   //deserialize every link from the metadata in every document and register it with the corresponding documents
    documents.forEach(doc => {
       doc.metaData.linksFromThisStrings.forEach(str => {
          var link = Link.fromString(str, state)

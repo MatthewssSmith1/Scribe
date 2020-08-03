@@ -6,8 +6,8 @@ import Link from '@main/link'
 // import Breadcrumbs from '@/renderer/note_page/breadcrumbs/breadcrumbs'
 
 import { getContext, GlobalContext, Context } from '@/renderer/state/context'
-import { trySaveDocument, loadDocumentByID, loadDocumentAsync, loadWorkspace } from '@renderer/state/context_actions_async'
-import { setUpdateNoteCallback } from '@renderer/state/context_actions'
+import { trySaveDocument, loadWorkspace } from '@renderer/state/context_actions_async'
+import { setUpdateNoteCallback, loadDocument } from '@renderer/state/context_actions'
 
 import Icon from '@renderer/other_components/icon'
 import cx from 'classnames'
@@ -104,7 +104,7 @@ const LinkItem = (props: { link: Link }) => {
    //TODO rework the bullet text fetching because this current form is very inefficient
 
    var handleTitleClick = () => {
-      dispatchAsync(loadDocumentAsync(props.link.from.document))
+      dispatchAsync(loadDocument(props.link.from.document))
    }
 
    var docTitle = props.link.from.document.name

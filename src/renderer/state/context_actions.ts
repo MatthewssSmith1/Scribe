@@ -1,7 +1,7 @@
 import { createAction, State, LinkMenuState, initialState, Page } from '@renderer/state/context'
 
 import Document from '@main/document'
-import Link, {FromAddress, ToAddress} from '@main/link'
+import Link, { FromAddress, ToAddress } from '@main/link'
 
 //#region Workspace
 export const setWorkspacePath = createAction((state: State, path: string) => {
@@ -44,10 +44,14 @@ export const resizeContentPanel = createAction((state: State, width: number) => 
 //#endregion
 
 //#region Note Body
-export const loadDocument = createAction((state: State, document: Document) => {
+export const loadDocument = createAction((state: State, doc: Document) => {
+   document.querySelector('.note-body').scrollTop = 0
+
+   state.noteBody.shouldSave = false
+
    state.noteBody = {
-      document: document,
-      headNode: document.getNodeHead(state),
+      document: doc,
+      headNode: doc.getNodeHead(state),
       shouldSave: false,
       updateCallback: state.noteBody.updateCallback,
       isLinkListCollapsed: false,
