@@ -1,4 +1,4 @@
-export default class Bullet {
+class Bullet {
    //#region this.text
    private _text: string
    get text() {

@@ -17,6 +17,14 @@ import { ContextProvider, GlobalContext, Context, Page, State } from '@renderer/
 //import all scss files
 import '@renderer/style.scss'
 
+//mark down converter settings
+showdown.setOption('emoji', true)
+showdown.setOption('backslashEscapesHTMLTags', true)
+showdown.setOption('strikethrough', true)
+showdown.setOption('headerLevelStart', 3)
+showdown.setOption('requireSpaceBeforeHeadingText', true)
+export const markDownConverter = new showdown.Converter() //{ extensions: ['youtube'] }
+
 //add titlebar to top of window
 let titleBar = new Titlebar({
    backgroundColor: Color.fromHex('#4a6fa5'),
@@ -62,11 +70,3 @@ document.addEventListener('keyup', (e: KeyboardEvent) => {
 //disable dragging of things into bullets
 document.body.ondragstart = () => false
 document.body.ondrop = () => false
-
-showdown.setOption('emoji', true)
-showdown.setOption('backslashEscapesHTMLTags', true)
-showdown.setOption('strikethrough', true)
-showdown.setOption('headerLevelStart', 3)
-showdown.setOption('requireSpaceBeforeHeadingText', true)
-
-export const markDownConverter = new showdown.Converter() //{ extensions: ['youtube'] }

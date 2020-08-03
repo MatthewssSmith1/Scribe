@@ -5,8 +5,8 @@ import Node from '@main/node'
 import Link from '@main/link'
 // import Breadcrumbs from '@/renderer/note_page/breadcrumbs/breadcrumbs'
 
-import { getContext, GlobalContext } from '@/renderer/state/context'
-import { trySaveDocument, loadDocumentByID, loadDocumentAsync } from '@renderer/state/context_actions_async'
+import { getContext, GlobalContext, Context } from '@/renderer/state/context'
+import { trySaveDocument, loadDocumentByID, loadDocumentAsync, loadWorkspace } from '@renderer/state/context_actions_async'
 import { setUpdateNoteCallback } from '@renderer/state/context_actions'
 
 import Icon from '@renderer/other_components/icon'
@@ -23,14 +23,12 @@ class NoteBody extends React.Component {
       this.alreadyDidMountCheck = true
 
       const { dispatch, dispatchAsync } = this.context
+      dispatchAsync(loadWorkspace())
       dispatch(setUpdateNoteCallback(() => this.forceUpdate()))
-      dispatchAsync(loadDocumentByID(-115310742))
    }
 
    render() {
-      console.log('note rerendered')
-
-      const { state, dispatchAsync } = this.context
+      const { state, dispatchAsync } = this.context as Context
 
       if (state.noteBody.document == null) return <div className="note-body" />
 

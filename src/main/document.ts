@@ -1,9 +1,10 @@
 import { readFileSync, writeFileSync, existsSync } from 'fs'
-const yaml = require('js-yaml')
+import yaml from 'js-yaml'
+
+import { State } from '@renderer/state/context'
 
 import Link from '@/main/link'
 import Node from '@main/node'
-import WorkspaceManager from '@main/workspace_manager'
 
 interface MetaData {
    id: number
@@ -16,12 +17,15 @@ export default class Document {
    linksToThis: Array<Link> = []
    linksFromThis: Array<Link> = []
 
-   constructor(_name: string) {
+   constructor(_name: string, workspacePath: string) {
       this.name = _name
 
-      var metaFilePath = WorkspaceManager.workspacePath + `${_name}.meta`
-      if (existsSync(metaFilePath)) this.metaData = yaml.safeLoad(readFileSync(metaFilePath, 'utf8'))
-      else this.generateMetaData()
+      var metaFilePath = workspacePath + `${_name}.meta`
+      if (existsSync(metaFilePath)) this.metaData = yaml.safeLoad(readFileSync(metaFilePath, 'utf8')) as MetaData
+      else {
+         this.generateMetaData()
+         this.saveMetaData(workspacePath)
+      }
    }
 
    //creates .meta file for documents that are missing one
@@ -39,15 +43,12 @@ export default class Document {
       }
 
       this.metaData = { id: hashCode(this.name), linksFromThisStrings: [] }
-
-      this.saveMetaData()
    }
 
-   getNodeHead(): Node {
-      if (!WorkspaceManager.isInitialized) throw 'Document.toNodeList() (reading from a file) called before WorkspaceManager.init() finished'
+   getNodeHead(state: State): Node {
+      if (state.workspace.path === null) throw 'Document.toNodeList() (reading from a file) called before state.workspace was initialized'
 
-      var fileLines = readFileSync(WorkspaceManager.workspacePath + `${this.name}.txt`, { encoding: 'utf8', flag: 'r' })
-         .split('\n')
+      var fileLines = readFileSync(state.workspace.path + `${this.name}.txt`, { encoding: 'utf8', flag: 'r' }).split('\n')
 
       return Node.headFromStringArray(fileLines)
    }
@@ -62,9 +63,9 @@ export default class Document {
    //    return Bullet.fromStringArray(this.name, fileLines)
    // }
 
-   saveMetaData() {
+   saveMetaData(workspacePath: string) {
       this.metaData.linksFromThisStrings = this.linksFromThis.map(l => l.toString())
 
-      writeFileSync(WorkspaceManager.workspacePath + `${this.name}.meta`, yaml.safeDump(this.metaData))
+      writeFileSync(workspacePath + `${this.name}.meta`, yaml.safeDump(this.metaData))
    }
 }

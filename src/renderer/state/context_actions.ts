@@ -1,6 +1,16 @@
 import { createAction, State, LinkMenuState, initialState, Page } from '@renderer/state/context'
 
 import Document from '@main/document'
+import Link, {FromAddress, ToAddress} from '@main/link'
+
+//#region Workspace
+export const setWorkspacePath = createAction((state: State, path: string) => {
+   state.workspace.path = path
+})
+export const setWorkspaceDocuments = createAction((state: State, documents: Array<Document>) => {
+   state.workspace.documents = documents
+})
+//#endregion
 
 //#region Content Body
 export const openGraphPage = createAction((state: State) => {
@@ -37,7 +47,7 @@ export const resizeContentPanel = createAction((state: State, width: number) => 
 export const loadDocument = createAction((state: State, document: Document) => {
    state.noteBody = {
       document: document,
-      headNode: document.getNodeHead(),
+      headNode: document.getNodeHead(state),
       shouldSave: false,
       updateCallback: state.noteBody.updateCallback,
       isLinkListCollapsed: false,

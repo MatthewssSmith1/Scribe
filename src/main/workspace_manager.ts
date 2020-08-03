@@ -1,110 +1,85 @@
-import { readdirSync, Dirent, existsSync, readFileSync, writeFileSync, appendFileSync } from 'fs'
-import Document from '@main/document'
-import Link, { ToAddress } from '@main/link'
-import { FromAddress } from './link'
-
-// import yaml from 'js-yaml'
+// import { readdirSync, Dirent} from 'fs'
+// import Document from '@main/document'
+// import Link, { ToAddress } from '@main/link'
+// import { FromAddress } from './link'
 
 export default class WorkspaceManager {
-   private static _workspacePath: string
-   static get workspacePath() {
-      return this._workspacePath
-   }
+   // private static _workspacePath: string
+   // static get workspacePath() {
+   //    return this._workspacePath
+   // }
 
-   private static _isInitialized = false
-   static get isInitialized() {
-      return this._isInitialized
-   }
+   // private static _isInitialized = false
+   // static get isInitialized() {
+   //    return this._isInitialized
+   // }
 
-   static documents: Array<Document> = []
-   static links: Array<Link> = []
-   static _onceInitCallbacks: Array<Function> = []
+   // static documents: Array<Document> = []
 
-   static async init() {
-      if (this.isInitialized) throw 'WorkspaceManager initialized twice'
-      this._isInitialized = true
+   // static async init() {
+   //    this._workspacePath = `${process.cwd()}\\workspace\\`
 
-      this._workspacePath = `${process.cwd()}\\workspace\\`
+   //    this.loadDocuments()
+   // }
 
-      this.loadConfig()
-      this.loadDocuments()
+   // static loadDocuments() {
+   //    //list of every .txt file name in workspace
+   //    var documentNames: Array<string> = []
 
-      this._onceInitCallbacks.forEach(cb => cb())
-   }
+   //    //read the title of every folder/file in the workspace folder
+   //    //populates documentName array with .txt file names
+   //    readdirSync(this.workspacePath, { withFileTypes: true }).forEach((dirent: Dirent) => {
+   //       var fullName = `${dirent}`
+   //       var splitName = fullName.split('.')
 
-   static onceInitialized(callback: Function) {
-      if (this.isInitialized) callback()
-      else this._onceInitCallbacks.push(callback)
-   }
+   //       //skip if there is no extension
+   //       if (splitName.length < 2) return
 
-   static loadDocuments() {
-      //list of every .txt file name in workspace
-      var documentNames: Array<string> = []
+   //       var fileName = splitName.shift() //everything before first '.'
+   //       var ext = splitName.join('.') //everything after first '.'
 
-      //populates documentName array with .txt file names
-      readdirSync(this.workspacePath, { withFileTypes: true }).forEach((dirent: Dirent) => {
-         var fullName = `${dirent}`
-         var splitName = fullName.split('.')
+   //       if (ext == 'txt') documentNames.push(fileName)
+   //       else if (ext != 'meta' && fullName != 'config.yaml') console.warn(`unexpected file: '${fullName}'`)
+   //    })
 
-         //skip if there is no extension
-         if (splitName.length < 2) return
+   //    //creates a Document object for each .txt file
+   //    this.documents = documentNames.map(docName => new Document(docName))
 
-         var fileName = splitName.shift() //everything before first '.'
-         var ext = splitName.join('.') //everything after first '.'
+   //    //deserialize every link string into a Link object and adds it to the from/to link lists for the corresponding documents
+   //    this.documents.forEach(d => {
+   //       d.metaData.linksFromThisStrings.forEach(str => {
+   //          var link = Link.fromString(str)
 
-         if (ext == 'txt') documentNames.push(fileName)
-         else if (ext != 'meta' && fullName != 'config.yaml') console.warn(`unexpected extension on file: '${fullName}'`)
-      })
+   //          link.from.document.linksFromThis.push(link)
+   //          link.to.document.linksToThis.push(link)
+   //       })
+   //    })
+   // }
 
-      //creates a Document object for each .txt file
-      this.documents = documentNames.map(docName => new Document(docName))
+   // static getSuggestedLinks(str: string): Array<[string, ToAddress]> {
+   //    if (!this.isInitialized) throw 'WorkspaceManager.getRecommendedLinks() called before init() completed'
 
-      //deserialize every link string into a Link object and adds it to the from/to link lists for the corresponding documents
-      this.documents.forEach(d => {
-         d.metaData.linksFromThisStrings.forEach(str => {
-            var link = Link.fromString(str)
+   //    str = str.toLowerCase().trim()
 
-            link.from.document.linksFromThis.push(link)
-            link.to.document.linksToThis.push(link)
-         })
-      })
-   }
+   //    return this.documents
+   //       .filter(doc => doc.name.toLowerCase().includes(str))
+   //       .map(doc => [
+   //          doc.name,
+   //          {
+   //             document: doc,
+   //          },
+   //       ])
+   // }
 
-   static loadConfig() {
-      // var config = yaml.safeLoad(readFileSync(this._workspacePath + 'config.yaml', 'utf8'))
-      // console.log(`config loaded: ${config}`)
-   }
+   // static createLink(from: FromAddress, to: ToAddress): Link {
+   //    var link = new Link(Date.now(), { ...from }, { ...to })
 
-   static getSuggestedLinks(str: string): Array<[string, ToAddress]> {
-      if (!this.isInitialized) throw 'WorkspaceManager.getRecommendedLinks() called before init() completed'
+   //    from.document.linksFromThis.push(link)
+   //    from.document.saveMetaData()
 
-      str = str.toLowerCase().trim()
+   //    to.document.linksToThis.push(link)
+   //    to.document.saveMetaData()
 
-      return this.documents
-         .filter(doc => doc.name.toLowerCase().includes(str))
-         .map(doc => [
-            doc.name,
-            {
-               document: doc,
-            },
-         ])
-   }
-
-   static get newLinkID(): number {
-      return Date.now()
-
-      //? save link to file here too?
-   }
-
-   static createLink(from: FromAddress, to: ToAddress): Link {
-      var link = new Link(this.newLinkID, { ...from }, { ...to })
-
-      from.document.linksFromThis.push(link)
-      from.document.saveMetaData()
-
-      to.document.linksToThis.push(link)
-      to.document.saveMetaData()
-
-      return link
-   }
+   //    return link
+   // }
 }

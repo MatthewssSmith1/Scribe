@@ -11,6 +11,10 @@ export enum Page {
 
 //#region State
 export const initialState = {
+   workspace: {
+      documents: [] as Array<Document>,
+      path: null as string
+   },
    contentBody: {
       activePage: Page.Note,
    },
