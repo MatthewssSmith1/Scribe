@@ -39,6 +39,8 @@ export default class Bullet extends React.Component {
          marginLeft: `${node.numIndents * 2}rem`,
       }
 
+      console.log('bullet rendered');
+
       return (
          <div className={cx('bullet', { collapsed: node.isCollapsed })} style={style}>
             <Icon className="bullet__chevron" glyph="keyboard_arrow_down" onClick={this.handleChevronClick} />
@@ -95,8 +97,6 @@ export default class Bullet extends React.Component {
          var sel = window.getSelection()
 
          var caretPos = getSelectionCharacterOffsetWithin(this.editableRef.current.childNodes[0]).start
-
-         console.log(caretPos);
 
          this.editableRef.current.innerHTML = this.props.node.text
 

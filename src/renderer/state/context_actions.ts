@@ -41,6 +41,10 @@ export const resizeContentPanel = createAction((state: State, width: number) => 
 
    state.contentPanel.width = Math.min(maxWidth, Math.max(minWidth, width))
 })
+
+export const setSearchValue = createAction((state: State, value: string) => {
+   state.actionPanel.searchValue = value
+})
 //#endregion
 
 //#region Note Body

@@ -64,6 +64,10 @@ class BulletList extends React.Component {
       headNode: Node
    }
 
+   shouldComponentUpdate(nextProps: any, _nextState: any) {
+      return true
+   }
+
    render() {
       var node = this.props.headNode
       var children = []
