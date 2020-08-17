@@ -1,7 +1,6 @@
 import { app, BrowserWindow } from 'electron'
 import * as path from 'path'
 import * as url from 'url'
-import WorkspaceManager from './workspace_manager'
 
 let mainWindow: BrowserWindow | null
 

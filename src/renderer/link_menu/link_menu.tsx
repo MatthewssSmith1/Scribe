@@ -7,7 +7,6 @@ import { hideLinkMenu, enqueueSaveDocument } from '@renderer/state/context_actio
 import { trySaveDocument } from '@renderer/state/context_actions_async'
 
 import { FromAddress, ToAddress } from '@main/link'
-import WorkspaceManager from '@main/workspace_manager'
 
 export default function LinkMenu() {
    var { state, dispatch } = getContext()

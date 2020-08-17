@@ -16,7 +16,7 @@ export const initialState = {
       path: null as string
    },
    contentBody: {
-      activePage: Page.Note,
+      activePage: Page.Graph,
    },
    actionPanel: {
       isCollapsed: true,

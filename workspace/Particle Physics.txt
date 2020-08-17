@@ -1,3 +1,9 @@
+id: -1198266707
+tags: []
+propKeys: []
+propValues: []
+linksFromThis: []
+---
 building electricity blocks calculus of the universe (two classes)
 	fermions (quarks & leptons) make up matter
 		two cannot occupy the same quantum space (bosons can)

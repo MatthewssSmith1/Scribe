@@ -6,66 +6,66 @@ import { State } from '@renderer/state/context'
 import Link from '@/main/link'
 import Node from '@main/node'
 
-interface MetaData {
+export interface IDocumentMetaData {
    id: number
-   linksFromThisStrings: Array<string>
+   tags: Array<string>
+   propKeys: Array<string>
+   propValues: Array<string>
+   linksFromThis: Array<string>
 }
 
 export default class Document {
    name: string
-   metaData: MetaData
+   id: number
+
+   tags: Array<string>
+   props: Map<string, string>
+
    linksToThis: Array<Link> = []
    linksFromThis: Array<Link> = []
 
-   constructor(_name: string, workspacePath: string) {
+   constructor(_name: string, state: State) {
+      var filePath = state.workspace.path + `${_name}.txt`
+      if (!existsSync(filePath)) throw `document '${filePath}' does not exist in workspace folder`
+
+      var str = readFileSync(filePath, 'utf8')
+      var mData = yaml.safeLoad(str.substr(0, str.indexOf('\n---\n'))) as IDocumentMetaData
+
       this.name = _name
+      this.id = mData.id
+      this.tags = mData.tags
+      this.linksFromThis = mData.linksFromThis.map(s => Link.fromString(s, state))
 
-      var metaFilePath = workspacePath + `${_name}.meta`
-      if (existsSync(metaFilePath)) this.metaData = yaml.safeLoad(readFileSync(metaFilePath, 'utf8')) as MetaData
-      else {
-         this.generateMetaData()
-         this.saveMetaData(workspacePath)
-      }
+      this.props = new Map<string, string>()
+      if (mData.propKeys.length != mData.propValues.length) throw `document '${filePath}' property key and values count mismatch`
+
+      mData.propKeys.forEach((key, i) => {
+         this.props.set(key, mData.propValues[i])
+      })
    }
 
-   //creates .meta file for documents that are missing one
-   private generateMetaData() {
-      var hashCode = (str: string) => {
-         var hash = 0
-         if (str.length == 0) return hash
+   // static hashCode(str: string) {
+   //    var hash = 0
+   //    if (str.length == 0) return hash
 
-         for (var i = 0; i < str.length; i++) {
-            var char = str.charCodeAt(i)
-            hash = (hash << 5) - hash + char
-            hash = hash & hash // Convert to 32bit integer
-         }
-         return hash
-      }
-
-      this.metaData = { id: hashCode(this.name), linksFromThisStrings: [] }
-   }
+   //    for (var i = 0; i < str.length; i++) {
+   //       var char = str.charCodeAt(i)
+   //       hash = (hash << 5) - hash + char
+   //       hash = hash & hash // Convert to 32bit integer
+   //    }
+   //    return hash
+   // }
 
    getNodeHead(state: State): Node {
-      if (state.workspace.path === null) throw 'Document.toNodeList() (reading from a file) called before state.workspace was initialized'
-
-      var fileLines = readFileSync(state.workspace.path + `${this.name}.txt`, { encoding: 'utf8', flag: 'r' }).split('\n')
+      var fileStr = readFileSync(state.workspace.path + `${this.name}.txt`, { encoding: 'utf8', flag: 'r' })
+      var fileLines = fileStr.substr(fileStr.indexOf('\n---\n') + 5).split('\n')
 
       return Node.headFromStringArray(fileLines)
    }
 
-   // toBullet(): Bullet {
-   //    if (!WorkspaceManager.isInitialized) throw 'Document.toBullet() (reading from a file) called before WorkspaceManager.init() finished'
+   // saveMetaData(workspacePath: string) {
+   //    this.metaData.linksFromThisStrings = this.linksFromThis.map(l => l.toString())
 
-   //    var fileLines = readFileSync(WorkspaceManager.workspacePath + `${this.name}.txt`, { encoding: 'utf8', flag: 'r' })
-   //       .split('\n')
-   //       .filter(line => line.trim() !== '')
-
-   //    return Bullet.fromStringArray(this.name, fileLines)
+   //    writeFileSync(workspacePath + `${this.name}.meta`, yaml.safeDump(this.metaData))
    // }
-
-   saveMetaData(workspacePath: string) {
-      this.metaData.linksFromThisStrings = this.linksFromThis.map(l => l.toString())
-
-      writeFileSync(workspacePath + `${this.name}.meta`, yaml.safeDump(this.metaData))
-   }
 }

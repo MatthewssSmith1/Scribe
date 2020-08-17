@@ -1,7 +1,6 @@
 import React from 'react'
 import * as ReactDOM from 'react-dom'
 import { Titlebar, Color } from 'custom-electron-titlebar'
-
 import showdown from 'showdown'
 
 require('typeface-montserrat')
@@ -12,7 +11,7 @@ import ContentPanel from '@renderer/content_panel/content_panel'
 import LinkMenu from '@/renderer/link_menu/link_menu'
 import GraphPage from '@renderer/graph_page/graph_page'
 
-import { ContextProvider, GlobalContext, Context, Page, State } from '@renderer/state/context'
+import { ContextProvider, GlobalContext, Context, Page } from '@renderer/state/context'
 
 //import all scss files
 import '@renderer/style.scss'

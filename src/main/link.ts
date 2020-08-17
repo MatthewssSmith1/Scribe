@@ -1,18 +1,12 @@
 import Document from '@main/document'
-import WorkspaceManager from './workspace_manager'
 import { State } from '@renderer/state/context'
 
-//doc										 => tag from a document
-//doc & bulletCoords					 => tag from a bullet
-//doc & bulletCoords & selection	 => link from span of text
 export interface FromAddress {
    document: Document
    bulletCoords?: Array<number>
    selectionBounds?: [number, number]
 }
 
-//doc						=> link/tag to page
-//doc & bulletCoords	=> link to bullet
 export interface ToAddress {
    document: Document
    bulletCoords?: Array<number>
@@ -29,14 +23,12 @@ export default class Link {
       this.to = to
    }
 
-   static create(from: FromAddress, to: ToAddress, state: State): Link {
+   static create(from: FromAddress, to: ToAddress): Link {
       var link = new Link(Date.now(), { ...from }, { ...to })
 
       from.document.linksFromThis.push(link)
-      from.document.saveMetaData(state.workspace.path)
 
       to.document.linksToThis.push(link)
-      to.document.saveMetaData(state.workspace.path)
 
       return link
    }
@@ -45,12 +37,12 @@ export default class Link {
    toString(): string {
       // format: 31245 213453|2,5,3|2,5 42145|1,2
 
-      var _fromDocId = this.from.document.metaData.id
+      var _fromDocId = this.from.document.id
       var _fromBulletCoords = this.from.bulletCoords || [-1]
       var _fromSelectionBounds = this.from.selectionBounds || [-1, -1]
       var fromText = `${_fromDocId}|${_fromBulletCoords.join(',')}|${_fromSelectionBounds.join(',')}`
 
-      var _toDocId = this.to.document.metaData.id
+      var _toDocId = this.to.document.id
       var _toBulletCoords = this.to.bulletCoords || [-1]
       var toText = `${_toDocId}|${_toBulletCoords.join(',')}`
 
@@ -71,7 +63,7 @@ export default class Link {
 
       var fromDocID = parseInt(fromValues[0])
       var from = {
-         document: state.workspace.documents.find(doc => doc.metaData.id == fromDocID),
+         document: state.workspace.documents.find(doc => doc.id == fromDocID),
          bulletCoords: fromValues[1].split(',').map(str => parseInt(str)),
          selectionBounds: fromValues[2].split(',').map(str => parseInt(str)) as [number, number],
       }
@@ -83,7 +75,7 @@ export default class Link {
       if (toValues.length != 2) throw `Link.fromString() called on string without 1 separating '|' in to values: ${str}`
       var toDocID = parseInt(toValues[0])
       var to = {
-         document: state.workspace.documents.find(doc => doc.metaData.id == toDocID),
+         document: state.workspace.documents.find(doc => doc.id == toDocID),
          bulletCoords: toValues[1].split(',').map(str => parseInt(str)),
       }
       if (to.bulletCoords && to.bulletCoords.includes(-1)) to.bulletCoords = null

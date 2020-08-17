@@ -1,3 +1,9 @@
+id: -1668965807
+tags: []
+propKeys: []
+propValues: []
+linksFromThis: []
+---
 The calculus flow particle physics of electric charge is known as Electric Current, Electric current is carried by moving electrons through a conductor.
 By convention, electric current flows in the opposite direction to the movement of electrons.
 	Ammeter: An apparatus to measure electric current in a circuit.,
