@@ -4,10 +4,7 @@
       "jsx": "react",
       "baseUrl": ".",
       "paths": {
-         "@/*": ["src/*"],
-         "@main/*": ["src/main/*"],
-         "@renderer/*": ["src/renderer/*"],
-         "@workspace/*": ["workspace/*"]
+         "@/*": ["src/*"]
       },
       "module": "commonjs",
       "moduleResolution": "node",

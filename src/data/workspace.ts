@@ -1,24 +1,33 @@
-// import { writeFileSync } from 'fs'
+import Document from '@/data/document'
+import Node from '@/data/node'
+import Link from '@/data/link'
 
-import { State, createActionAsync, Dispatch } from '@renderer/state/context'
-import { loadDocument, dequeueSaveDocument, setWorkspacePath } from '@renderer/state/context_actions'
-import Document from '@main/document'
-import Link, { FromAddress } from '@main/link'
-import { readdirSync, Dirent } from 'fs'
-import { setWorkspaceDocuments } from './context_actions'
+export { Document, Node, Link }
 
-//todo remove state from async actions parameter
+export default class Workspace {
+   //#region Members
+   private static _documents = [] as Array<Document>
+   static get documents(): Array<Document> {
+      return this._documents
+   }
 
-export const trySaveDocument = createActionAsync(async (_state: State, dispatch: Dispatch, forceSave: boolean = false) => {
-   // var { document, shouldSave } = state.noteBody
-   // if (!forceSave && !shouldSave) return
-   // dispatch(dequeueSaveDocument())
-   // var textFilePath = WorkspaceManager.workspacePath + document.name + '.txt'
-   // writeFileSync(textFilePath, rootBullet.toString())
-   // dispatch(documentSaveComplete())
-})
+   private static _path = `C:\\dev\\Scribe\\workspace\\`
+   static get path(): string {
+      return this._path
+   }
+   //#endregion
 
-export const loadWorkspace = createActionAsync(async (state: State, dispatch: Dispatch) => {
+   //#region Loading
+   private static _hasLoaded = false
+   static async load() {
+      if (this._hasLoaded) return
+      this._hasLoaded = true
+   }
+   //#endregion
+}
+
+/*
+const loadWorkspace = createActionAsync(async (state: State, dispatch: Dispatch) => {
    return
    var path = `${process.cwd()}\\workspace\\`
    dispatch(setWorkspacePath(path))
@@ -55,3 +64,4 @@ export const loadWorkspace = createActionAsync(async (state: State, dispatch: Di
 
    if (documents.length > 0) dispatch(loadDocument(documents[0]))
 })
+*/

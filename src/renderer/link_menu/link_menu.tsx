@@ -1,78 +1,99 @@
-import React, { useRef, useEffect } from 'react'
+import React from 'react'
 
-import cx from 'classnames'
+import { ToAddress } from '@/data/link'
 
-import { getContext, LinkMenuState } from '@renderer/state/context'
-import { hideLinkMenu, enqueueSaveDocument } from '@renderer/state/context_actions'
-import { trySaveDocument } from '@renderer/state/context_actions_async'
+export default class LinkMenu extends React.Component {
+   //#region Static
+   private static _SINGLETON: LinkMenu
 
-import { FromAddress, ToAddress } from '@main/link'
-
-export default function LinkMenu() {
-   var { state, dispatch } = getContext()
-   var domRef = useRef(null)
-
-   var linkMenuState: LinkMenuState = state.linkMenu
-
-   //TODO give isHidden its own return statement
-   var isHidden = linkMenuState.isHidden
-
-   //while the link menu is active: if clicked away from it => hide it, ignore keydown events
-   useEffect(() => {
-      if (isHidden) return
-
-      var handleMouseDown = (e: MouseEvent) => {
-         var clickedElm = e.target
-
-         var menuDiv = domRef.current
-
-         if (clickedElm != menuDiv && !menuDiv.contains(clickedElm)) {
-            dispatch(hideLinkMenu())
-         } else e.preventDefault()
-      }
-
-      var handleKeyDown = (e: KeyboardEvent) => {
-         e.preventDefault()
-      }
-
-      window.addEventListener('mousedown', handleMouseDown, false)
-      window.addEventListener('keydown', handleKeyDown, false)
-
-      return () => {
-         window.removeEventListener('mousedown', handleMouseDown, false)
-         window.removeEventListener('keydown', handleKeyDown, false)
-      }
-   })
-
-   return (
-      <div id="link-menu" className={cx({ enabled: !isHidden })} style={isHidden ? {} : positionStyle(linkMenuState)} ref={domRef}>
-         {isHidden ? [] : getMenuItems(linkMenuState)}
-      </div>
-   )
-}
-
-function positionStyle(linkMenuState: LinkMenuState) {
-   return {
-      left: `${linkMenuState.viewportPos[0]}px`,
-      top: `${linkMenuState.viewportPos[1]}px`,
+   static hide(): void {
+      LinkMenu._SINGLETON.setState({ isHidden: true })
    }
-}
+   //#endregion
 
-function getMenuItems(linkMenuState: LinkMenuState): Array<JSX.Element> {
-   // if (!linkMenuState.suggestedLinks) return []
+   //#region Members & Constructor
+   state = {
+      isHidden: true,
+      viewportPos: null as [number, number],
+      nodeWithSelection: null as Node,
+      selectionBounds: null as [number, number],
+      selectedText: null as string,
+      suggestions: null as Array<[string, ToAddress]>,
+   }
 
-   var children: Array<JSX.Element> = linkMenuState.suggestedLinks.map((suggestion: [string, ToAddress], i) => (
-      <SuggestionItem name={suggestion[0]} toAddress={suggestion[1]} key={i} />
-   ))
+   domRef: React.RefObject<HTMLDivElement>
 
-   //if the selected text isn't an exact match to a file, add an item to the top of the suggestions for a new file
-   if (
-      linkMenuState.suggestedLinks.find((suggestion: [string, ToAddress]) => suggestion[0].toLowerCase() == linkMenuState.selectedText.toLowerCase()) ==
-      undefined
-   )
-      children.unshift(<NewPageItem selectedText={linkMenuState.selectedText} key="-1" />)
+   constructor(props: any) {
+      super(props)
 
-   return children
+      LinkMenu._SINGLETON = this
+
+      this.domRef = React.createRef<HTMLDivElement>()
+   }
+   //#endregion
+
+   //#region Input
+   handleMouseDown = (e: MouseEvent) => {
+      if (this.state.isHidden) return
+
+      var clickedElm = e.target as Node
+      var menuDiv = this.domRef.current
+
+      var clickedInLinkMenu = clickedElm != menuDiv && !menuDiv.contains(clickedElm)
+
+      if (clickedInLinkMenu) LinkMenu.hide()
+      else e.preventDefault()
+   }
+
+   handleKeyDown = (e: KeyboardEvent) => {
+      if (this.state.isHidden) return
+
+      e.preventDefault()
+   }
+
+   componentDidMount() {
+      window.addEventListener('mousedown', this.handleMouseDown)
+      window.addEventListener('keydown', this.handleKeyDown)
+   }
+
+   componentWillUnmount() {
+      window.removeEventListener('mousedown', this.handleMouseDown)
+      window.removeEventListener('keydown', this.handleKeyDown)
+   }
+   //#endregion
+
+   //#region Getters
+   get style(): React.CSSProperties {
+      return {
+         left: `${this.state.viewportPos[0]}px`,
+         top: `${this.state.viewportPos[1]}px`,
+      }
+   }
+
+   get menuItems(): Array<JSX.Element> {
+      // if (!linkMenuState.suggestions) return []
+
+      var children = this.state.suggestions.map((suggestion: [string, ToAddress], i) => (
+         <SuggestionItem name={suggestion[0]} toAddress={suggestion[1]} key={i} />
+      ))
+
+      //if the selected text isn't an exact match to a file, add an item to the top of the suggestions for a new file
+      if (this.state.suggestions.find((suggestion: [string, ToAddress]) => suggestion[0].toLowerCase() == this.state.selectedText.toLowerCase()) == undefined)
+         children.unshift(<NewPageItem selectedText={this.state.selectedText} key="-1" />)
+
+      return children
+   }
+   //#endregion
+
+   render() {
+      if (this.state.isHidden) return <div id="link-menu" ref={this.domRef} />
+
+      return (
+         <div id="link-menu" className={'enabled'} style={this.style} ref={this.domRef}>
+            {this.menuItems}
+         </div>
+      )
+   }
 }
 
 function NewPageItem(props: { selectedText: string }): JSX.Element {
@@ -117,9 +138,5 @@ function SuggestionItem(props: { name: string; toAddress: ToAddress }): JSX.Elem
    //    // NoteBody.queueSaveDocument(true)
    // }
 
-   return (
-      <div className="link-menu__item">
-         {/* <p onClick={handleClick}>{props.name}</p> */}
-      </div>
-   )
+   return <div className="link-menu__item">{/* <p onClick={handleClick}>{props.name}</p> */}</div>
 }

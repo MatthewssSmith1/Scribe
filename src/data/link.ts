@@ -1,5 +1,4 @@
-import Document from '@main/document'
-import { State } from '@renderer/state/context'
+import Workspace, { Document } from '@/data/workspace'
 
 export interface FromAddress {
    document: Document
@@ -49,7 +48,7 @@ export default class Link {
       return `${this.id} ${fromText} ${toText}`
    }
 
-   static fromString(str: string, state: State) {
+   static fromString(str: string) {
       // format: 31245 213453|2,5,3|2,5 42145|1,2
 
       var splitBySpaces = str.split(' ')
@@ -63,7 +62,7 @@ export default class Link {
 
       var fromDocID = parseInt(fromValues[0])
       var from = {
-         document: state.workspace.documents.find(doc => doc.id == fromDocID),
+         document: Workspace.documents.find(doc => doc.id == fromDocID),
          bulletCoords: fromValues[1].split(',').map(str => parseInt(str)),
          selectionBounds: fromValues[2].split(',').map(str => parseInt(str)) as [number, number],
       }
@@ -75,7 +74,7 @@ export default class Link {
       if (toValues.length != 2) throw `Link.fromString() called on string without 1 separating '|' in to values: ${str}`
       var toDocID = parseInt(toValues[0])
       var to = {
-         document: state.workspace.documents.find(doc => doc.id == toDocID),
+         document: Workspace.documents.find(doc => doc.id == toDocID),
          bulletCoords: toValues[1].split(',').map(str => parseInt(str)),
       }
       if (to.bulletCoords && to.bulletCoords.includes(-1)) to.bulletCoords = null

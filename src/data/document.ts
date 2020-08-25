@@ -1,10 +1,7 @@
-import { readFileSync, writeFileSync, existsSync } from 'fs'
+import { readFileSync, existsSync } from 'fs'
 import yaml from 'js-yaml'
 
-import { State } from '@renderer/state/context'
-
-import Link from '@/main/link'
-import Node from '@main/node'
+import Workspace, { Link, Node } from '@/data/workspace'
 
 export interface IDocumentMetaData {
    id: number
@@ -24,8 +21,8 @@ export default class Document {
    linksToThis: Array<Link> = []
    linksFromThis: Array<Link> = []
 
-   constructor(_name: string, state: State) {
-      var filePath = state.workspace.path + `${_name}.txt`
+   constructor(_name: string) {
+      var filePath = Workspace.path + `${_name}.txt`
       if (!existsSync(filePath)) throw `document '${filePath}' does not exist in workspace folder`
 
       var str = readFileSync(filePath, 'utf8')
@@ -34,7 +31,7 @@ export default class Document {
       this.name = _name
       this.id = mData.id
       this.tags = mData.tags
-      this.linksFromThis = mData.linksFromThis.map(s => Link.fromString(s, state))
+      this.linksFromThis = mData.linksFromThis.map(s => Link.fromString(s))
 
       this.props = new Map<string, string>()
       if (mData.propKeys.length != mData.propValues.length) throw `document '${filePath}' property key and values count mismatch`
@@ -56,8 +53,9 @@ export default class Document {
    //    return hash
    // }
 
-   getNodeHead(state: State): Node {
-      var fileStr = readFileSync(state.workspace.path + `${this.name}.txt`, { encoding: 'utf8', flag: 'r' })
+   getNodeHead(): Node {
+      //todo rewrite workspace path once workspace is extracted into a static class
+      var fileStr = readFileSync(Workspace.path + `${this.name}.txt`, { encoding: 'utf8', flag: 'r' })
       var fileLines = fileStr.substr(fileStr.indexOf('\n---\n') + 5).split('\n')
 
       return Node.headFromStringArray(fileLines)

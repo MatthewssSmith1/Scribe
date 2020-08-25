@@ -3,60 +3,44 @@ import * as ReactDOM from 'react-dom'
 import { Titlebar, Color } from 'custom-electron-titlebar'
 import showdown from 'showdown'
 
-require('typeface-montserrat')
-
-import ActionPanel from '@/renderer/action_panel/action_panel'
-import NoteBody from '@/renderer/note_page/note_page'
-import ContentPanel from '@renderer/content_panel/content_panel'
+import ActionBar from '@/renderer/action_bar/action_bar'
+import SidePanel from '@/renderer/side_panel/side_panel'
 import LinkMenu from '@/renderer/link_menu/link_menu'
-import GraphPage from '@renderer/graph_page/graph_page'
+import ContentBody from '@/renderer/content_body/content_body'
 
-import { ContextProvider, GlobalContext, Context, Page } from '@renderer/state/context'
+//import all scss files and font
+require('typeface-montserrat')
+import '@/renderer/style.scss'
 
-//import all scss files
-import '@renderer/style.scss'
-
-//mark down converter settings
+//#region Mark Down
 showdown.setOption('emoji', true)
 showdown.setOption('backslashEscapesHTMLTags', true)
 showdown.setOption('strikethrough', true)
 showdown.setOption('headerLevelStart', 3)
 showdown.setOption('requireSpaceBeforeHeadingText', true)
 export const markDownConverter = new showdown.Converter() //{ extensions: ['youtube'] }
+//#endregion
 
-//add titlebar to top of window
+//#region Titlebar
 let titleBar = new Titlebar({
    backgroundColor: Color.fromHex('#4a6fa5'),
    overflow: 'hidden',
    unfocusEffect: false,
 })
 titleBar.updateTitle('Scribe')
-
-class ContentBody extends React.Component {
-   static contextType = GlobalContext
-
-   render() {
-      var { state } = this.context as Context
-
-      var activePage = state.contentBody.activePage
-
-      return activePage == Page.Note ? <NoteBody /> : <GraphPage />
-   }
-}
+//#endregion
 
 ReactDOM.render(
-   <ContextProvider>
-      <div id="root">
-         <ActionPanel key="0" />
-         {/* <NoteBody key="1" /> */}
-         <ContentBody key="1" />
-         <ContentPanel key="2" />
-         <LinkMenu key="3" />
-      </div>
-   </ContextProvider>,
+   <div id="root">
+      <ActionBar />
+      <ContentBody />
+      <SidePanel />
+      <LinkMenu />
+   </div>,
    document.querySelector('.container-after-titlebar')
 )
 
+//#region Input Initialization
 //allow for different css behavior when ctrl is clicked
 document.addEventListener('keydown', (e: KeyboardEvent) => {
    if (e.key == 'Control') document.body.classList.add('ctrl-is-pressed')
@@ -69,3 +53,4 @@ document.addEventListener('keyup', (e: KeyboardEvent) => {
 //disable dragging of things into bullets
 document.body.ondragstart = () => false
 document.body.ondrop = () => false
+//#endregion

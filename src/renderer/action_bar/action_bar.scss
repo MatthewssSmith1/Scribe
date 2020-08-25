@@ -4,7 +4,11 @@
    top: 0;
    bottom: 0;
 
-   width: 224px;
+   &.collapsed {
+      left: -14rem
+   }
+
+   width: 14rem;
 
    //attempts to get the uncollapse button to work
    overflow-x: visible;

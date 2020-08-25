@@ -19,9 +19,6 @@ const commonConfig = {
    resolve: {
       alias: {
          '@': srcPaths('src'),
-         '@main': srcPaths('src/main'),
-         '@workspace': srcPaths('workspace'),
-         '@renderer': srcPaths('src/renderer'),
       },
       extensions: ['.js', '.json', '.ts', '.tsx'],
    },

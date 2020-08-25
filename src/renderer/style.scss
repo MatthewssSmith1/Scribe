@@ -63,13 +63,17 @@ $action-panel__search-bar-anim: 200ms ease-in;
    overflow: hidden;
 }
 
-@import 'other_components/icon.scss';
-@import 'action_panel/action_panel.scss';
-@import 'content_panel/content_panel.scss';
-@import 'note_page/note_page.scss';
+@import '@/components/icon.scss';
+
+@import 'action_bar/action_bar.scss';
+
+@import 'side_panel/side_panel.scss';
+
 @import 'link_menu/link_menu.scss';
-@import 'note_page/bullet/bullet.scss';
-@import 'graph_page/graph_page.scss';
+
+@import 'content_body/note_page/note_page.scss';
+@import 'content_body/note_page/bullet/bullet.scss';
+@import 'content_body/graph_page/graph_page.scss';
 
 .all-descendants-w-resize * {
    cursor: w-resize;

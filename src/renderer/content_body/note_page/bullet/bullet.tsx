@@ -2,17 +2,12 @@ import React from 'react'
 
 import ContentEditable, { ContentEditableEvent } from 'react-contenteditable'
 import cx from 'classnames'
-import { markDownConverter } from '@renderer/renderer'
+import { markDownConverter } from '@/renderer/renderer'
 
-import Node from '@main/node'
-
-import { GlobalContext, Context } from '@renderer/state/context'
-
-import Icon from '@renderer/other_components/icon'
+import Node from '@/data/node'
+import Icon from '@/components/icon'
 
 export default class Bullet extends React.Component {
-   static contextType = GlobalContext
-
    editableRef: React.RefObject<HTMLDivElement>
 
    props: { node: Node }
@@ -39,7 +34,7 @@ export default class Bullet extends React.Component {
          marginLeft: `${node.numIndents * 2}rem`,
       }
 
-      console.log('bullet rendered');
+      console.log('bullet rendered')
 
       return (
          <div className={cx('bullet', { collapsed: node.isCollapsed })} style={style}>
@@ -64,9 +59,6 @@ export default class Bullet extends React.Component {
 
       node.toggleCollapsed(null, e.altKey)
       node.shouldRebuild = true
-
-      var ctx = this.context as Context
-      ctx.state.noteBody.updateCallback()
    }
 
    //#region Editable Callbacks
@@ -111,7 +103,7 @@ export default class Bullet extends React.Component {
    }
 
    handleEditableBlur = () => {
-      var {node} = this.props
+      var { node } = this.props
 
       //disable headers, but not hashtags
       node.text = node.text.replace('# ', '')
