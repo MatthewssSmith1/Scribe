@@ -1,5 +1,5 @@
 {
-   "name": "note-app",
+   "name": "scribe",
    "version": "1.0.0",
    "description": "A simple note taking app",
    "main": "./dist/main.bundle.js",
@@ -12,8 +12,8 @@
       "build:mac": "electron-builder build --mac --x64"
    },
    "build": {
-      "appId": "com.mattsmith.note_app",
-      "productName": "Note App",
+      "appId": "com.mattsmith.scribe",
+      "productName": "Scribe",
       "directories": {
          "app": "./dist/",
          "output": "./out/"

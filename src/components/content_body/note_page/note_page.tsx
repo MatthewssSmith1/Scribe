@@ -3,9 +3,9 @@ import cx from 'classnames'
 
 import Workspace, { Node, Link, Document } from '@/data/workspace'
 
-import SidePanel from '@/renderer/side_panel/side_panel'
-import Bullet from '@/renderer/content_body/note_page/bullet/bullet'
-import Icon from '@/components/icon'
+import SidePanel from '@/components/side_panel/side_panel'
+import Bullet from '@/components/content_body/note_page/bullet/bullet'
+import Icon from '@/components/icon/icon'
 
 export default class NotePage extends React.Component {
    //#region Static Members & State
@@ -47,8 +47,9 @@ export default class NotePage extends React.Component {
    render() {
       if (this.state.document == null) return <div className="note-body" />
 
+      var right = SidePanel.isCollapsed ? 0 : SidePanel.width
       const style = {
-         right: `${SidePanel.isCollapsed ? 0 : SidePanel.width}px`,
+         right: `${right}px`,
       }
 
       //top element: <h1 className="document-title">{document.name}</h1> : <Breadcrumbs />

@@ -2,10 +2,10 @@ import React from 'react'
 
 import ContentEditable, { ContentEditableEvent } from 'react-contenteditable'
 import cx from 'classnames'
-import { markDownConverter } from '@/renderer/renderer'
+import { markDownConverter } from '@/renderer'
 
 import Node from '@/data/node'
-import Icon from '@/components/icon'
+import Icon from '@/components/icon/icon'
 
 export default class Bullet extends React.Component {
    editableRef: React.RefObject<HTMLDivElement>

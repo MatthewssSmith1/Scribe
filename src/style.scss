@@ -63,17 +63,17 @@ $action-panel__search-bar-anim: 200ms ease-in;
    overflow: hidden;
 }
 
-@import '@/components/icon.scss';
+@import '@/components/icon/icon.scss';
 
-@import 'action_bar/action_bar.scss';
+@import '@/components/action_bar/action_bar.scss';
 
-@import 'side_panel/side_panel.scss';
+@import '@/components/side_panel/side_panel.scss';
 
-@import 'link_menu/link_menu.scss';
+@import '@/components/link_menu/link_menu.scss';
 
-@import 'content_body/note_page/note_page.scss';
-@import 'content_body/note_page/bullet/bullet.scss';
-@import 'content_body/graph_page/graph_page.scss';
+@import '@/components/content_body/note_page/note_page.scss';
+@import '@/components/content_body/note_page/bullet/bullet.scss';
+@import '@/components/content_body/graph_page/graph_page.scss';
 
 .all-descendants-w-resize * {
    cursor: w-resize;

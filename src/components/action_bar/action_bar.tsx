@@ -1,12 +1,12 @@
 import * as React from 'react'
-import Icon from '@/components/icon'
+import Icon from '@/components/icon/icon'
 import cx from 'classnames'
 
-import SidePanel from '@/renderer/side_panel/side_panel'
+import SidePanel from '@/components/side_panel/side_panel'
 
-import SearchResultList from '@/renderer/action_bar/search_result_list/search_result_list'
-import PinList from '@/renderer/action_bar/pin_list/pin_list'
-import ContentBody from '@/renderer/content_body/content_body'
+import SearchResultList from '@/components/action_bar/search_result_list/search_result_list'
+import PinList from '@/components/action_bar/pin_list/pin_list'
+import ContentBody from '@/components/content_body/content_body'
 
 type ActionBarState = {
    isCollapsed: boolean

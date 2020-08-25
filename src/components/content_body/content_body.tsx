@@ -1,7 +1,7 @@
 import React from 'react'
 
-import NotePage from '@/renderer/content_body/note_page/note_page'
-import GraphPage from '@/renderer/content_body/graph_page/graph_page'
+import NotePage from '@/components/content_body/note_page/note_page'
+import GraphPage from '@/components/content_body/graph_page/graph_page'
 
 export enum Page {
    Note,

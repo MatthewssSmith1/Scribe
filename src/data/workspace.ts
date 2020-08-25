@@ -3,7 +3,6 @@ import { readdirSync, Dirent } from 'fs'
 import Document from '@/data/document'
 import Node from '@/data/node'
 import Link from '@/data/link'
-import NotePage from '../renderer/content_body/note_page/note_page'
 
 export { Document, Node, Link }
 

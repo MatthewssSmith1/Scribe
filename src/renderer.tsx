@@ -3,14 +3,14 @@ import * as ReactDOM from 'react-dom'
 import { Titlebar, Color } from 'custom-electron-titlebar'
 import showdown from 'showdown'
 
-import ActionBar from '@/renderer/action_bar/action_bar'
-import SidePanel from '@/renderer/side_panel/side_panel'
-import LinkMenu from '@/renderer/link_menu/link_menu'
-import ContentBody from '@/renderer/content_body/content_body'
+import ActionBar from '@/components/action_bar/action_bar'
+import SidePanel from '@/components/side_panel/side_panel'
+import LinkMenu from '@/components/link_menu/link_menu'
+import ContentBody from '@/components/content_body/content_body'
 
 //import all scss files and font
 require('typeface-montserrat')
-import '@/renderer/style.scss'
+import '@/style.scss'
 
 //#region Mark Down
 showdown.setOption('emoji', true)
