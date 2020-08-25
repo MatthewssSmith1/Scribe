@@ -50,7 +50,7 @@ const commonConfig = {
 //#endregion
 
 const mainConfig = lodash.cloneDeep(commonConfig)
-mainConfig.entry = './src/main/main.ts'
+mainConfig.entry = './src/main.ts'
 mainConfig.target = 'electron-main'
 mainConfig.output.filename = 'main.bundle.js'
 mainConfig.plugins = [
