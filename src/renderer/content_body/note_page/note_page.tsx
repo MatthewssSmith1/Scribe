@@ -1,26 +1,15 @@
 import React from 'react'
 import cx from 'classnames'
 
-import Bullet from '@/renderer/content_body/note_page/bullet/bullet'
-import Node from '@/data/node'
-import Link from '@/data/link'
-import Document from '@/data/document'
+import Workspace, { Node, Link, Document } from '@/data/workspace'
 
 import SidePanel from '@/renderer/side_panel/side_panel'
-
+import Bullet from '@/renderer/content_body/note_page/bullet/bullet'
 import Icon from '@/components/icon'
 
 export default class NotePage extends React.Component {
    //#region Static Members & State
    private static _SINGLETON: NotePage
-
-   constructor(props: any) {
-      super(props)
-
-      NotePage._SINGLETON = this
-
-      //? load workspace here or in a method call lower down the stack?
-   }
 
    static get document(): Document {
       return NotePage._SINGLETON.state.document
@@ -31,11 +20,27 @@ export default class NotePage extends React.Component {
 
       document.querySelector('.note-body').scrollTop = 0
    }
+   //#endregion
 
+   //#region State & Loading
    state = {
       document: null as Document,
       headNode: null as Node,
       shouldSave: null as boolean,
+   }
+
+   constructor(props: any) {
+      super(props)
+
+      NotePage._SINGLETON = this
+
+      Workspace.load()
+   }
+
+   componentDidMount() {
+      Workspace.onceLoaded(() => {
+         if (Workspace.documents.length > 0) NotePage.document = Workspace.documents[0]
+      })
    }
    //#endregion
 

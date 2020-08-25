@@ -25,8 +25,8 @@ export default class Document {
       var filePath = Workspace.path + `${_name}.txt`
       if (!existsSync(filePath)) throw `document '${filePath}' does not exist in workspace folder`
 
-      var str = readFileSync(filePath, 'utf8')
-      var mData = yaml.safeLoad(str.substr(0, str.indexOf('\n---\n'))) as IDocumentMetaData
+      var str = readFileSync(filePath, 'utf8') as string
+      var mData = yaml.safeLoad(str.substr(0, str.indexOf('---'))) as IDocumentMetaData
 
       this.name = _name
       this.id = mData.id
@@ -56,7 +56,7 @@ export default class Document {
    getNodeHead(): Node {
       //todo rewrite workspace path once workspace is extracted into a static class
       var fileStr = readFileSync(Workspace.path + `${this.name}.txt`, { encoding: 'utf8', flag: 'r' })
-      var fileLines = fileStr.substr(fileStr.indexOf('\n---\n') + 5).split('\n')
+      var fileLines = fileStr.substr(fileStr.indexOf('---') + 5).split('\n')
 
       return Node.headFromStringArray(fileLines)
    }
