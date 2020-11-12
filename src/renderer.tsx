@@ -20,13 +20,13 @@ showdown.setOption('headerLevelStart', 3)
 showdown.setOption('requireSpaceBeforeHeadingText', true)
 
 var getExtensions = (): Array<showdown.ShowdownExtension> => {
-   var ext1 = {
-      type: 'lang',
-      regex: /\[\[(.*?)\]\]/g,
-      replace: '<a data-link="$1">[[$1]]</a>',
-   }
-
-   return [ext1]
+   return [
+      {
+         type: 'lang',
+         regex: /\[\[(.*?)\]\]/g,
+         replace: '<a data-link="$1">[[$1]]</a>',
+      },
+   ]
 }
 
 export const markDownConverter = new showdown.Converter({ extensions: getExtensions() }) //{ extensions: ['youtube'] }
