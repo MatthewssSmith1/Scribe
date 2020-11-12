@@ -18,7 +18,18 @@ showdown.setOption('backslashEscapesHTMLTags', true)
 showdown.setOption('strikethrough', true)
 showdown.setOption('headerLevelStart', 3)
 showdown.setOption('requireSpaceBeforeHeadingText', true)
-export const markDownConverter = new showdown.Converter() //{ extensions: ['youtube'] }
+
+var getExtensions = (): Array<showdown.ShowdownExtension> => {
+   var ext1 = {
+      type: 'lang',
+      regex: /\[\[(.*?)\]\]/g,
+      replace: '<a data-link="$1">[[$1]]</a>',
+   }
+
+   return [ext1]
+}
+
+export const markDownConverter = new showdown.Converter({ extensions: getExtensions() }) //{ extensions: ['youtube'] }
 //#endregion
 
 //#region Titlebar

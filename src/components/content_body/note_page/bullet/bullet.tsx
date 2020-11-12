@@ -34,8 +34,6 @@ export default class Bullet extends React.Component {
          marginLeft: `${node.numIndents * 2}rem`,
       }
 
-      console.log('bullet rendered')
-
       return (
          <div className={cx('bullet', { collapsed: node.isCollapsed })} style={style}>
             <Icon className="bullet__chevron" glyph="keyboard_arrow_down" onClick={this.handleChevronClick} />
@@ -62,7 +60,7 @@ export default class Bullet extends React.Component {
    }
 
    //#region Editable Callbacks
-   handleEditableFocus = () => {
+   handleEditableFocus = (e: React.FocusEvent<HTMLDivElement>) => {
       var getSelectionCharacterOffsetWithin = element => {
          var start = 0
          var end = 0
@@ -84,19 +82,19 @@ export default class Bullet extends React.Component {
 
       //this is wrapped in a listener so that the selection from the focus event is contained in the output from window.getSelection()
       var handleSelectionChange = () => {
-         document.removeEventListener('selectionchange', handleSelectionChange)
+         // document.removeEventListener('selectionchange', handleSelectionChange)
 
-         var sel = window.getSelection()
+         // var sel = window.getSelection()
 
-         var caretPos = getSelectionCharacterOffsetWithin(this.editableRef.current.childNodes[0]).start
+         // var caretPos = getSelectionCharacterOffsetWithin(this.editableRef.current.childNodes[0]).start
 
-         this.editableRef.current.innerHTML = this.props.node.text
+         // this.editableRef.current.innerHTML = this.props.node.text
 
-         var range = new Range()
-         range.setStart(this.editableRef.current.childNodes[0], caretPos) //caretPos is out of range
+         // var range = new Range()
+         // range.setStart(this.editableRef.current.childNodes[0], caretPos) //caretPos is out of range
 
-         sel.removeAllRanges()
-         sel.addRange(range)
+         // sel.removeAllRanges()
+         // sel.addRange(range)
       }
 
       document.addEventListener('selectionchange', handleSelectionChange)

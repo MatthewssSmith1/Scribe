@@ -71,10 +71,20 @@
       //hide the default orange outline
       outline: 0;
 
-      & p {
+      & p,
+      & p > * {
          cursor: text;
       }
+
+      & p a {
+         text-decoration: none;
+         color: rgb(66, 137, 218);
+      }
    }
+}
+
+.ctrl-is-pressed .bullet .bullet__editable p a {
+   cursor: pointer;
 }
 
 .bullet:hover .bullet__chevron {

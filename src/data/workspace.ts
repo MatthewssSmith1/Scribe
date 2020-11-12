@@ -34,17 +34,18 @@ export default class Workspace {
          .filter(fileName => fileName.substring(fileName.indexOf('.')) == '.txt')
          .map(fileName => new Document(fileName.split('.')[0]))
 
-      // deserialize every link from the metadata in every document and register it with the corresponding documents
-      // documents.forEach(doc => {
-      //    doc.linksFromThisStrings.forEach(str => {
-      //       var link = Link.fromString(str, state)
+      // register every link with the document it points to
+      this._documents.forEach(doc => {
+         doc.linksFromThis.forEach(lnk => {
+            this._documents.forEach(d => {
+               if (d.name == lnk.toDocName) {
+                  d.linksToThis.push(lnk)
+               }
+            })
+         })
+      })
 
-      //       link.from.document.linksFromThis.push(link)
-      //       link.to.document.linksToThis.push(link)
-      //    })
-      // })
-
-      this.onceLoadedCallbacks.forEach(callback => callback());
+      this.onceLoadedCallbacks.forEach(callback => callback())
    }
 
    static onceLoaded(callback: Function) {
@@ -52,4 +53,16 @@ export default class Workspace {
       else this.onceLoadedCallbacks.push(callback)
    }
    //#endregion
+
+   static documentByName(docName: string): Document {
+      for (var i = 0; i < this._documents.length; i++) {
+         var doc: Document = this._documents[i]
+
+         if (doc.name.toLowerCase().trim() === docName.toLowerCase().trim()) {
+            return doc
+         }
+      }
+
+      return null
+   }
 }

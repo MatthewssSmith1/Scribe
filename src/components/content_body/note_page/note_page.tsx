@@ -37,6 +37,21 @@ export default class NotePage extends React.Component {
       Workspace.load()
    }
 
+   handleClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+      if (!e.ctrlKey) return
+
+      var t = e.target as HTMLLinkElement
+      if (t.tagName != 'A') return
+
+      var link: string = t.dataset.link
+      if (link == undefined) return
+
+      var doc: Document = Workspace.documentByName(link)
+      if (doc == null) return
+
+      NotePage.document = doc
+   }
+
    componentDidMount() {
       Workspace.onceLoaded(() => {
          if (Workspace.documents.length > 0) NotePage.document = Workspace.documents[0]
@@ -54,7 +69,7 @@ export default class NotePage extends React.Component {
 
       //top element: <h1 className="document-title">{document.name}</h1> : <Breadcrumbs />
       return (
-         <div className="note-body" style={style}>
+         <div className="note-body" style={style} onClick={this.handleClick}>
             <div className="note-body__top-element-wrapper" />
             <BulletList headNode={this.state.headNode} />
             <LinkList />
@@ -68,6 +83,18 @@ class BulletList extends React.Component {
       headNode: Node
    }
 
+   state: {
+      keyMultiplier: number
+   }
+
+   constructor(props: any) {
+      super(props)
+
+      this.state = {
+         keyMultiplier: 1,
+      }
+   }
+
    shouldComponentUpdate(nextProps: any, _nextState: any) {
       return true
    }
@@ -76,8 +103,11 @@ class BulletList extends React.Component {
       var node = this.props.headNode
       var children = []
 
+      var keyMult: number = this.state.keyMultiplier
+      this.state.keyMultiplier *= -1
+
       while (node) {
-         children.push(<Bullet node={node} key={node.key} />)
+         children.push(<Bullet node={node} key={node.key * keyMult} />)
 
          node = node.nextNodeToRender
       }
@@ -94,8 +124,6 @@ class LinkList extends React.Component {
       super(props)
 
       LinkList._SINGLETON = this
-
-      //? load workspace here or in a method call lower down the stack?
    }
 
    static toggleCollapsed() {
@@ -108,7 +136,7 @@ class LinkList extends React.Component {
    }
 
    render() {
-      if (NotePage.document.linksToThis.length == 0) return <div className="link-list" />
+      if (NotePage.document.linksToThis == undefined || NotePage.document.linksToThis.length == 0) return <div className="link-list" />
 
       return (
          <div className={cx('link-list', { collapsed: this.state.isCollapsed })}>
@@ -125,14 +153,14 @@ class LinkList extends React.Component {
       //TODO rework the bullet text fetching because this current form is very inefficient
 
       var handleTitleClick = () => {
-         NotePage.document = link.from.document
+         NotePage.document = Workspace.documentByName(link.fromDocName)
       }
 
       var innerHtml = { __html: 'placeholder text' } //{ __html: props.link.from.document.toBullet().childAt(props.link.from.bulletCoords).text }
 
       return (
          <div className="link-item" key={index}>
-            <h1 onClick={handleTitleClick}>{`${link.from.document.name}`}</h1>
+            <h1 onClick={handleTitleClick}>{`${link.fromDocName}`}</h1>
             <div className="link-item__content" dangerouslySetInnerHTML={innerHtml}></div>
          </div>
       )

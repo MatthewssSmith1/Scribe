@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { ToAddress } from '@/data/link'
+import Link from '@/data/link'
 
 export default class LinkMenu extends React.Component {
    //#region Static
@@ -18,7 +18,7 @@ export default class LinkMenu extends React.Component {
       nodeWithSelection: null as Node,
       selectionBounds: null as [number, number],
       selectedText: null as string,
-      suggestions: null as Array<[string, ToAddress]>,
+      suggestions: null as Array<Link>,
    }
 
    domRef: React.RefObject<HTMLDivElement>
@@ -73,15 +73,13 @@ export default class LinkMenu extends React.Component {
    get menuItems(): Array<JSX.Element> {
       // if (!linkMenuState.suggestions) return []
 
-      var children = this.state.suggestions.map((suggestion: [string, ToAddress], i) => (
-         <SuggestionItem name={suggestion[0]} toAddress={suggestion[1]} key={i} />
-      ))
+      // var children = this.state.suggestions.map((suggestion: [string, {}], i) => <SuggestionItem name={suggestion[0]} toAddress={suggestion[1]} key={i} />)
 
       //if the selected text isn't an exact match to a file, add an item to the top of the suggestions for a new file
-      if (this.state.suggestions.find((suggestion: [string, ToAddress]) => suggestion[0].toLowerCase() == this.state.selectedText.toLowerCase()) == undefined)
-         children.unshift(<NewPageItem selectedText={this.state.selectedText} key="-1" />)
+      // if (this.state.suggestions.find((suggestion: [string, {}]) => suggestion[0].toLowerCase() == this.state.selectedText.toLowerCase()) == undefined)
+      //    children.unshift(<NewPageItem selectedText={this.state.selectedText} key="-1" />)
 
-      return children
+      return [] //children
    }
    //#endregion
 
@@ -104,7 +102,7 @@ function NewPageItem(props: { selectedText: string }): JSX.Element {
    )
 }
 
-function SuggestionItem(props: { name: string; toAddress: ToAddress }): JSX.Element {
+function SuggestionItem(props: { name: string; toAddress: any }): JSX.Element {
    // var { state, dispatch, dispatchAsync } = getContext()
 
    // var handleClick = () => {

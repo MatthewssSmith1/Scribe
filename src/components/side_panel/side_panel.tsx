@@ -53,7 +53,7 @@ export default class SidePanel extends React.Component {
 
    //? consider removing react state storage and just store a static value/set of values on the class
    shouldComponentUpdate(_nextProps: any, nextState: SidePanelState) {
-      console.log('update checked')
+      // console.log('update checked')
       return true
    }
    //#endregion
@@ -87,7 +87,7 @@ export default class SidePanel extends React.Component {
    //#endregion
 
    render() {
-      console.log('SidePanel built')
+      // console.log('SidePanel built')
 
       var { isCollapsed, width } = this.state
 
