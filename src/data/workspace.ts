@@ -3,24 +3,17 @@ import { readdirSync, Dirent } from 'fs'
 import Document from '@/data/document'
 import Node from '@/data/node'
 import Link from '@/data/link'
+import { empty } from '@typed/hashmap'
 
 export { Document, Node, Link }
 
 export default class Workspace {
-   //#region Members
    private static _documents = [] as Array<Document>
-   static get documents(): Array<Document> {
-      return this._documents
-   }
+   private static _documentsMap = empty<string, Document>()
 
    // get path at runtime: `${process.cwd()}\\workspace\\`
    private static _path = `C:\\dev\\Scribe\\workspace\\`
-   static get path(): string {
-      return this._path
-   }
-   //#endregion
 
-   //#region Loading
    private static _hasLoaded = false
    static onceLoadedCallbacks: Array<Function> = []
 
@@ -52,8 +45,8 @@ export default class Workspace {
       if (this._hasLoaded) callback()
       else this.onceLoadedCallbacks.push(callback)
    }
-   //#endregion
 
+   //#region Getters/Setters
    static documentByName(docName: string): Document {
       for (var i = 0; i < this._documents.length; i++) {
          var doc: Document = this._documents[i]
@@ -65,4 +58,19 @@ export default class Workspace {
 
       return null
    }
+
+   static get numDocuments(): number {
+      return this._documents.length
+   }
+
+   static get defaultDocument(): Document {
+      if (this.numDocuments == 0) return null
+
+      return this._documents[0]
+   }
+
+   static get path(): string {
+      return this._path
+   }
+   //#endregion
 }

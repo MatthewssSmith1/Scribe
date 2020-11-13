@@ -29,6 +29,10 @@ var getExtensions = (): Array<showdown.ShowdownExtension> => {
    ]
 }
 
+//!--------------------
+console.log(require('@amilajack/neon-hello'))
+//!--------------------
+
 export const markDownConverter = new showdown.Converter({ extensions: getExtensions() }) //{ extensions: ['youtube'] }
 //#endregion
 

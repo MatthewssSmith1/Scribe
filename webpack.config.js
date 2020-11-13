@@ -20,7 +20,7 @@ const commonConfig = {
       alias: {
          '@': srcPaths('src'),
       },
-      extensions: ['.js', '.json', '.ts', '.tsx'],
+      extensions: ['.js', '.json', '.ts', '.tsx', '.node'],
    },
    module: {
       rules: [
@@ -43,6 +43,10 @@ const commonConfig = {
          {
             test: /\.(woff|woff2|eot|ttf|otf)$/,
             loader: 'file-loader',
+         },
+         {
+            test: /\.node$/,
+            loader: 'node-loader',
          },
       ],
    },

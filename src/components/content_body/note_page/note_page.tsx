@@ -54,7 +54,7 @@ export default class NotePage extends React.Component {
 
    componentDidMount() {
       Workspace.onceLoaded(() => {
-         if (Workspace.documents.length > 0) NotePage.document = Workspace.documents[0]
+         if (Workspace.numDocuments > 0) NotePage.document = Workspace.defaultDocument
       })
    }
    //#endregion
