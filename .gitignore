@@ -1,6 +1,11 @@
 #User specific
 .vscode
 
+#Build Files
+dist
+
+
+
 # Logs
 logs
 *.log
