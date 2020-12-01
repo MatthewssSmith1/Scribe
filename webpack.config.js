@@ -19,6 +19,7 @@ const commonConfig = {
    resolve: {
       alias: {
          '@': srcPaths('src'),
+         '@rust': srcPaths('rust-bindings'),
       },
       extensions: ['.js', '.json', '.ts', '.tsx', '.node'],
    },

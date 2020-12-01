@@ -6,11 +6,11 @@
    "scripts": {
       "start": "electron ./dist/main.bundle.js",
       "dev": "rimraf dist && cross-env NODE_ENV=development webpack --watch --progress --colors",
+      "build:rust": "cd rust-bindings && npm run build",
       "prod": "rimraf dist && cross-env NODE_ENV=production webpack --progress --colors",
       "test": "mocha -r ts-node/register -r tsconfig-paths/register \"test/**/*.ts\"",
       "build:win": "electron-builder build --win --x64",
-      "build:mac": "electron-builder build --mac --x64",
-      "build:neon": "electron-build-env neon build @amilajack/neon-hello --release"
+      "build:mac": "electron-builder build --mac --x64"
    },
    "build": {
       "appId": "com.mattsmith.scribe",

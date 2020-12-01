@@ -30,7 +30,9 @@ var getExtensions = (): Array<showdown.ShowdownExtension> => {
 }
 
 //!--------------------
-console.log(require('@amilajack/neon-hello'))
+// console.log(require('@/rust-bindings/native/index.node'))
+let RustBindings = require('@rust/native/index.node')
+console.log(RustBindings.hello())
 //!--------------------
 
 export const markDownConverter = new showdown.Converter({ extensions: getExtensions() }) //{ extensions: ['youtube'] }
