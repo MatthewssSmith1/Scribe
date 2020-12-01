@@ -1,0 +1,8 @@
+{
+	"files.exclude": {
+		"rust-bindings/package.json": true,
+		"rust-bindings/native/artifacts.json": true,
+		"rust-bindings/native/target": true,
+		"rust-bindings/native/index.node": true,
+	}
+}
