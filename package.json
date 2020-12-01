@@ -6,7 +6,7 @@
    "scripts": {
       "start": "electron ./dist/main.bundle.js",
       "dev": "rimraf dist && cross-env NODE_ENV=development webpack --watch --progress --colors",
-      "build:rust": "cd rust-bindings && npm run build",
+      "build:rust": "cd rust-bindings && npm run build && cd ..",
       "prod": "rimraf dist && cross-env NODE_ENV=production webpack --progress --colors",
       "test": "mocha -r ts-node/register -r tsconfig-paths/register \"test/**/*.ts\"",
       "build:win": "electron-builder build --win --x64",
@@ -93,7 +93,11 @@
       "Electron",
       "React",
       "Typescript",
+      "Rust",
+      "Tool",
       "Webpack",
-      "Notes"
+      "Notes",
+      "Notetaking",
+      "App"
    ]
 }

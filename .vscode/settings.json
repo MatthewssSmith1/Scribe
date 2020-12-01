@@ -4,5 +4,7 @@
 		"rust-bindings/native/artifacts.json": true,
 		"rust-bindings/native/target": true,
 		"rust-bindings/native/index.node": true,
+      "**/README.md": true,
+      "**/.gitignore": false,
 	}
 }
