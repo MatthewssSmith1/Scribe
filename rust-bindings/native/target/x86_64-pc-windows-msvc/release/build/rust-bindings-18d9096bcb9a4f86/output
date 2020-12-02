@@ -1,0 +1,4 @@
+cargo:rustc-link-search=native=C:\dev\Scribe\rust-bindings\native\target\release\build\neon-build-b79ced6b56eddd09\out
+cargo:rustc-link-lib=node-x64
+cargo:rustc-cdylib-link-arg=delayimp.lib
+cargo:rustc-cdylib-link-arg=/DELAYLOAD:node.exe

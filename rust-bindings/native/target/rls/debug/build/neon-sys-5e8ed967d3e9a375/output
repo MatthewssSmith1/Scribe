@@ -1,0 +1,44 @@
+'Skipping node-gyp installation as part of npm install.'
+added 96 packages from 70 contributors and audited 96 packages in 4.044s
+found 7 vulnerabilities (3 low, 1 moderate, 3 high)
+  run `npm audit fix` to fix them, or `npm audit` for details
+cargo:node_arch=x64
+cargo:node_root_dir=C:\\Users\\Matthew\\AppData\\Local\\node-gyp\\Cache\\14.5.0
+cargo:node_lib_file=C:\\\\Users\\\\Matthew\\\\AppData\\\\Local\\\\node-gyp\\\\Cache\\\\14.5.0\\\\<(target_arch)\\\\node.lib
+
+> @ build-debug c:\dev\Scribe\rust-bindings\native\target\rls\debug\build\neon-sys-5e8ed967d3e9a375\out\native
+> node-gyp build --debug
+
+
+c:\dev\Scribe\rust-bindings\native\target\rls\debug\build\neon-sys-5e8ed967d3e9a375\out\native>if not defined npm_config_node_gyp (node "C:\dev\nodejs\node_modules\npm\node_modules\npm-lifecycle\node-gyp-bin\\..\..\node_modules\node-gyp\bin\node-gyp.js" build --debug )  else (node "C:\dev\nodejs\node_modules\npm\node_modules\node-gyp\bin\node-gyp.js" build --debug ) 
+Building the projects in this solution one at a time. To enable parallel build, please add the "/m" switch.
+  neon.cc
+  win_delay_load_hook.cc
+c:\dev\scribe\rust-bindings\native\target\rls\debug\build\neon-sys-5e8ed967d3e9a375\out\native\src\neon_task.h(62): warning C4996: 'node::MakeCallback': was declared deprecated (compiling source file ..\src\neon.cc) [c:\dev\Scribe\rust-bindings\native\target\rls\debug\build\neon-sys-5e8ed967d3e9a375\out\native\build\neon.vcxproj]
+  c:\users\matthew\appdata\local\node-gyp\cache\14.5.0\include\node\node.h(188): note: see declaration of 'node::MakeCallback' (compiling source file ..\src\neon.cc)
+c:\dev\scribe\rust-bindings\native\target\rls\debug\build\neon-sys-5e8ed967d3e9a375\out\native\src\neon.cc(217): warning C4996: 'v8::ArrayBuffer::GetContents': Use GetBackingStore. See http://crbug.com/v8/9908. [c:\dev\Scribe\rust-bindings\native\target\rls\debug\build\neon-sys-5e8ed967d3e9a375\out\native\build\neon.vcxproj]
+  c:\users\matthew\appdata\local\node-gyp\cache\14.5.0\include\node\v8.h(5255): note: see declaration of 'v8::ArrayBuffer::GetContents'
+c:\dev\scribe\rust-bindings\native\target\rls\debug\build\neon-sys-5e8ed967d3e9a375\out\native\src\neon.cc(329): warning C4996: 'node::AtExit': was declared deprecated [c:\dev\Scribe\rust-bindings\native\target\rls\debug\build\neon-sys-5e8ed967d3e9a375\out\native\build\neon.vcxproj]
+  c:\users\matthew\appdata\local\node-gyp\cache\14.5.0\include\node\node.h(830): note: see declaration of 'node::AtExit'
+  neon.vcxproj -> c:\dev\Scribe\rust-bindings\native\target\rls\debug\build\neon-sys-5e8ed967d3e9a375\out\native\build\Debug\\neon.node
+TARGET = Some("x86_64-pc-windows-msvc")
+HOST = Some("x86_64-pc-windows-msvc")
+AR_x86_64-pc-windows-msvc = None
+AR_x86_64_pc_windows_msvc = None
+HOST_AR = None
+AR = None
+running: "C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\BuildTools\\VC\\Tools\\MSVC\\14.16.27023\\bin\\HostX64\\x64\\lib.exe" "-out:c:\\dev\\Scribe\\rust-bindings\\native\\target\\rls\\debug\\build\\neon-sys-5e8ed967d3e9a375\\out\\libneon.a" "-nologo" "c:\\dev\\Scribe\\rust-bindings\\native\\target\\rls\\debug\\build\\neon-sys-5e8ed967d3e9a375\\out\\native\\build\\Debug\\obj\\neon\\neon.obj"
+exit code: 0
+CXX_x86_64-pc-windows-msvc = None
+CXX_x86_64_pc_windows_msvc = None
+HOST_CXX = None
+CXX = None
+cargo:rustc-link-lib=static=neon
+cargo:rustc-link-search=native=c:\dev\Scribe\rust-bindings\native\target\rls\debug\build\neon-sys-5e8ed967d3e9a375\out
+CXXSTDLIB_x86_64-pc-windows-msvc = None
+CXXSTDLIB_x86_64_pc_windows_msvc = None
+HOST_CXXSTDLIB = None
+CXXSTDLIB = None
+cargo:rerun-if-env-changed=npm_config_target
+cargo:rerun-if-env-changed=npm_config_arch
+cargo:rerun-if-env-changed=npm_config_target_arch

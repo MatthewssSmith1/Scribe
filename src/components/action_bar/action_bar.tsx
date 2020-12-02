@@ -68,8 +68,6 @@ export default class ActionBar extends React.Component {
    //#endregion
 
    render() {
-      console.log('ActionBar built')
-
       return (
          <div id="action-panel-wrapper" className={cx({ collapsed: this.state.isCollapsed })}>
             <div id="action-panel">

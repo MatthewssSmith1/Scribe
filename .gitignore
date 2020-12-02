@@ -146,7 +146,7 @@ dist
 
 */rust-bindings/*/.idea
 */rust-bindings/*/npm-debug.log.*
-*/rust-bindings/*/target
+*/rust-bindings/native/target
 */rust-bindings/*/artifacts.json
 */rust-bindings/*/index.node
 #                                                           #

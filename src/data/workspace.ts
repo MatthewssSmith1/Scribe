@@ -3,13 +3,11 @@ import { readdirSync, Dirent } from 'fs'
 import Document from '@/data/document'
 import Node from '@/data/node'
 import Link from '@/data/link'
-import { empty } from '@typed/hashmap'
 
 export { Document, Node, Link }
 
-export default class Workspace {
+export default abstract class Workspace {
    private static _documents = [] as Array<Document>
-   private static _documentsMap = empty<string, Document>()
 
    // get path at runtime: `${process.cwd()}\\workspace\\`
    private static _path = `C:\\dev\\Scribe\\workspace\\`

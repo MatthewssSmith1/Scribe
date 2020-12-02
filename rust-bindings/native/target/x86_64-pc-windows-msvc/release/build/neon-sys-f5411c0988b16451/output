@@ -1,0 +1,28 @@
+'Skipping node-gyp installation as part of npm install.'
+added 97 packages from 70 contributors and audited 97 packages in 5.907s
+found 3 low severity vulnerabilities
+  run `npm audit fix` to fix them, or `npm audit` for details
+cargo:node_root_dir=C:\\Users\\Matthew\\.electron-gyp\\iojs-3.1.13
+cargo:node_lib_file=C:\\\\Users\\\\Matthew\\\\.electron-gyp\\\\iojs-3.1.13\\\\<(target_arch)\\\\iojs.lib
+cargo:node_arch=x64
+TARGET = Some("x86_64-pc-windows-msvc")
+HOST = Some("x86_64-pc-windows-msvc")
+AR_x86_64-pc-windows-msvc = None
+AR_x86_64_pc_windows_msvc = None
+HOST_AR = None
+AR = None
+running: "C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\BuildTools\\VC\\Tools\\MSVC\\14.16.27023\\bin\\HostX64\\x64\\lib.exe" "-out:C:\\dev\\Scribe\\rust-bindings\\native\\target\\x86_64-pc-windows-msvc\\release\\build\\neon-sys-f5411c0988b16451\\out\\libneon.a" "-nologo" "C:\\dev\\Scribe\\rust-bindings\\native\\target\\x86_64-pc-windows-msvc\\release\\build\\neon-sys-f5411c0988b16451\\out\\native\\build\\Release\\obj\\neon\\neon.obj"
+exit code: 0
+CXX_x86_64-pc-windows-msvc = None
+CXX_x86_64_pc_windows_msvc = None
+HOST_CXX = None
+CXX = None
+cargo:rustc-link-lib=static=neon
+cargo:rustc-link-search=native=C:\dev\Scribe\rust-bindings\native\target\x86_64-pc-windows-msvc\release\build\neon-sys-f5411c0988b16451\out
+CXXSTDLIB_x86_64-pc-windows-msvc = None
+CXXSTDLIB_x86_64_pc_windows_msvc = None
+HOST_CXXSTDLIB = None
+CXXSTDLIB = None
+cargo:rerun-if-env-changed=npm_config_target
+cargo:rerun-if-env-changed=npm_config_arch
+cargo:rerun-if-env-changed=npm_config_target_arch

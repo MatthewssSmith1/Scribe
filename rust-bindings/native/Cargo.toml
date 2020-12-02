@@ -15,4 +15,6 @@ crate-type = ["cdylib"]
 neon-build = "0.5.1"
 
 [dependencies]
-neon = "0.5.1"
+lazy_static = "1.4.0"
+neon = "0.5.3"
+int-enum = "0.4.0"

@@ -1,0 +1,1 @@
+{"rustc":578464894881672569,"features":"","target":0,"profile":0,"path":0,"deps":[[18084110747603963386,"build_script_build",false,1006487435493444667]],"local":[{"RerunIfChanged":{"output":"x86_64-pc-windows-msvc\\release\\build\\num-iter-e45a020ad7ea1cea\\output","paths":["build.rs"]}}],"rustflags":[],"metadata":0,"config":0}

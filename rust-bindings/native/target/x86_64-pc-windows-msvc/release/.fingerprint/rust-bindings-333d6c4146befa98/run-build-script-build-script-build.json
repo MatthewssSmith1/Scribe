@@ -1,0 +1,1 @@
+{"rustc":578464894881672569,"features":"","target":0,"profile":0,"path":0,"deps":[[4544119022422923260,"build_script_build",false,7705560517406655840]],"local":[{"RerunIfEnvChanged":{"var":"npm_config_runtime","val":"electron"}}],"rustflags":[],"metadata":0,"config":0}

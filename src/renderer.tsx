@@ -7,6 +7,7 @@ import ActionBar from '@/components/action_bar/action_bar'
 import SidePanel from '@/components/side_panel/side_panel'
 import LinkMenu from '@/components/link_menu/link_menu'
 import ContentBody from '@/components/content_body/content_body'
+import RustInterface, { BindingEvent, BindingEventType } from '@/rust_interface'
 
 //import all scss files and font
 require('typeface-montserrat')
@@ -29,12 +30,6 @@ var getExtensions = (): Array<showdown.ShowdownExtension> => {
    ]
 }
 
-//!--------------------
-// console.log(require('@/rust-bindings/native/index.node'))
-let RustBindings = require('@rust/native/index.node')
-console.log(RustBindings.hello())
-//!--------------------
-
 export const markDownConverter = new showdown.Converter({ extensions: getExtensions() }) //{ extensions: ['youtube'] }
 //#endregion
 
@@ -46,6 +41,9 @@ let titleBar = new Titlebar({
 })
 titleBar.updateTitle('Scribe')
 //#endregion
+
+RustInterface.init();
+RustInterface.processEvent(new BindingEvent(BindingEventType.GraphOpened, ["231", "hello"]));
 
 ReactDOM.render(
    <div id="root">
