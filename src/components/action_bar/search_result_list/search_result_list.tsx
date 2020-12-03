@@ -16,8 +16,6 @@ export default class SearchResultList extends React.Component {
    //#endregion
 
    render() {
-      console.log('SearchResultList built')
-
       return <div className="search-result-list"></div>
    }
 }

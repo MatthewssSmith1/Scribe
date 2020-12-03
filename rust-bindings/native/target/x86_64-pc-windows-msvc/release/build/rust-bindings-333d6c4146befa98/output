@@ -1,7 +1,0 @@
-cargo:rustc-link-search=C:\\Users\\Matthew\\.electron-gyp\\iojs-3.1.13\Release
-cargo:rustc-link-search=native=C:\\Users\\Matthew\\.electron-gyp\\iojs-3.1.13\x64
-cargo:rustc-link-lib=iojs
-cargo:rerun-if-env-changed=npm_config_runtime
-cargo:rustc-cdylib-link-arg=win_delay_load_hook.obj
-cargo:rustc-cdylib-link-arg=delayimp.lib
-cargo:rustc-cdylib-link-arg=/DELAYLOAD:node.exe

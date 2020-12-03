@@ -87,8 +87,6 @@ export default class SidePanel extends React.Component {
    //#endregion
 
    render() {
-      // console.log('SidePanel built')
-
       var { isCollapsed, width } = this.state
 
       var style: React.CSSProperties = {

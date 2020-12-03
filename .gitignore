@@ -149,6 +149,7 @@ dist
 */rust-bindings/native/target
 */rust-bindings/*/artifacts.json
 */rust-bindings/*/index.node
+rust-bindings/native/target
 #                                                           #
 #                                                           #
 #############################################################

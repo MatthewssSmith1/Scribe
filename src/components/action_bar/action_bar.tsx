@@ -8,6 +8,9 @@ import SearchResultList from '@/components/action_bar/search_result_list/search_
 import PinList from '@/components/action_bar/pin_list/pin_list'
 import ContentBody from '@/components/content_body/content_body'
 
+import RustInterface, { generateEvent } from '@/rust-bindings/rust_interface'
+import BindingEvent, { BindingEventType, BindingEventListener } from '@/rust-bindings/binding_event'
+
 type ActionBarState = {
    isCollapsed: boolean
    searchValue: string
@@ -15,7 +18,7 @@ type ActionBarState = {
 }
 
 //the panel on the left of the document body that can be collapsed/expanded
-export default class ActionBar extends React.Component {
+export default class ActionBar extends React.Component implements BindingEventListener {
    //#region State
    private static _SINGLETON: ActionBar
 
@@ -24,6 +27,8 @@ export default class ActionBar extends React.Component {
    constructor(props: any) {
       super(props)
 
+      RustInterface.subscribe(this, BindingEventType.GraphOpened)
+
       ActionBar._SINGLETON = this
 
       this.state = {
@@ -31,6 +36,10 @@ export default class ActionBar extends React.Component {
          searchValue: null,
          searchResults: null,
       }
+   }
+
+   handleEvent(e: BindingEvent) {
+      if (e.type == BindingEventType.GraphOpened) ContentBody.openGraphPage()
    }
 
    //only rebuild the ActionBar component hierarchy when searchValue becomes null or not null (changing from "a" to "ab" doesn't rebuild)
@@ -85,7 +94,7 @@ var ButtonRow = () => {
    return (
       <div className="button-row">
          <div className="search-icon-place-holder" />
-         <Icon glyph="device_hub" onClick={ContentBody.openGraphPage} />
+         <Icon glyph="device_hub" onClick={() => generateEvent(BindingEventType.GraphOpened)} />
          <Icon glyph="calendar_today" onClick={ContentBody.openNotePage} />
          <Icon glyph="settings" onClick={SidePanel.toggleIsCollapsed} />
          <Icon glyph="arrow_back_ios" className="button-row__collapse-icon" onClick={() => ActionBar.toggleIsCollapsed()} />
