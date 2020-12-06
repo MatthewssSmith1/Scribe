@@ -1,40 +1,41 @@
-export enum BindingEventType {
+export enum EventType {
    Error = 0,
    Empty = 1,
    Multiple = 2,
    Init = 3,
-   GraphOpened = 4,
-   NoteOpened = 5,
-   NodeTextChanged = 6,
-   NUM_EVENT_TYPES = 7,
+   Message = 4,
+   GraphOpened = 5,
+   NoteOpened = 6,
+   NodeTextChanged = 7,
+   NumEventTypes = 8,
 }
 
-export default class BindingEvent {
-   constructor(public type: BindingEventType, public data: Array<string> = new Array<string>()) {
-      if (type == BindingEventType.NUM_EVENT_TYPES) {
-         console.error('new BindingEvent() called with BindingEventType.NUM_EVENT_TYPES')
+export class Event {
+   constructor(public type: EventType, public data: Array<string> = new Array<string>()) {
+      if (type == EventType.NumEventTypes) {
+         console.error('new Event() called with EventType.NUM_EVENT_TYPES')
       }
    }
 
-   static fromArray(events: Array<BindingEvent>): BindingEvent {
-      return new BindingEvent(
-         BindingEventType.Multiple,
+   static fromArray(events: Array<Event>): Event {
+      return new Event(
+         EventType.Multiple,
          events.map<string>(e => e.toString())
       )
    }
 
-   toArray(): Array<BindingEvent> {
-      if (this.type == BindingEventType.Multiple) {
-         return this.data.map<BindingEvent>(s => BindingEvent.fromString(s))
+   toArray(): Array<Event> {
+      if (this.type == EventType.Multiple) {
+         return this.data.map<Event>(s => Event.fromString(s))
       }
 
       return [this]
    }
 
-   static fromString(str: string): BindingEvent {
+   static fromString(str: string): Event {
       let str_list: Array<string> = str.slice(2, -2).split('|')
 
-      return new BindingEvent(parseInt(str_list.shift()) as BindingEventType, str_list)
+      return new Event(parseInt(str_list.shift()) as EventType, str_list)
    }
 
    toString(): string {
@@ -45,11 +46,11 @@ export default class BindingEvent {
 /**
  * An class for ui components throughout the application to extend and then subscribe themselves to events using RustInterface.subscribe()
  */
-export interface BindingEventListener {
+export interface EventListener {
    /**
-    * For the extending class to implement any sort of functionality. Only events of the BindingEventType(s) subscribed to will be dispatched to this method.
+    * For the extending class to implement any sort of functionality. Only events of the EventType(s) subscribed to will be dispatched to this method.
     *
     * @param e the event to be handled
     */
-   handleEvent(e: BindingEvent): void
+   handleEvent(e: Event): void
 }

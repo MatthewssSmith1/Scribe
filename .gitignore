@@ -129,26 +129,25 @@ dist
 #ADDED FOR NEON
 ###########################################################
 # Logs
-*/rust-bindings/*/logs
-*/rust-bindings/*/*.log
+rust-bindings/*/logs
+rust-bindings/*/*.log
 
 # Runtime data
-*/rust-bindings/*/pids
-*/rust-bindings/*/*.pid
-*/rust-bindings/*/*.seed
+rust-bindings/*/pids
+rust-bindings/*/*.pid
+rust-bindings/*/*.seed
 
 # Dependency directory
 # https://www.npmjs.org/doc/misc/npm-faq.html#should-i-check-my-node_modules-folder-into-git
-*/rust-bindings/*/node_modules
+rust-bindings/*/node_modules
 
 # OSX
-*/rust-bindings/*/.DS_Store
+rust-bindings/*/.DS_Store
 
-*/rust-bindings/*/.idea
-*/rust-bindings/*/npm-debug.log.*
-*/rust-bindings/native/target
-*/rust-bindings/*/artifacts.json
-*/rust-bindings/*/index.node
+rust-bindings/*/.idea
+rust-bindings/*/npm-debug.log.*
+rust-bindings/*/artifacts.json
+rust-bindings/*/index.node
 rust-bindings/native/target
 #                                                           #
 #                                                           #

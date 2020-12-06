@@ -10,9 +10,11 @@ pub enum BindingEventType {
 	Empty = 1,
 	Multiple = 2,
 	Init = 3,
-	GraphOpened = 4,
-	NoteOpened = 5,
-	NodeTextChanged = 6,
+	Message = 4,
+	GraphOpened = 5,
+	NoteOpened = 6,
+	NodeTextChanged = 7,
+	NumEventTypes = 8,
 }
 
 pub struct BindingEvent {
@@ -21,15 +23,33 @@ pub struct BindingEvent {
 }
 
 impl BindingEvent {
-	pub fn new(event_type: BindingEventType, data: Vec<String>) -> BindingEvent {
-		BindingEvent { event_type, data }
+	pub fn new<N: AsRef<str>>(event_type: BindingEventType, data: Vec<N>) -> BindingEvent {
+		BindingEvent {
+			event_type,
+			data: data.iter().map(|n| n.as_ref().to_string()).collect(),
+		}
 	}
 
-	pub fn err(msg: &str) -> BindingEvent {
-		BindingEvent::new(BindingEventType::Error, vec![msg.to_string()])
+	pub fn err<N: AsRef<str>>(msg: N) -> BindingEvent {
+		BindingEvent::new(BindingEventType::Error, vec![msg])
 	}
 
-	pub fn from_function_ctx(ctx: &mut FunctionContext) -> BindingEvent {
+	pub fn empty() -> BindingEvent {
+		BindingEvent {
+			event_type: BindingEventType::Empty,
+			data: vec![],
+		}
+	}
+
+	pub fn msg<N: AsRef<str>>(msg: N) -> BindingEvent {
+		BindingEvent::new(BindingEventType::Message, vec![msg])
+	}
+
+	pub fn msgs<N: AsRef<str>>(msgs: Vec<N>) -> BindingEvent {
+		BindingEvent::new(BindingEventType::Message, msgs)
+	}
+
+	pub fn from_ctx(ctx: &mut FunctionContext) -> BindingEvent {
 		return match ctx.argument::<JsString>(0) {
 			Ok(s) => s
 				.value()

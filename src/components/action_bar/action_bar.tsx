@@ -9,7 +9,7 @@ import PinList from '@/components/action_bar/pin_list/pin_list'
 import ContentBody from '@/components/content_body/content_body'
 
 import RustInterface, { generateEvent } from '@/rust-bindings/rust_interface'
-import BindingEvent, { BindingEventType, BindingEventListener } from '@/rust-bindings/binding_event'
+import {Event, EventType, EventListener } from '@/rust-bindings/binding_event'
 
 type ActionBarState = {
    isCollapsed: boolean
@@ -18,7 +18,7 @@ type ActionBarState = {
 }
 
 //the panel on the left of the document body that can be collapsed/expanded
-export default class ActionBar extends React.Component implements BindingEventListener {
+export default class ActionBar extends React.Component implements EventListener {
    //#region State
    private static _SINGLETON: ActionBar
 
@@ -27,7 +27,7 @@ export default class ActionBar extends React.Component implements BindingEventLi
    constructor(props: any) {
       super(props)
 
-      RustInterface.subscribe(this, BindingEventType.GraphOpened)
+      RustInterface.subscribe(this, EventType.GraphOpened)
 
       ActionBar._SINGLETON = this
 
@@ -38,8 +38,8 @@ export default class ActionBar extends React.Component implements BindingEventLi
       }
    }
 
-   handleEvent(e: BindingEvent) {
-      if (e.type == BindingEventType.GraphOpened) ContentBody.openGraphPage()
+   handleEvent(e: Event) {
+      if (e.type == EventType.GraphOpened) ContentBody.openGraphPage()
    }
 
    //only rebuild the ActionBar component hierarchy when searchValue becomes null or not null (changing from "a" to "ab" doesn't rebuild)
@@ -94,7 +94,7 @@ var ButtonRow = () => {
    return (
       <div className="button-row">
          <div className="search-icon-place-holder" />
-         <Icon glyph="device_hub" onClick={() => generateEvent(BindingEventType.GraphOpened)} />
+         <Icon glyph="device_hub" onClick={() => generateEvent(EventType.GraphOpened)} />
          <Icon glyph="calendar_today" onClick={ContentBody.openNotePage} />
          <Icon glyph="settings" onClick={SidePanel.toggleIsCollapsed} />
          <Icon glyph="arrow_back_ios" className="button-row__collapse-icon" onClick={() => ActionBar.toggleIsCollapsed()} />
