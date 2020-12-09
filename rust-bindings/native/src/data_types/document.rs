@@ -5,7 +5,7 @@ use std::{fs, vec::Vec};
 use serde::{Deserialize, Serialize};
 use serde_yaml;
 
-use crate::data_types::{app_state::*, link::*};
+use crate::data_types::app_state::*;
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct DocSerData {
@@ -38,7 +38,10 @@ impl DocSerData {
 			None => {
 				return Err(Error::new(
 					ErrorKind::InvalidData,
-					format!("file at path '{}' was not formatted properly", path.as_ref()),
+					format!(
+						"file at path '{}' was not formatted properly",
+						path.as_ref()
+					),
 				))
 			}
 		};
@@ -47,12 +50,15 @@ impl DocSerData {
 		return serde_yaml::from_str::<DocSerData>(&file[..sep_index]).map_err(|_| {
 			Error::new(
 				ErrorKind::InvalidData,
-				format!("file at path '{}' was not formatted properly", path.as_ref()),
+				format!(
+					"file at path '{}' was not formatted properly",
+					path.as_ref()
+				),
 			)
 		});
 	}
 
-	pub fn from_doc(doc: &Document, state: &AppState) -> DocSerData {
+	pub fn _from_doc(state: &AppState, doc: &Document) -> DocSerData {
 		DocSerData {
 			name: doc.name.clone(),
 			id: doc.id,
@@ -63,6 +69,29 @@ impl DocSerData {
 				.iter()
 				.map(|id| state.links[id].to_string())
 				.collect(),
+		}
+	}
+
+	pub fn to_doc(self, state: &AppState) -> Document {
+		let DocSerData {
+			name,
+			id,
+			tags,
+			props,
+			links_from_this,
+		} = self;
+
+		let (links_from, links_to) = state.links_with_doc(id);
+
+		Document {
+			name,
+			id,
+
+			tags,
+			props,
+
+			links_from,
+			links_to,
 		}
 	}
 }
@@ -77,39 +106,4 @@ pub struct Document {
 
 	pub links_from: Vec<i32>,
 	pub links_to: Vec<i32>,
-}
-
-impl Document {
-	pub fn from_path(state: &AppState, path: &str) -> Result<(Document, Vec<Link>), Error> {
-		let data = match DocSerData::from_path(path) {
-			Ok(d) => d,
-			Err(e) => return Err(e),
-		};
-
-		let links: Vec<Link> = data
-			.links_from_this
-			.iter()
-			.map(|s| Link::from_str(state, s))
-			.filter_map(Result::ok)
-			.collect();
-
-		Ok((
-			Document {
-				name: data.name,
-				id: data.id,
-
-				tags: data.tags,
-				props: data.props,
-
-				links_from: links.iter().map(|lnk| lnk.id).collect(),
-				links_to: vec![],
-			},
-			links,
-		))
-	}
-
-	// pub fn to_string(&self, state: &AppState) -> String {
-	// 	return serde_yaml::to_string(&DocSerData::from_doc(self, state))
-	// 		.expect("could not serialize doc");
-	// }
 }

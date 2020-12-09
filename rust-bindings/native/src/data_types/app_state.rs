@@ -76,71 +76,41 @@ impl AppState {
 		//convert all doc data into documents and store them in state
 		let docs: Vec<Document> = docs_data
 			.iter()
-			.map(|data| Document {
-				name: data.name.clone(),
-				id: data.id,
+			.map(|data| {
+				let (links_from, links_to) = self.links_with_doc(data.id);
+				Document {
+					name: data.name.clone(),
+					id: data.id,
 
-				tags: data.tags.clone(),
-				props: data.props.clone(),
+					tags: data.tags.clone(),
+					props: data.props.clone(),
 
-				links_from: self.links_from_doc(data.id),
-				links_to: self.links_to_doc(data.id),
+					links_from,
+					links_to,
+				}
 			})
 			.collect();
 
-		docs.iter().for_each(|d| {self.documents.insert(d.id, d.clone());});
-
-		return BindingEvent::empty();
-	}
-
-	fn links_to_doc(&self, doc_id: i32) -> Vec<i32> {
-		self
-			.links
-			.values()
-			.filter(|lnk| lnk.to_id == doc_id)
-			.map(|lnk| lnk.id)
-			.collect()
-	}
-
-	fn links_from_doc(&self, doc_id: i32) -> Vec<i32> {
-		self
-			.links
-			.values()
-			.filter(|lnk| lnk.from_id == doc_id)
-			.map(|lnk| lnk.id)
-			.collect()
-	}
-}
-
-/*
-pub fn load_workspace(&mut self) -> BindingEvent {
-		if self.documents.len() != 0 {
-			return BindingEvent::err("AppState.load_workspace() called more than once");
-		}
-
-		match fs::read_dir(&self.workspace_path) {
-			Ok(dir) => dir,
-			Err(_) => return BindingEvent::err("could not read workspace dir"),
-		}
-		.filter_map(Result::ok)
-		.map(|p| p.path().display().to_string())
-		.filter(|s| s.split(".").last().unwrap_or("").eq("txt"))
-		.for_each(|s| {
-			let (doc, links) = Document::from_path(self, &s).expect("doc couldn't be loaded");
-			self.documents.insert(doc.id, doc);
-			links.iter().for_each(|l| {
-				self.links.insert(l.id, l.clone());
-			});
+		docs.iter().for_each(|d| {
+			self.documents.insert(d.id, d.clone());
 		});
 
-		self
-			.links
-			.values()
-			.for_each(|lnk| match self.documents.get(&lnk.id) {
-				Some(doc) => doc.links_to.push(lnk.id),
-				None => {}
-			});
-
 		return BindingEvent::empty();
 	}
-	*/
+
+	
+	pub fn links_with_doc(&self, doc_id: i32) -> (Vec<i32>, Vec<i32>) {
+		let mut links_from: Vec<i32> = vec![];
+		let mut links_to: Vec<i32> = vec![];
+
+		self.links.values().for_each(|lnk| {
+			if lnk.to_id == doc_id {
+				links_to.push(lnk.id);
+			} else if lnk.from_id == doc_id {
+				links_from.push(lnk.id);
+			}
+		});
+
+		(links_from, links_to)
+	}
+}
