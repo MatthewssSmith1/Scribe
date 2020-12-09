@@ -1,8 +1,9 @@
+name: "Particle Physics"
 id: -1198266707
 tags: []
-propKeys: []
-propValues: []
-linksFromThis: []
+props: {}
+links_from_this: []
+links_to_this: []
 ---
 building electricity blocks calculus of the universe (two classes)
 	fermions (quarks & leptons) make up matter

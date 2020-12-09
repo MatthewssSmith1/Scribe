@@ -1,9 +1,9 @@
+name: "Calculus"
 id: -115310742
 tags: []
-propKeys: []
-propValues: []
-linksFromThis:
-	- "Calculus,2->Electricity,4"
+props: {}
+links_from_this: []
+links_to_this: []
 ---
 Calculus I
 	Algebra *Trigonometry* __Review__ hello there [[Electricity]] Trig Functions and Equations, and this too Particle Physics Exponential Functions and Equations, Logarithm Functions and Equations.

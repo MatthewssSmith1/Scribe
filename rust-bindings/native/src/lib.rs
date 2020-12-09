@@ -1,24 +1,18 @@
-mod binding_event;
-mod data_types;
-
-use std::collections::HashMap;
-
+use std::sync::Mutex;
+use lazy_static::lazy_static;
 use neon::prelude::*;
 
+mod binding_event;
 use binding_event::*;
-use data_types::*;
 
-use std::sync::Mutex;
+mod data_types;
+use data_types::app_state::AppState;
 
-#[macro_use]
-extern crate lazy_static;
+mod id_manager;
+
 
 lazy_static! {
-    static ref STATE: Mutex<AppState> = Mutex::new(AppState {
-        workspace_path: "C:/dev/Scribe/workspace/".to_string(),
-        documents: HashMap::new(),
-        links: HashMap::new(),
-    });
+    static ref STATE: Mutex<AppState> = Mutex::new(AppState::new());
 }
 
 fn process_event(mut ctx: FunctionContext) -> JsResult<JsString> {
@@ -28,6 +22,22 @@ fn process_event(mut ctx: FunctionContext) -> JsResult<JsString> {
     match in_event.event_type {
         BindingEventType::Init => {
             out_event = Some(STATE.lock().unwrap().load_workspace());
+
+            // let mut props = HashMap::new();
+            // props.insert("date-created".to_string(), "12-6-2020".to_string());
+
+            // let doc = Document {
+            //     name: "Doc Name".to_string(),
+            //     id: 142135342,
+
+            //     tags: vec!["completed".to_string()],
+
+            //     props: props,
+
+            //     links_to_this: vec![],
+            //     links_from_this: vec![],
+            // };
+            // out_event = Some(BindingEvent::msg(doc.to_string()))
         }
         _ => {}
     }

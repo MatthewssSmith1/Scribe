@@ -16,6 +16,7 @@ export default abstract class Workspace {
    static onceLoadedCallbacks: Array<Function> = []
 
    static async load() {
+      return
       if (this._hasLoaded) return
       this._hasLoaded = true
 
