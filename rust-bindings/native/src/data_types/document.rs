@@ -20,14 +20,14 @@ pub struct DocSerData {
 }
 
 impl DocSerData {
-	pub fn from_path(path: &str) -> Result<DocSerData, Error> {
+	pub fn from_path<N: AsRef<str>>(path: N) -> Result<DocSerData, Error> {
 		//get the file at path
-		let file = match fs::read_to_string(path) {
+		let file = match fs::read_to_string(path.as_ref()) {
 			Ok(s) => s,
-			Err(e) => {
+			Err(_) => {
 				return Err(Error::new(
 					ErrorKind::Interrupted,
-					format!("file at path '{}' could not be read", path),
+					format!("file at path '{}' could not be read", path.as_ref()),
 				))
 			}
 		};
@@ -38,7 +38,7 @@ impl DocSerData {
 			None => {
 				return Err(Error::new(
 					ErrorKind::InvalidData,
-					format!("file at path '{}' was not formatted properly", path),
+					format!("file at path '{}' was not formatted properly", path.as_ref()),
 				))
 			}
 		};
@@ -47,7 +47,7 @@ impl DocSerData {
 		return serde_yaml::from_str::<DocSerData>(&file[..sep_index]).map_err(|_| {
 			Error::new(
 				ErrorKind::InvalidData,
-				format!("file at path '{}' was not formatted properly", path),
+				format!("file at path '{}' was not formatted properly", path.as_ref()),
 			)
 		});
 	}
@@ -67,6 +67,7 @@ impl DocSerData {
 	}
 }
 
+#[derive(Clone)]
 pub struct Document {
 	pub name: String,
 	pub id: i32,
@@ -89,7 +90,8 @@ impl Document {
 			.links_from_this
 			.iter()
 			.map(|s| Link::from_str(state, s))
-			.filter_map(Result::ok).collect();
+			.filter_map(Result::ok)
+			.collect();
 
 		Ok((
 			Document {
