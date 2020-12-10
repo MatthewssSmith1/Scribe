@@ -4,7 +4,7 @@ import NotePage from '@/components/content_body/note_page/note_page'
 import GraphPage from '@/components/content_body/graph_page/graph_page'
 
 import { Event, EventType, EventListener } from '@/rust-bindings/binding_event'
-import RustInterface, { generateEvent } from '@/rust-bindings/rust_interface'
+import RustInterface from '@/rust-bindings/rust_interface'
 
 export enum Page {
    Note,
@@ -12,8 +12,6 @@ export enum Page {
 }
 
 export default class ContentBody extends React.Component implements EventListener {
-   private static _SINGLETON: ContentBody
-
    state = {
       currentPage: Page.Note,
    }
@@ -22,17 +20,15 @@ export default class ContentBody extends React.Component implements EventListene
       super(props)
 
       RustInterface.subscribe(this, EventType.OpenGraphPage, EventType.OpenTodayPage)
-
-      ContentBody._SINGLETON = this
    }
 
    handleEvent(e: Event) {
       switch (e.type) {
          case EventType.OpenGraphPage:
-            ContentBody._SINGLETON.setState({ currentPage: Page.Graph })
+            this.setState({ currentPage: Page.Graph })
             break
          case EventType.OpenTodayPage:
-            ContentBody._SINGLETON.setState({ currentPage: Page.Note })
+            this.setState({ currentPage: Page.Note })
             break
       }
    }

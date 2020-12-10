@@ -20,14 +20,14 @@ type ActionBarState = {
 //the panel on the left of the document body that can be collapsed/expanded
 export default class ActionBar extends React.Component implements EventListener {
    //#region State
-   private static _SINGLETON: ActionBar
+   // private static _SINGLETON: ActionBar
 
    state: ActionBarState
 
    constructor(props: any) {
       super(props)
 
-      ActionBar._SINGLETON = this
+      // ActionBar._SINGLETON = this
 
       RustInterface.subscribe(this, EventType.ToggleActionBar)
 
@@ -39,8 +39,19 @@ export default class ActionBar extends React.Component implements EventListener 
    }
 
    handleEvent(e: Event): void {
-      if(e.type == EventType.ToggleActionBar)
-         ActionBar.isCollapsed = !ActionBar.isCollapsed
+      if (e.type == EventType.ToggleActionBar) {
+         var isCollapsed = !this.state.isCollapsed;
+
+         this.setState({ isCollapsed })
+
+         //modifies the class list in the front facing HTML independent of React
+         var classList = document.querySelector('#action-panel-wrapper').classList
+         if (isCollapsed) {
+            classList.add('collapsed')
+         } else {
+            classList.remove('collapsed')
+         }
+      }
    }
 
    //only rebuild the ActionBar component hierarchy when searchValue becomes null or not null (changing from "a" to "ab" doesn't rebuild)
@@ -49,28 +60,28 @@ export default class ActionBar extends React.Component implements EventListener 
    }
    //#endregion
 
-   //#region Getters & Setters
-   static get isCollapsed(): boolean {
-      return this._SINGLETON.state.isCollapsed
-   }
+   // //#region Getters & Setters
+   // static get isCollapsed(): boolean {
+   //    return this._SINGLETON.state.isCollapsed
+   // }
 
-   //does not rebuild html, see shouldComponentUpdate
-   static set isCollapsed(_isCollapsed: boolean) {
-      //stores it in state for the next rebuild
-      this._SINGLETON.setState({ isCollapsed: _isCollapsed })
+   // //does not rebuild html, see shouldComponentUpdate
+   // static set isCollapsed(_isCollapsed: boolean) {
+   //    //stores it in state for the next rebuild
+   //    this._SINGLETON.setState({ isCollapsed: _isCollapsed })
 
-      //modifies the class list in the front facing HTML independent of React
-      var classList = document.querySelector('#action-panel-wrapper').classList
-      if (_isCollapsed) {
-         classList.add('collapsed')
-      } else {
-         classList.remove('collapsed')
-      }
-   }
+   //    //modifies the class list in the front facing HTML independent of React
+   //    var classList = document.querySelector('#action-panel-wrapper').classList
+   //    if (_isCollapsed) {
+   //       classList.add('collapsed')
+   //    } else {
+   //       classList.remove('collapsed')
+   //    }
+   // }
 
-   static set search(search: { searchValue: string; searchResults: Array<[string, Function]> }) {
-      this._SINGLETON.setState(search)
-   }
+   // static set search(search: { searchValue: string; searchResults: Array<[string, Function]> }) {
+   //    this._SINGLETON.setState(search)
+   // }
    //#endregion
 
    render() {
@@ -127,13 +138,13 @@ class SearchBar extends React.Component {
    handleFocus = () => {
       document.querySelector('#action-panel').classList.add('search-expanded')
 
-      ActionBar.search = { searchValue: null, searchResults: null }
+      // ActionBar.search = { searchValue: null, searchResults: null }
    }
 
    handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
       document.querySelector('#action-panel').classList.remove('search-expanded')
 
-      ActionBar.search = { searchValue: null, searchResults: null }
+      // ActionBar.search = { searchValue: null, searchResults: null }
 
       var input = e.target as HTMLInputElement
 
@@ -147,6 +158,6 @@ class SearchBar extends React.Component {
 
       if (searchValue) SearchResultList.updateUI()
 
-      ActionBar.search = { searchValue, searchResults: null }
+      // ActionBar.search = { searchValue, searchResults: null }
    }
 }

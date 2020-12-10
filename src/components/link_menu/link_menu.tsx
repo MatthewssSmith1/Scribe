@@ -2,7 +2,10 @@ import React from 'react'
 
 import Link from '@/data/link'
 
-export default class LinkMenu extends React.Component {
+import { Event, EventType, EventListener } from '@/rust-bindings/binding_event'
+import RustInterface from '@/rust-bindings/rust_interface'
+
+export default class LinkMenu extends React.Component implements EventListener {
    //#region Static
    private static _SINGLETON: LinkMenu
 
@@ -29,6 +32,10 @@ export default class LinkMenu extends React.Component {
       LinkMenu._SINGLETON = this
 
       this.domRef = React.createRef<HTMLDivElement>()
+   }
+   
+   handleEvent(e: Event): void {
+      throw new Error('Method not implemented.')
    }
    //#endregion
 

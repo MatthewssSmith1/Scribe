@@ -5,9 +5,9 @@ export enum EventType {
    Init = 3,
    Message = 4,
 
-   A = 5,
-   B = 6,
-   
+   ShowLinkMenu = 5,
+   HideLinkMenu = 6,
+
    OpenGraphPage = 7,
    OpenTodayPage = 8,
    ToggleActionBar = 9,
