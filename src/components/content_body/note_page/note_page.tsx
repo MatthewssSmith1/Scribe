@@ -7,7 +7,10 @@ import SidePanel from '@/components/side_panel/side_panel'
 import Bullet from '@/components/content_body/note_page/bullet/bullet'
 import Icon from '@/components/icon/icon'
 
-export default class NotePage extends React.Component {
+import RustInterface, { generateEvent } from '@/rust-bindings/rust_interface'
+import { Event, EventType, EventListener } from '@/rust-bindings/binding_event'
+
+export default class NotePage extends React.Component implements EventListener {
    //#region Static Members & State
    private static _SINGLETON: NotePage
 
@@ -27,14 +30,24 @@ export default class NotePage extends React.Component {
       document: null as Document,
       headNode: null as Node,
       shouldSave: null as boolean,
+      rightMargin: 0,
    }
 
    constructor(props: any) {
       super(props)
 
+      RustInterface.subscribe(this, EventType.ChangeNotePageRMargin)
+
       NotePage._SINGLETON = this
 
       Workspace.load()
+   }
+
+   handleEvent(e: Event): void {
+      if (e.is(EventType.ChangeNotePageRMargin)) {
+         console.log(e.dataAsNum(0));
+         this.setState({rightMargin: e.dataAsNum(0)})
+      }
    }
 
    handleClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -62,9 +75,8 @@ export default class NotePage extends React.Component {
    render() {
       if (this.state.document == null) return <div className="note-body" />
 
-      var right = SidePanel.isCollapsed ? 0 : SidePanel.width
       const style = {
-         right: `${right}px`,
+         right: `${this.state.rightMargin}px`,
       }
 
       //top element: <h1 className="document-title">{document.name}</h1> : <Breadcrumbs />

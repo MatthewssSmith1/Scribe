@@ -32,7 +32,7 @@ export default abstract class RustInterface {
 
       let returned = Event.fromString(this.binding.processEvent(e.toString()))
 
-      if (returned.type == EventType.Message) {
+      if (returned.is(EventType.Log)) {
          returned.data.forEach(msg => {
             console.log(`RUST: ${msg}`);
          });

@@ -12,17 +12,11 @@ type SidePanelState = {
 }
 
 export default class SidePanel extends React.Component implements EventListener {
-   //#region State & Members
-   private static _SINGLETON: SidePanel
-
-   draggableEdgeRef: React.RefObject<HTMLDivElement>
-
    state: SidePanelState
+   draggableEdgeRef: React.RefObject<HTMLDivElement>
 
    constructor(props: any) {
       super(props)
-
-      SidePanel._SINGLETON = this
 
       RustInterface.subscribe(this, EventType.ToggleSidePanel)
 
@@ -36,7 +30,10 @@ export default class SidePanel extends React.Component implements EventListener 
       }
 
       var handleDrag = (e: MouseEvent) => {
-         this.setState({ width: window.innerWidth - e.clientX })
+         var width = window.innerWidth - e.clientX
+         this.setState({ width })
+
+         generateEvent(EventType.ChangeNotePageRMargin, width.toString())
 
          //! set style of html element here (don't need to rebuild every time)
       }
@@ -57,39 +54,24 @@ export default class SidePanel extends React.Component implements EventListener 
    }
 
    handleEvent(e: Event): void {
-      if (e.type == EventType.ToggleSidePanel) SidePanel.isCollapsed = !SidePanel.isCollapsed
+      if (e.is(EventType.ToggleSidePanel)) {
+         var isCollapsed = !this.state.isCollapsed
+
+         this.setState({ isCollapsed })
+
+         var notePageRMargin = isCollapsed ? 0 : this.state.width
+         generateEvent(EventType.ChangeNotePageRMargin, notePageRMargin.toString())
+
+         //modifies the class list in the front facing HTML independent of React
+         var contentPanelWrapper = document.querySelector('#content-panel-wrapper') as HTMLDivElement
+         if (isCollapsed) contentPanelWrapper.classList.add('collapsed')
+         else contentPanelWrapper.classList.remove('collapsed')
+
+         //sets the style of the HTML element, also independent from React
+         var right = isCollapsed ? -this.state.width : 0
+         contentPanelWrapper.style.right = `right: ${right}px`
+      }
    }
-
-   //? consider removing react state storage and just store a static value/set of values on the class
-   shouldComponentUpdate(_nextProps: any, nextState: SidePanelState) {
-      // console.log('update checked')
-      return true
-   }
-   //#endregion
-
-   //#region Getters & Setters
-   static get width(): number {
-      return this._SINGLETON.state.width
-   }
-
-   static get isCollapsed(): boolean {
-      return this._SINGLETON.state.isCollapsed
-   }
-
-   static set isCollapsed(_isCollapsed: boolean) {
-      //stores it in state for the next rebuild
-      this._SINGLETON.setState({ isCollapsed: _isCollapsed })
-
-      //modifies the class list in the front facing HTML independent of React
-      var contentPanelWrapper = document.querySelector('#content-panel-wrapper') as HTMLDivElement
-      if (_isCollapsed) contentPanelWrapper.classList.add('collapsed')
-      else contentPanelWrapper.classList.remove('collapsed')
-
-      //sets the style of the HTML element, also independent from React
-      var right = _isCollapsed ? -this._SINGLETON.state.width : 0
-      contentPanelWrapper.style.right = `right: ${right}px`
-   }
-   //#endregion
 
    render() {
       var { isCollapsed, width } = this.state

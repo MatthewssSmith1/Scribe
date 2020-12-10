@@ -3,16 +3,20 @@ export enum EventType {
    Empty = 1,
    Multiple = 2,
    Init = 3,
-   Message = 4,
+   Log = 4,
 
    ShowLinkMenu = 5,
    HideLinkMenu = 6,
 
    OpenGraphPage = 7,
    OpenTodayPage = 8,
+
    ToggleActionBar = 9,
    ToggleSidePanel = 10,
-   NumEventTypes = 11,
+
+   ChangeNotePageRMargin = 11,
+
+   NumEventTypes = 12,
 }
 
 export class Event {
@@ -30,7 +34,7 @@ export class Event {
    }
 
    toArray(): Array<Event> {
-      if (this.type == EventType.Multiple) {
+      if (this.is(EventType.Multiple)) {
          return this.data.map<Event>(s => Event.fromString(s))
       }
 
@@ -45,6 +49,14 @@ export class Event {
 
    toString(): string {
       return `<<${<number>this.type}|${this.data.join('|')}>>`
+   }
+
+   is(type: EventType): boolean {
+      return this.type == type
+   }
+
+   dataAsNum(index: number): number {
+      return +this.data[index]
    }
 }
 

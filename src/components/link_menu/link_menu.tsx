@@ -3,17 +3,9 @@ import React from 'react'
 import Link from '@/data/link'
 
 import { Event, EventType, EventListener } from '@/rust-bindings/binding_event'
-import RustInterface from '@/rust-bindings/rust_interface'
+import RustInterface, {generateEvent} from '@/rust-bindings/rust_interface'
 
 export default class LinkMenu extends React.Component implements EventListener {
-   //#region Static
-   private static _SINGLETON: LinkMenu
-
-   static hide(): void {
-      LinkMenu._SINGLETON.setState({ isHidden: true })
-   }
-   //#endregion
-
    //#region Members & Constructor
    state = {
       isHidden: true,
@@ -29,13 +21,17 @@ export default class LinkMenu extends React.Component implements EventListener {
    constructor(props: any) {
       super(props)
 
-      LinkMenu._SINGLETON = this
+      RustInterface.subscribe(this, EventType.HideLinkMenu, EventType.ShowLinkMenu)
 
       this.domRef = React.createRef<HTMLDivElement>()
    }
-   
+
    handleEvent(e: Event): void {
-      throw new Error('Method not implemented.')
+      if (e.is(EventType.ShowLinkMenu)) {
+         this.setState({ isHidden: false })
+      } else if (e.is(EventType.HideLinkMenu)) {
+         this.setState({ isHidden: true })
+      }
    }
    //#endregion
 
@@ -48,7 +44,7 @@ export default class LinkMenu extends React.Component implements EventListener {
 
       var clickedInLinkMenu = clickedElm != menuDiv && !menuDiv.contains(clickedElm)
 
-      if (clickedInLinkMenu) LinkMenu.hide()
+      if (clickedInLinkMenu) generateEvent(EventType.HideLinkMenu)
       else e.preventDefault()
    }
 

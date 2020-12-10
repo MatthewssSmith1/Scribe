@@ -6,7 +6,6 @@ import SidePanel from '@/components/side_panel/side_panel'
 
 import SearchResultList from '@/components/action_bar/search_result_list/search_result_list'
 import PinList from '@/components/action_bar/pin_list/pin_list'
-import ContentBody from '@/components/content_body/content_body'
 
 import RustInterface, { generateEvent } from '@/rust-bindings/rust_interface'
 import { Event, EventType, EventListener } from '@/rust-bindings/binding_event'
@@ -19,15 +18,10 @@ type ActionBarState = {
 
 //the panel on the left of the document body that can be collapsed/expanded
 export default class ActionBar extends React.Component implements EventListener {
-   //#region State
-   // private static _SINGLETON: ActionBar
-
    state: ActionBarState
 
    constructor(props: any) {
       super(props)
-
-      // ActionBar._SINGLETON = this
 
       RustInterface.subscribe(this, EventType.ToggleActionBar)
 
@@ -39,7 +33,7 @@ export default class ActionBar extends React.Component implements EventListener 
    }
 
    handleEvent(e: Event): void {
-      if (e.type == EventType.ToggleActionBar) {
+      if (e.is(EventType.ToggleActionBar)) {
          var isCollapsed = !this.state.isCollapsed;
 
          this.setState({ isCollapsed })
@@ -58,31 +52,6 @@ export default class ActionBar extends React.Component implements EventListener 
    shouldComponentUpdate(_nextProps: any, nextState: ActionBarState) {
       return (this.state.searchValue == null) != (nextState.searchValue == null)
    }
-   //#endregion
-
-   // //#region Getters & Setters
-   // static get isCollapsed(): boolean {
-   //    return this._SINGLETON.state.isCollapsed
-   // }
-
-   // //does not rebuild html, see shouldComponentUpdate
-   // static set isCollapsed(_isCollapsed: boolean) {
-   //    //stores it in state for the next rebuild
-   //    this._SINGLETON.setState({ isCollapsed: _isCollapsed })
-
-   //    //modifies the class list in the front facing HTML independent of React
-   //    var classList = document.querySelector('#action-panel-wrapper').classList
-   //    if (_isCollapsed) {
-   //       classList.add('collapsed')
-   //    } else {
-   //       classList.remove('collapsed')
-   //    }
-   // }
-
-   // static set search(search: { searchValue: string; searchResults: Array<[string, Function]> }) {
-   //    this._SINGLETON.setState(search)
-   // }
-   //#endregion
 
    render() {
       return (
