@@ -9,7 +9,7 @@ import PinList from '@/components/action_bar/pin_list/pin_list'
 import ContentBody from '@/components/content_body/content_body'
 
 import RustInterface, { generateEvent } from '@/rust-bindings/rust_interface'
-import {Event, EventType, EventListener } from '@/rust-bindings/binding_event'
+import { Event, EventType, EventListener } from '@/rust-bindings/binding_event'
 
 type ActionBarState = {
    isCollapsed: boolean
@@ -27,9 +27,9 @@ export default class ActionBar extends React.Component implements EventListener 
    constructor(props: any) {
       super(props)
 
-      RustInterface.subscribe(this, EventType.GraphOpened)
-
       ActionBar._SINGLETON = this
+
+      RustInterface.subscribe(this, EventType.ToggleActionBar)
 
       this.state = {
          isCollapsed: true,
@@ -38,8 +38,9 @@ export default class ActionBar extends React.Component implements EventListener 
       }
    }
 
-   handleEvent(e: Event) {
-      if (e.type == EventType.GraphOpened) ContentBody.openGraphPage()
+   handleEvent(e: Event): void {
+      if(e.type == EventType.ToggleActionBar)
+         ActionBar.isCollapsed = !ActionBar.isCollapsed
    }
 
    //only rebuild the ActionBar component hierarchy when searchValue becomes null or not null (changing from "a" to "ab" doesn't rebuild)
@@ -67,10 +68,6 @@ export default class ActionBar extends React.Component implements EventListener 
       }
    }
 
-   static toggleIsCollapsed(): void {
-      this.isCollapsed = !this.isCollapsed
-   }
-
    static set search(search: { searchValue: string; searchResults: Array<[string, Function]> }) {
       this._SINGLETON.setState(search)
    }
@@ -94,10 +91,10 @@ var ButtonRow = () => {
    return (
       <div className="button-row">
          <div className="search-icon-place-holder" />
-         <Icon glyph="device_hub" onClick={() => generateEvent(EventType.GraphOpened)} />
-         <Icon glyph="calendar_today" onClick={ContentBody.openNotePage} />
-         <Icon glyph="settings" onClick={SidePanel.toggleIsCollapsed} />
-         <Icon glyph="arrow_back_ios" className="button-row__collapse-icon" onClick={() => ActionBar.toggleIsCollapsed()} />
+         <Icon glyph="device_hub" onClick={() => generateEvent(EventType.OpenGraphPage)} />
+         <Icon glyph="calendar_today" onClick={() => generateEvent(EventType.OpenTodayPage)} />
+         <Icon glyph="settings" onClick={() => generateEvent(EventType.ToggleSidePanel)} />
+         <Icon glyph="arrow_back_ios" className="button-row__collapse-icon" onClick={() => generateEvent(EventType.ToggleActionBar)} />
       </div>
    )
 }

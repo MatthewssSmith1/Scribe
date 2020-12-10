@@ -1,6 +1,9 @@
 import React from 'react'
 import cx from 'classnames'
 
+import RustInterface, { generateEvent } from '@/rust-bindings/rust_interface'
+import { Event, EventType, EventListener } from '@/rust-bindings/binding_event'
+
 type SidePanelState = {
    isCollapsed: boolean
    width: number
@@ -8,7 +11,7 @@ type SidePanelState = {
    maxWidthPercentage: number
 }
 
-export default class SidePanel extends React.Component {
+export default class SidePanel extends React.Component implements EventListener {
    //#region State & Members
    private static _SINGLETON: SidePanel
 
@@ -20,6 +23,8 @@ export default class SidePanel extends React.Component {
       super(props)
 
       SidePanel._SINGLETON = this
+
+      RustInterface.subscribe(this, EventType.ToggleSidePanel)
 
       this.draggableEdgeRef = React.createRef<HTMLDivElement>()
 
@@ -51,6 +56,10 @@ export default class SidePanel extends React.Component {
       })
    }
 
+   handleEvent(e: Event): void {
+      if (e.type == EventType.ToggleSidePanel) SidePanel.isCollapsed = !SidePanel.isCollapsed
+   }
+
    //? consider removing react state storage and just store a static value/set of values on the class
    shouldComponentUpdate(_nextProps: any, nextState: SidePanelState) {
       // console.log('update checked')
@@ -79,10 +88,6 @@ export default class SidePanel extends React.Component {
       //sets the style of the HTML element, also independent from React
       var right = _isCollapsed ? -this._SINGLETON.state.width : 0
       contentPanelWrapper.style.right = `right: ${right}px`
-   }
-
-   static toggleIsCollapsed(): void {
-      SidePanel.isCollapsed = !SidePanel.isCollapsed
    }
    //#endregion
 

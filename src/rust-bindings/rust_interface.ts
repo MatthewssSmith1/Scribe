@@ -28,6 +28,8 @@ export default abstract class RustInterface {
     * @param e the event to be sent to rust
     */
    static async send(e: Event) {
+      this.listeners[e.type].forEach(l => l.handleEvent(e))
+
       let returned = Event.fromString(this.binding.processEvent(e.toString()))
 
       if (returned.type == EventType.Message) {

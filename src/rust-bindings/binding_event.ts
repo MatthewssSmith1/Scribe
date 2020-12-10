@@ -4,10 +4,15 @@ export enum EventType {
    Multiple = 2,
    Init = 3,
    Message = 4,
-   GraphOpened = 5,
-   NoteOpened = 6,
-   NodeTextChanged = 7,
-   NumEventTypes = 8,
+
+   A = 5,
+   B = 6,
+   
+   OpenGraphPage = 7,
+   OpenTodayPage = 8,
+   ToggleActionBar = 9,
+   ToggleSidePanel = 10,
+   NumEventTypes = 11,
 }
 
 export class Event {
