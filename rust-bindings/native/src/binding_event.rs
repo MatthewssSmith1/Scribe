@@ -41,11 +41,11 @@ impl BindingEvent {
 		}
 	}
 
-	pub fn msg<N: AsRef<str>>(msg: N) -> BindingEvent {
+	pub fn _msg<N: AsRef<str>>(msg: N) -> BindingEvent {
 		BindingEvent::new(BindingEventType::Message, vec![msg])
 	}
 
-	pub fn msgs<N: AsRef<str>>(msgs: Vec<N>) -> BindingEvent {
+	pub fn _msgs<N: AsRef<str>>(msgs: Vec<N>) -> BindingEvent {
 		BindingEvent::new(BindingEventType::Message, msgs)
 	}
 

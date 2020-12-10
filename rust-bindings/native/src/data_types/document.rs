@@ -1,5 +1,5 @@
-use std::collections::HashMap;
 use std::io::{Error, ErrorKind};
+use std::collections::HashMap;
 use std::{fs, vec::Vec};
 
 use serde::{Deserialize, Serialize};
@@ -58,38 +58,14 @@ impl DocSerData {
 		});
 	}
 
-	pub fn _from_doc(state: &AppState, doc: &Document) -> DocSerData {
-		DocSerData {
-			name: doc.name.clone(),
-			id: doc.id,
-			tags: doc.tags.clone(),
-			props: doc.props.clone(),
-			links_from_this: doc
-				.links_from
-				.iter()
-				.map(|id| state.links[id].to_string())
-				.collect(),
-		}
-	}
-
-	pub fn to_doc(self, state: &AppState) -> Document {
-		let DocSerData {
-			name,
-			id,
-			tags,
-			props,
-			links_from_this,
-		} = self;
-
-		let (links_from, links_to) = state.links_with_doc(id);
+	pub fn to_doc(&self, state: &AppState) -> Document {
+		let (links_from, links_to) = state.links_with_doc(self.id);
 
 		Document {
-			name,
-			id,
-
-			tags,
-			props,
-
+			name: self.name.clone(),
+			id: self.id.clone(),
+			tags: self.tags.clone(),
+			props: self.props.clone(),
 			links_from,
 			links_to,
 		}

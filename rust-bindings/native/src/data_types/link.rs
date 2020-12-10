@@ -1,7 +1,7 @@
 use std::io::{Error, ErrorKind};
-use std::{fmt, vec::Vec};
+use std::{fmt, vec::Vec, sync::Mutex};
 
-use super::app_state::*;
+use lazy_static::lazy_static;
 
 #[derive(Clone, Copy)]
 pub struct Link {
@@ -13,9 +13,15 @@ pub struct Link {
 }
 
 impl Link {
-	pub fn new(state: &AppState, from_id: i32, from_line: i32, to_id: i32, to_line: i32) -> Link {
+	pub fn new(from_id: i32, from_line: i32, to_id: i32, to_line: i32) -> Link {
+		lazy_static!{
+			static ref ID_GEN: Mutex<i32> = Mutex::new(0);
+		}
+		let mut id_gen = ID_GEN.lock().unwrap();
+		*id_gen = *id_gen + 1;
+
 		Link {
-			id: state.id_manager.get_id(),
+			id: *id_gen,
 			from_id,
 			from_line,
 			to_id,
@@ -23,7 +29,7 @@ impl Link {
 		}
 	}
 
-	pub fn from_str(state: &AppState, s: &str) -> Result<Link, Error> {
+	pub fn from_str(s: &str) -> Result<Link, Error> {
 		let split: Vec<i32> = s
 			.split("|")
 			.map(|s| s.parse::<i32>())
@@ -37,7 +43,7 @@ impl Link {
 			));
 		}
 
-		Ok(Link::new(state, split[0], split[1], split[2], split[3]))
+		Ok(Link::new(split[0], split[1], split[2], split[3]))
 	}
 }
 
