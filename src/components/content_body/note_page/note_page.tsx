@@ -36,7 +36,7 @@ export default class NotePage extends React.Component implements EventListener {
    constructor(props: any) {
       super(props)
 
-      RustInterface.subscribe(this, EventType.ChangeNotePageRMargin)
+      RustInterface.subscribe(this, EventType.SidePanelWidthChanged)
 
       NotePage._SINGLETON = this
 
@@ -44,9 +44,8 @@ export default class NotePage extends React.Component implements EventListener {
    }
 
    handleEvent(e: Event): void {
-      if (e.is(EventType.ChangeNotePageRMargin)) {
-         console.log(e.dataAsNum(0));
-         this.setState({rightMargin: e.dataAsNum(0)})
+      if (e.is(EventType.SidePanelWidthChanged)) {
+         this.setState({ rightMargin: e.dataAsNum(0) })
       }
    }
 

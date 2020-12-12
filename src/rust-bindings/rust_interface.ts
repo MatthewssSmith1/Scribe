@@ -28,16 +28,14 @@ export default abstract class RustInterface {
     * @param e the event to be sent to rust
     */
    static async send(e: Event) {
+      //if e is an error or log, just log it to console it and return
+      if (e.try_log()) return
+
       this.listeners[e.type].forEach(l => l.handleEvent(e))
 
       let returned = Event.fromString(this.binding.processEvent(e.toString()))
 
-      if (returned.is(EventType.Log)) {
-         returned.data.forEach(msg => {
-            console.log(`RUST: ${msg}`);
-         });
-      }
-
+      returned.try_log("RUST ")
       this.listeners[returned.type].forEach(l => l.handleEvent(returned))
    }
 

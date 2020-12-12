@@ -10,16 +10,20 @@ pub enum BindingEventType {
 	Empty = 1,
 	Multiple = 2,
 	Init = 3,
-	Message = 4,
+	Log = 4,
 
-	A = 5,
-	B = 6,
+	ShowLinkMenu = 5,
+	HideLinkMenu = 6,
 
 	OpenGraphPage = 7,
 	OpenTodayPage = 8,
+
 	ToggleActionBar = 9,
 	ToggleSidePanel = 10,
-	NumEventTypes = 11,
+
+	ChangeNotePageRMargin = 11,
+
+	NumEventTypes = 12,
 }
 
 pub struct BindingEvent {
@@ -47,11 +51,11 @@ impl BindingEvent {
 	}
 
 	pub fn _msg<N: AsRef<str>>(msg: N) -> BindingEvent {
-		BindingEvent::new(BindingEventType::Message, vec![msg])
+		BindingEvent::new(BindingEventType::Log, vec![msg])
 	}
 
 	pub fn _msgs<N: AsRef<str>>(msgs: Vec<N>) -> BindingEvent {
-		BindingEvent::new(BindingEventType::Message, msgs)
+		BindingEvent::new(BindingEventType::Log, msgs)
 	}
 
 	pub fn from_ctx(ctx: &mut FunctionContext) -> BindingEvent {
@@ -82,7 +86,13 @@ impl FromStr for BindingEvent {
 			.map(|val| val.to_string())
 			.collect();
 
-		let event_type = BindingEventType::from_int(i32::from_str(&s_split.remove(0))?).unwrap();
+		let event_type = match BindingEventType::from_int(i32::from_str(&s_split.remove(0))?) {
+			Ok(t) => t,
+			Err(e) => return Ok(BindingEvent::err(format!(
+				"event passed to rust with event type (as an integer) that couldn't be converted: {}",
+				e
+			))),
+		};
 
 		Ok(BindingEvent::new(event_type, s_split))
 	}

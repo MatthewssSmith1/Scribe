@@ -2,8 +2,6 @@ import * as React from 'react'
 import Icon from '@/components/icon/icon'
 import cx from 'classnames'
 
-import SidePanel from '@/components/side_panel/side_panel'
-
 import SearchResultList from '@/components/action_bar/search_result_list/search_result_list'
 import PinList from '@/components/action_bar/pin_list/pin_list'
 
@@ -18,33 +16,28 @@ type ActionBarState = {
 
 //the panel on the left of the document body that can be collapsed/expanded
 export default class ActionBar extends React.Component implements EventListener {
-   state: ActionBarState
+   //TODO take isCollapsed out of react state and just store it in the class (and change CSS styles like side panel does)
+   state = {
+      isCollapsed: true,
+      searchValue: null as string,
+      searchResults: null as Array<[string, Function]>,
+   }
 
    constructor(props: any) {
       super(props)
 
       RustInterface.subscribe(this, EventType.ToggleActionBar)
-
-      this.state = {
-         isCollapsed: true,
-         searchValue: null,
-         searchResults: null,
-      }
    }
 
    handleEvent(e: Event): void {
       if (e.is(EventType.ToggleActionBar)) {
-         var isCollapsed = !this.state.isCollapsed;
+         var isCollapsed = !this.state.isCollapsed
 
          this.setState({ isCollapsed })
 
          //modifies the class list in the front facing HTML independent of React
-         var classList = document.querySelector('#action-panel-wrapper').classList
-         if (isCollapsed) {
-            classList.add('collapsed')
-         } else {
-            classList.remove('collapsed')
-         }
+         document.querySelector('#action-panel-wrapper').classList.toggle('collapsed')
+         generateEvent(EventType.ActionBarWidthChanged, isCollapsed ? '0' : '224')
       }
    }
 
@@ -116,7 +109,6 @@ class SearchBar extends React.Component {
       // ActionBar.search = { searchValue: null, searchResults: null }
 
       var input = e.target as HTMLInputElement
-
       input.value = ''
    }
 
@@ -125,8 +117,8 @@ class SearchBar extends React.Component {
 
       if (searchValue == '') searchValue = null
 
-      if (searchValue) SearchResultList.updateUI()
-
+      // !both lines below don't work any more, have to switch over to event system
+      //if (searchValue) SearchResultList.updateUI()
       // ActionBar.search = { searchValue, searchResults: null }
    }
 }

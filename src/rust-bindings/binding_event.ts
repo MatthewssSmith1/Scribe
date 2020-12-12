@@ -1,3 +1,5 @@
+import { generateEvent } from '@/rust-bindings/rust_interface'
+
 export enum EventType {
    Error = 0,
    Empty = 1,
@@ -14,9 +16,10 @@ export enum EventType {
    ToggleActionBar = 9,
    ToggleSidePanel = 10,
 
-   ChangeNotePageRMargin = 11,
+   ActionBarWidthChanged = 11,
+   SidePanelWidthChanged = 12,
 
-   NumEventTypes = 12,
+   NumEventTypes = 13,
 }
 
 export class Event {
@@ -51,12 +54,43 @@ export class Event {
       return `<<${<number>this.type}|${this.data.join('|')}>>`
    }
 
-   is(type: EventType): boolean {
-      return this.type == type
+   is(...types: Array<EventType>): boolean {
+      for (var i = 0; i < types.length; i++) {
+         if (types[i] == this.type) return true
+      }
+
+      return false
+   }
+
+   try_log(prefix: string = ''): boolean {
+      if (this.is(EventType.Log)) {
+         this.data.forEach(msg => {
+            console.log(`${prefix}${msg}`)
+         })
+
+         return true
+      } else if (this.is(EventType.Error)) {
+         this.data.forEach(msg => {
+            console.log(`${prefix}ERROR: ${msg}`)
+         })
+
+         return true
+      }
+
+      return false
    }
 
    dataAsNum(index: number): number {
       return +this.data[index]
+   }
+
+   dataAsBool(index: number): boolean {
+      let str = this.data[index]
+      if (str == 'true') return true
+
+      if (str != 'false') generateEvent(EventType.Error, `event data '${str}' was parsed as a boolean`)
+
+      return false
    }
 }
 

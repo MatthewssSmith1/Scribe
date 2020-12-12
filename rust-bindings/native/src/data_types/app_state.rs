@@ -65,8 +65,12 @@ impl AppState {
 		return BindingEvent::empty();
 	}
 
+	////* this is where all the important logic goes
 	pub fn handle_event(&mut self, event: BindingEvent) -> BindingEvent {
 		match event.event_type {
+			BindingEventType::Error => return event,
+			BindingEventType::Log => return event,
+
 			BindingEventType::Init => return self.load_workspace(),
 
 			_ => return BindingEvent::empty(),
