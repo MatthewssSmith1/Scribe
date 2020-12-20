@@ -19,7 +19,10 @@ export enum EventType {
    ActionBarWidthChanged = 11,
    SidePanelWidthChanged = 12,
 
-   NumEventTypes = 13,
+   NotePageLoaded = 13,
+   LoadDoc = 14,
+
+   NumEventTypes = 15,
 }
 
 export class Event {

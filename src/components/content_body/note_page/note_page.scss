@@ -6,9 +6,11 @@
    bottom: 0;
 
    transition: left $transition-time-normal;
+   transition: padding-right $transition-time-normal;
+   transition: padding-left $transition-time-normal;
 
    padding: 2rem;
-   padding-left: 3rem;
+   padding-left: 2rem;
    padding-right: 5rem;
    padding-bottom: 45vh;
 

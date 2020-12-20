@@ -53,13 +53,13 @@ export default class Document {
    //    return hash
    // }
 
-   getNodeHead(): Node {
-      //todo rewrite workspace path once workspace is extracted into a static class
-      var fileStr = readFileSync(Workspace.path + `${this.name}.txt`, { encoding: 'utf8', flag: 'r' })
-      var fileLines = fileStr.substr(fileStr.indexOf('---') + 5).split('\n')
+   // getNodeHead(): Node {
+   //    //todo rewrite workspace path once workspace is extracted into a static class
+   //    var fileStr = readFileSync(Workspace.path + `${this.name}.txt`, { encoding: 'utf8', flag: 'r' })
+   //    var fileLines = fileStr.substr(fileStr.indexOf('---') + 5).split('\n')
 
-      return Node.headFromStringArray(fileLines)
-   }
+   //    return Node.headFromStringArray(fileLines)
+   // }
 
    // saveMetaData(workspacePath: string) {
    //    this.metaData.linksFromThisStrings = this.linksFromThis.map(l => l.toString())

@@ -26,7 +26,7 @@ export default class ActionBar extends React.Component implements EventListener 
    constructor(props: any) {
       super(props)
 
-      RustInterface.subscribe(this, EventType.ToggleActionBar)
+      RustInterface.subscribe(this, EventType.ToggleActionBar, EventType.OpenTodayPage, EventType.OpenGraphPage)
    }
 
    handleEvent(e: Event): void {
@@ -38,6 +38,8 @@ export default class ActionBar extends React.Component implements EventListener 
          //modifies the class list in the front facing HTML independent of React
          document.querySelector('#action-panel-wrapper').classList.toggle('collapsed')
          generateEvent(EventType.ActionBarWidthChanged, isCollapsed ? '0' : '224')
+      } else if (e.is(EventType.OpenTodayPage) || e.is(EventType.OpenGraphPage)) {
+         generateEvent(EventType.ToggleActionBar)
       }
    }
 

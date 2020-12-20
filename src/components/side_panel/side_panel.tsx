@@ -8,6 +8,8 @@ export default class SidePanel extends React.Component implements EventListener 
    windowWidth = window.innerWidth
    actionBarWidth = 0
 
+   isDragging = false
+
    isCollapsed = true
    width = window.innerWidth * 0.4
 
@@ -15,8 +17,8 @@ export default class SidePanel extends React.Component implements EventListener 
       return 0.15 * (this.windowWidth - this.actionBarWidth)
    }
    maxExpand = () => {
-      return this.windowWidth - this.actionBarWidth - 32
-      // return 0.9 * area_width
+      // return this.windowWidth - this.actionBarWidth - 32
+      return 0.6 * this.windowWidth
    }
 
    draggableEdgeRef: React.RefObject<HTMLDivElement>
@@ -31,24 +33,33 @@ export default class SidePanel extends React.Component implements EventListener 
       this.wrapperRef = React.createRef<HTMLDivElement>()
 
       var handleDrag = (e: MouseEvent) => {
-         this.width = window.innerWidth - e.clientX
-         this.clampWidth()
+         let newWidth = window.innerWidth - e.clientX
+         if (this.width == newWidth) {
+            return
+         }
+         this.width = Math.min(this.maxExpand(), newWidth)
+         // this.clampWidth()
          this.updateStyle()
-
-         generateEvent(EventType.SidePanelWidthChanged, this.width.toString())
       }
 
       document.addEventListener('mousedown', (e: MouseEvent) => {
          if (e.button == 0 && e.target == this.draggableEdgeRef.current) {
             document.addEventListener('mousemove', handleDrag, false)
             document.body.classList.add('all-descendants-w-resize')
+            this.isDragging = true
          }
       })
 
       document.addEventListener('mouseup', e => {
-         if (e.button == 0) {
+         if (e.button == 0 && this.isDragging) {
             document.removeEventListener('mousemove', handleDrag, false)
             document.body.classList.remove('all-descendants-w-resize')
+            this.isDragging = false
+
+            if (this.width < this.minExpand()) {
+               generateEvent(EventType.ToggleSidePanel)
+               return
+            }
          }
       })
 
@@ -62,9 +73,11 @@ export default class SidePanel extends React.Component implements EventListener 
    handleEvent(e: Event): void {
       if (e.is(EventType.ToggleSidePanel)) {
          this.isCollapsed = !this.isCollapsed
+         if (!this.isCollapsed) {
+            this.width = window.innerWidth * 0.4
+         }
          this.updateStyle()
       } else if (e.is(EventType.ActionBarWidthChanged)) {
-         console.log("action bar width change received at " + (new Date()).getTime());
          this.actionBarWidth = e.dataAsNum(0)
          if (this.clampWidth() && !this.isCollapsed) this.updateStyle()
       }
@@ -84,13 +97,18 @@ export default class SidePanel extends React.Component implements EventListener 
    updateStyle(): void {
       let wrapperDiv = this.wrapperRef.current
 
-      var notePageRMargin = this.isCollapsed ? 0 : this.width
-      generateEvent(EventType.SidePanelWidthChanged, notePageRMargin.toString())
+      if (this.isCollapsed) {
+         generateEvent(EventType.SidePanelWidthChanged, `${0}`)
+      } else if (this.width >= this.minExpand()) {
+         var notePageRMargin = this.isCollapsed ? 0 : this.width
+         generateEvent(EventType.SidePanelWidthChanged, notePageRMargin.toString())
+      }
 
       wrapperDiv.classList.toggle('collapsed', this.isCollapsed)
 
       wrapperDiv.style.right = `${this.isCollapsed ? -this.width : 0}px`
       wrapperDiv.style.width = `${this.width}px`
+      wrapperDiv.style.opacity = `${Math.min(1.0, this.width / this.minExpand())}`
    }
 
    render() {

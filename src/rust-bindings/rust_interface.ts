@@ -35,7 +35,7 @@ export default abstract class RustInterface {
 
       let returned = Event.fromString(this.binding.processEvent(e.toString()))
 
-      returned.try_log("RUST ")
+      returned.try_log('RUST ')
       this.listeners[returned.type].forEach(l => l.handleEvent(returned))
    }
 

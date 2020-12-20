@@ -6,24 +6,28 @@ use neon::prelude::*;
 #[repr(i32)]
 #[derive(Clone, Copy, Debug, Eq, PartialEq, IntEnum)]
 pub enum BindingEventType {
-	Error = 0,
-	Empty = 1,
-	Multiple = 2,
-	Init = 3,
-	Log = 4,
+   Error = 0,
+   Empty = 1,
+   Multiple = 2,
+   Init = 3,
+   Log = 4,
 
-	ShowLinkMenu = 5,
-	HideLinkMenu = 6,
+   ShowLinkMenu = 5,
+   HideLinkMenu = 6,
 
-	OpenGraphPage = 7,
-	OpenTodayPage = 8,
+   OpenGraphPage = 7,
+   OpenTodayPage = 8,
 
-	ToggleActionBar = 9,
-	ToggleSidePanel = 10,
+   ToggleActionBar = 9,
+   ToggleSidePanel = 10,
 
-	ChangeNotePageRMargin = 11,
+   ActionBarWidthChanged = 11,
+   SidePanelWidthChanged = 12,
 
-	NumEventTypes = 12,
+   NotePageLoaded = 13,
+   LoadDoc = 14,
+
+   NumEventTypes = 15,
 }
 
 pub struct BindingEvent {

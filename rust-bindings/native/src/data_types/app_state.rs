@@ -73,6 +73,26 @@ impl AppState {
 
 			BindingEventType::Init => return self.load_workspace(),
 
+			BindingEventType::NotePageLoaded => {
+				return match self.documents.values().next() {
+					None => BindingEvent::empty(),
+					Some(doc) => {
+						let contents =
+							match fs::read_to_string(format!("{}{}.txt", self.workspace_path, doc.name)) {
+								Ok(c) => c,
+								Err(_) => return BindingEvent::empty(),
+							};
+
+						let sep_index = match contents.find("---") {
+							Some(i) => i,
+							None => return BindingEvent::empty(),
+						};
+
+						BindingEvent::new(BindingEventType::LoadDoc, vec![&contents[sep_index + 3..]])
+					}
+				}
+			}
+
 			_ => return BindingEvent::empty(),
 		}
 	}

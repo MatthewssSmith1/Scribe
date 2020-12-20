@@ -9,6 +9,7 @@ import Icon from '@/components/icon/icon'
 
 export default class Bullet extends React.Component {
    editableRef: React.RefObject<HTMLDivElement>
+   bulletRef: React.RefObject<HTMLDivElement>
 
    props: { node: Node }
 
@@ -16,15 +17,11 @@ export default class Bullet extends React.Component {
       super(props)
 
       this.editableRef = React.createRef()
+      this.bulletRef = React.createRef()
    }
 
-   shouldComponentUpdate(nextProps: { node: Node }, _nextState: any): boolean {
-      var { node } = nextProps
-
-      if (!node.shouldRebuild) return false
-
-      node.shouldRebuild = false
-      return true
+   shouldComponentUpdate() {
+      return false
    }
 
    render() {
@@ -35,7 +32,7 @@ export default class Bullet extends React.Component {
       }
 
       return (
-         <div className={cx('bullet', { collapsed: node.isCollapsed })} style={style}>
+         <div className={cx('bullet', { collapsed: false })} style={style} ref={this.bulletRef}>
             <Icon className="bullet__chevron" glyph="keyboard_arrow_down" onClick={this.handleChevronClick} />
             <div className="bullet__dot">
                <div className="bullet__dot__circle" />
@@ -53,10 +50,7 @@ export default class Bullet extends React.Component {
    }
 
    handleChevronClick = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
-      var { node } = this.props
-
-      node.toggleCollapsed(null, e.altKey)
-      node.shouldRebuild = true
+      this.bulletRef.current.classList.toggle('collapsed')
    }
 
    //#region Editable Callbacks
@@ -83,16 +77,11 @@ export default class Bullet extends React.Component {
       //this is wrapped in a listener so that the selection from the focus event is contained in the output from window.getSelection()
       var handleSelectionChange = () => {
          // document.removeEventListener('selectionchange', handleSelectionChange)
-
          // var sel = window.getSelection()
-
          // var caretPos = getSelectionCharacterOffsetWithin(this.editableRef.current.childNodes[0]).start
-
          // this.editableRef.current.innerHTML = this.props.node.text
-
          // var range = new Range()
          // range.setStart(this.editableRef.current.childNodes[0], caretPos) //caretPos is out of range
-
          // sel.removeAllRanges()
          // sel.addRange(range)
       }
