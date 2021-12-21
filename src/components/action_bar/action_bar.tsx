@@ -117,10 +117,11 @@ class SearchBar extends React.Component {
    handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       var searchValue = e.target.value
 
-      if (searchValue == '') searchValue = null
+      if (searchValue == '' || searchValue == null) {
+         //TODO close the search bar here
+         return
+      }
 
-      // !both lines below don't work any more, have to switch over to event system
-      //if (searchValue) SearchResultList.updateUI()
-      // ActionBar.search = { searchValue, searchResults: null }
+      generateEvent(EventType.SearchQueryChanged, searchValue)
    }
 }

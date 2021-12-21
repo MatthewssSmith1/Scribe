@@ -91,7 +91,11 @@ impl AppState {
 						BindingEvent::new(BindingEventType::LoadDoc, vec![&contents[sep_index + 3..]])
 					}
 				}
-			}
+			},
+
+			BindingEventType::SearchQueryChanged => {
+				return BindingEvent::new(BindingEventType::NewSearchResults, vec!["hello"]);
+			},
 
 			_ => return BindingEvent::empty(),
 		}

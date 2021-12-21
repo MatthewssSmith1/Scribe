@@ -22,7 +22,10 @@ export enum EventType {
    NotePageLoaded = 13,
    LoadDoc = 14,
 
-   NumEventTypes = 15,
+   SearchQueryChanged = 15,
+   NewSearchResults = 16,
+
+   NumEventTypes = 17,
 }
 
 export class Event {
