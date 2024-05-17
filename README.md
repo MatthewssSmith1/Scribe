@@ -1,2 +1,2 @@
 # Scribe
-A precrsor to (Mymir)[https://mymir.io) from 2020.
+A precrsor to [Mymir](https://mymir.io) from 2020.
