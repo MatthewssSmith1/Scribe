@@ -1,2 +1,2 @@
 # Scribe
-A bottom-up associative thought note-taking application written with Electron and React
+A precrsor to (Mymir)[https://mymir.io) from 2020.
